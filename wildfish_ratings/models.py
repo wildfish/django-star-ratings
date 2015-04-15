@@ -21,7 +21,7 @@ class RateableModelManager(models.Manager):
 
         rating = Rating.objects.filter(user=user, ratable_model=instance).first()
         if rating:
-            if getattr(settings, 'WILDFISH_RATINGS_RERATE') is False:
+            if getattr(settings, 'WILDFISH_RATINGS_RERATE', True) is False:
                 raise ValidationError('Already rated')
             rating.score = score
             rating.save()
@@ -55,6 +55,13 @@ class RateableModel(models.Model):
         if self.rating_total is 0 or self.rating_count is 0:
             return 0
         return self.rating_total / self.rating_count
+
+    def to_dict(self):
+        return {
+            'rating_count': self.rating_count,
+            'rating_total': self.rating_total,
+            'rating_average': self.rating_average,
+        }
 
 
 class Rating(TimeStampedModel):
