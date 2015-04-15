@@ -1,19 +1,23 @@
 from django import template
+import uuid
 from ..models import RateableModel
 
 register = template.Library()
 
 
 @register.inclusion_tag('ratings/widget.html', takes_context=True)
-def rating_widget(context, item, star_count=5):
-    ratings = RateableModel.objects.ratings_for_item(item)
+def ratings(context, item, icon_height=32, icon_width=32, star_count=5):
+    rating = RateableModel.objects.ratings_for_item(item)
     stars = [i for i in range(1, star_count+1)]
     request = context.get('request')
     return {
-        'ratings': ratings,
+        'rating': rating,
         'request': request,
         'user': request.user,
         'stars': stars,
         'star_count': star_count,
-        'percentage': 100 / ratings.max_value * ratings.rating_average
+        'percentage': 100 / rating.max_value * rating.rating_average,
+        'icon_height': icon_height,
+        'icon_width': icon_width,
+        'id': 'wfr{}'.format(uuid.uuid4().hex)
     }

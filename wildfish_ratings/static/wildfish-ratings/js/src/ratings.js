@@ -7,7 +7,6 @@ var utils = require('./utils');
  *********************/
 function init() {
     var ratingActions = document.querySelectorAll(".wildfish-ratings-rate-action"),
-        currentRatings = document.querySelectorAll(".wildfish-ratings-bg"),
         i;
 
     // Add click events to stars
@@ -92,9 +91,9 @@ function updateRating(rating, sender) {
 
     parent.setAttribute("data-avg-rating", rating.rating_average);
 
-    parent.querySelector(".wildfish-ratings-count").innerHTML = rating.rating_count.toString();
-    parent.querySelector(".wildfish-ratings-total").innerHTML = rating.rating_total.toString();
-    parent.querySelector(".wildfish-ratings-avg").innerHTML = rating.rating_average.toString();
+    //parent.querySelector(".wildfish-ratings-count").innerHTML = rating.rating_count.toString();
+    //parent.querySelector(".wildfish-ratings-total").innerHTML = rating.rating_total.toString();
+    //parent.querySelector(".wildfish-ratings-avg").innerHTML = rating.rating_average.toString();
     parent.querySelector(".wildfish-ratings-rating-foreground").style.width = 100 / rating.max_value * rating.rating_average + "%";
 }
 

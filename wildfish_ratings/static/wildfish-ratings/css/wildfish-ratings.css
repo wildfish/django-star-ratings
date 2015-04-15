@@ -1,5 +1,4 @@
 .wildfish-ratings {
-  color: black;
   display: inline-block;
   position: relative;
 }
@@ -16,13 +15,7 @@
 
 .wildfish-ratings-rating-full, .wildfish-ratings-rating-empty {
   display: block;
-  width: 32px;
-  height: 32px;
   background: url("/static/wildfish-ratings/images/stars.png") no-repeat;
-}
-
-.wildfish-ratings-rating-empty {
-  background-position: -32px 0;
 }
 
 .wildfish-ratings-rating-foreground {
