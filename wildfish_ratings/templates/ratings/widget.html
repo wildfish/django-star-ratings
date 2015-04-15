@@ -13,9 +13,13 @@
     <ul class="wildfish-ratings-rating-background">
         {% for star in stars %}
             <li>
+                {% if user.is_authenticated %}
                 <a href="{% url 'ratings:rate' rating.pk star %}?return={{ request.path }}" data-for="{{ rating.pk }}" data-score="{{ star }}" class="wildfish-ratings-rate-action">
                     <span class="wildfish-ratings-rating-empty"></span>
                 </a>
+                {% else %}
+                    <span class="wildfish-ratings-rating-empty"></span>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>
