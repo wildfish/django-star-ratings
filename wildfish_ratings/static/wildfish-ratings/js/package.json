@@ -1,0 +1,12 @@
+{
+    "name": "wildfish-ratings",
+    "version": "0.0.1",
+    "description": "Wildfish ratings",
+    "main": "index.js",
+    "scripts": {
+        "build": "browserify index.js -o ./dist/wildfish-ratings.js -d",
+        "watch": "watchify index.js -o ./dist/wildfish-ratings.js -d -v"
+    },
+    "author": "Jonas Hagstedt <hagstedt@gmail.com> (https://github.com/jonashagstedt)",
+    "license": "MIT"
+}
