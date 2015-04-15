@@ -1,0 +1,15 @@
+*.log
+*.pot
+*.pyc
+.idea/
+db.sqlite3
+static_root/
+media/
+build/
+.coverage
+pubpypi.sh
+
+# JS / CSS
+node_modules/
+.sass-cache/
+.tox/
