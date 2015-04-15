@@ -13,5 +13,7 @@ def rating_widget(context, item, star_count=5):
         'ratings': ratings,
         'request': request,
         'user': request.user,
-        'stars': stars
+        'stars': stars,
+        'star_count': star_count,
+        'percentage': 100 / ratings.max_value * ratings.rating_average
     }

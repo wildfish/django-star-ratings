@@ -61,6 +61,7 @@ class RateableModel(models.Model):
             'rating_count': self.rating_count,
             'rating_total': self.rating_total,
             'rating_average': self.rating_average,
+            'max_value': self.max_value
         }
 
 

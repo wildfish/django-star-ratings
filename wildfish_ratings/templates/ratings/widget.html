@@ -1,14 +1,27 @@
 <div class="wildfish-ratings">
+    <ul class="wildfish-ratings-rating-background">
+        {% for star in stars %}
+            <li>
+                <a href="{% url 'ratings:rate' ratings.pk star %}?return={{ request.path }}" data-for="{{ ratings.pk }}" data-score="{{ star }}" class="wildfish-ratings-rate-action">
+                    <span class="wildfish-ratings-rating-empty"></span>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
 
-    {% for star in stars %}
-        {% if user.is_authenticated %}
-        <a href="{% url 'ratings:rate' ratings.pk star %}?return={{ request.path }}" data-for="{{ ratings.pk }}" data-score="{{ star }}" class="wildfish-ratings-rate-action">
-            {{ star }}
-        </a>
-        {% else %}
-            {{ star }}
-        {% endif %}
-    {% endfor %}
+    <ul class="wildfish-ratings-rating-foreground" style="width: {{ percentage }}%">
+        {% for star in stars %}
+            <li>
+            {% if user.is_authenticated %}
+            <a href="{% url 'ratings:rate' ratings.pk star %}?return={{ request.path }}" data-for="{{ ratings.pk }}" data-score="{{ star }}" class="wildfish-ratings-rate-action">
+                <span class="wildfish-ratings-rating-full"></span>
+            </a>
+            {% else %}
+                {{ star }}
+            {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
 
     <div>
         Count: <span class="wildfish-ratings-count">{{ ratings.rating_count }}</span> |
