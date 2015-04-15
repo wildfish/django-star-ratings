@@ -12,7 +12,7 @@ function hasClass (el, name) {
 function findParent(el, className) {
     var parentNode = el.parentNode;
     while (hasClass(parentNode, className) === false) {
-        if (parentNode.hasOwnProperty('parentNode') === false) {
+        if (parentNode.parentNode === undefined) {
             return null;
         }
         parentNode = parentNode.parentNode;

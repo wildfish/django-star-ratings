@@ -1,4 +1,4 @@
-<div class="wildfish-ratings">
+<div class="wildfish-ratings" data-max-rating="{{ ratings.max_value }}" data-avg-rating="{{ ratings.rating_average }}">
     <ul class="wildfish-ratings-rating-background">
         {% for star in stars %}
             <li>
@@ -13,11 +13,11 @@
         {% for star in stars %}
             <li>
             {% if user.is_authenticated %}
-            <a href="{% url 'ratings:rate' ratings.pk star %}?return={{ request.path }}" data-for="{{ ratings.pk }}" data-score="{{ star }}" class="wildfish-ratings-rate-action">
+            <a href="{% url 'ratings:rate' ratings.pk star %}?return={{ request.path }}" data-for="{{ ratings.pk }}" data-score="{{ star }}" class="wildfish-ratings-bg wildfish-ratings-rate-action">
                 <span class="wildfish-ratings-rating-full"></span>
             </a>
             {% else %}
-                {{ star }}
+                <span class="wildfish-ratings-rating-full"></span>
             {% endif %}
             </li>
         {% endfor %}

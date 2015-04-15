@@ -28,4 +28,16 @@
 .wildfish-ratings-rating-foreground {
   top: 0;
   position: absolute;
+  -moz-transition-property: width;
+  -o-transition-property: width;
+  -webkit-transition-property: width;
+  transition-property: width;
+  -moz-transition-duration: 0.15s;
+  -o-transition-duration: 0.15s;
+  -webkit-transition-duration: 0.15s;
+  transition-duration: 0.15s;
+  -moz-transition-timing-function: ease-in;
+  -o-transition-timing-function: ease-in;
+  -webkit-transition-timing-function: ease-in;
+  transition-timing-function: ease-in;
 }

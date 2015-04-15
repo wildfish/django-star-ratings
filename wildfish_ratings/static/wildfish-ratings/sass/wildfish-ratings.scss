@@ -1,3 +1,5 @@
+@import "compass/css3/transition";
+
 .wildfish-ratings {
     color: black;
     display: inline-block;
@@ -34,4 +36,7 @@
 .wildfish-ratings-rating-foreground {
     top: 0;
     position: absolute;
+    @include transition-property(width);
+    @include transition-duration(0.15s);
+    @include transition-timing-function(ease-in);
 }
