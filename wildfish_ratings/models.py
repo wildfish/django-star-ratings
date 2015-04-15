@@ -57,38 +57,14 @@ class RateableModel(models.Model):
         return self.rating_total / self.rating_count
 
 
-# class RatingManager(models.Manager):
-#     def count_for_entry(self, entry):
-#         return self.filter(entry_media__entry=entry).count()
-#
-#     def for_entry_by_user(self, entry, user):
-#         return self.filter(entry_media__entry=entry, user=user)
-#
-#     def by_user(self, user):
-#         return self.filter(user=user)
-#
-#     def has_rated(self, user, content_object):
-#         content_type = ContentType.objects.get_for_model(content_object)
-#         return self.by_user(user).filter(content_type=content_type, object_id=content_object.pk).exists()
-
-
 class Rating(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     ip_address = models.IPAddressField(blank=True)  # TODO
     score = models.IntegerField()
     ratable_model = models.ForeignKey(RateableModel, related_name='ratings')
-    # objects = RatingManager()
 
     class Meta:
         unique_together = ['user', 'ratable_model']
 
     def __str__(self):
         return 'User {} rating of {} for {}'.format(self.user_id, self.content_object)
-
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #
-        # recalculate the denormalised vote count
-        # may need to change this to an incremented count where we know it's a
-        # new vote...
-        # self.entry_media.entry.update_vote_count(self.entry_media.entry.pk)
