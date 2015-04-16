@@ -20,6 +20,7 @@ setup(
     install_requires=[
         "Django >= 1.6, < 1.8",
         "django-model-utils",
+        "django-braces"
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
