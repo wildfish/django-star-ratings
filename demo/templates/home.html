@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+{% load ratings %}
 
 {% block content %}
+    <h1>{{ object.bar }}</h1>
+
+    {% ratings object %}
+
 {% endblock content %}

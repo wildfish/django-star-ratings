@@ -1,11 +1,14 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head lang="en">
     <meta charset="UTF-8">
     <title></title>
+    <link rel="stylesheet" href="{% static 'wildfish-ratings/css/wildfish-ratings.css' %}">
 </head>
 <body>
-{% block content %}
-{% endblock content %}
+    {% block content %}
+    {% endblock content %}
+    <script type="text/javascript" src="{% static 'wildfish-ratings/js/dist/wildfish-ratings.js' %}"></script>
 </body>
 </html>
