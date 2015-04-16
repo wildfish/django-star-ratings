@@ -26,8 +26,6 @@ function init() {
             var score = this.getAttribute('data-score');
             var parent = utils.findParent(this, "wildfish-ratings");
             var percentage = 100 / maxRating * avgRating + "%";
-            console.log(percentage);
-            console.log(avgRating);
             parent.querySelector(".wildfish-ratings-rating-foreground").style.width = percentage;
         };
     }
@@ -55,7 +53,7 @@ function rate(id, score, sender) {
     rest.get(url, {}, function (rating) {
         updateRating(rating, sender);
     }, function (errors) {
-        console.log(errors);
+        showError(errors, sender);
     });
 }
 
@@ -90,13 +88,20 @@ function updateRating(rating, sender) {
     }
 
     parent.setAttribute("data-avg-rating", rating.rating_average);
-
-    //parent.querySelector(".wildfish-ratings-count").innerHTML = rating.rating_count.toString();
-    //parent.querySelector(".wildfish-ratings-total").innerHTML = rating.rating_total.toString();
-    //parent.querySelector(".wildfish-ratings-avg").innerHTML = rating.rating_average.toString();
     parent.querySelector(".wildfish-ratings-rating-foreground").style.width = 100 / rating.max_value * rating.rating_average + "%";
 }
 
+
+function showError (errors, sender) {
+    var parent = utils.findParent(sender, "wildfish-ratings");
+    if (parent === undefined || parent === null) {
+        return;
+    }
+    parent.querySelector(".wildfish-ratings-errors").innerHTML = errors.error;
+    setTimeout(function () {
+        parent.querySelector(".wildfish-ratings-errors").innerHTML = "";
+    }, 2500);
+}
 
 /*********************
  * Only initialise ratings

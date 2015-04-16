@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect, JsonResponse
-from django.views.generic.edit import CreateView, BaseCreateView, UpdateView
+from django.views.generic.edit import UpdateView
 from braces.views import LoginRequiredMixin
 from .models import RateableModel
 
@@ -23,6 +23,6 @@ class RatingCreate(LoginRequiredMixin,  UpdateView):
                 return HttpResponseRedirect(return_url)
         except ValidationError as err:
             if request.is_ajax():
-                return JsonResponse(data={'error': 'error message here'})
+                return JsonResponse(data={'error': err.message}, status=400)
             else:
                 return HttpResponseRedirect(return_url)

@@ -111,3 +111,5 @@ STATICFILES_DIRS = [
 TEMPLATE_DIRS = [
     join(BASE_DIR, 'templates')
 ]
+
+WILDFISH_RATINGS_RERATE = True

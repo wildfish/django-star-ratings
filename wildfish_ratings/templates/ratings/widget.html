@@ -8,7 +8,7 @@
         background-position: -{{ icon_width }}px 0;
     }
 
-    #{{ id }} .wildfish-ratings-rating-full:hover, #{{ id }} .wildfish-ratings-rating-empty:hover {
+    #{{ id }} .wildfish-ratings-rate-action:hover {
         background-position: -{{ icon_width|add:icon_width }}px 0;
     }
 
@@ -41,4 +41,5 @@
             </li>
         {% endfor %}
     </ul>
+    <div class="wildfish-ratings-errors"></div>
 </div>
