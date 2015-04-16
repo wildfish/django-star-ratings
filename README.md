@@ -20,10 +20,14 @@ add the following to your urls.py:
     url(r'^ratings/', include('wildfish_ratings.urls', namespace='ratings', app_name='ratings')),
 
 
+Make sure `'django.core.context_processors.request',` is in `TEMPLATE_CONTEXT_PROCESSORS`.
+
+
 ## Usage
 
 Add the following javascript and stylesheet to you template
     
+    {% load static %}
     <html>
     ...
     <link rel="stylesheet" href="{% static 'wildfish-ratings/css/wildfish-ratings.css' %}">
@@ -34,7 +38,7 @@ Add the following javascript and stylesheet to you template
 
 To enable ratings for a model add the following tag in your template
 
-    {% load ratings %}
+    {% load  ratings %}
     <html>
     ...
     {% ratings object %}
@@ -61,3 +65,4 @@ To set a rating between 1 and 10 with an icon size of 16px: `{% ratings object 1
 ## Changing the star graphics
 
 To change the star graphic, add a sprite sheet to `/static/wildfish-ratings/images/stars.png` with the states aligned horizontally.
+The stars should be laid out in three states: full, empty and active.
