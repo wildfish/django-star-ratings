@@ -38,7 +38,7 @@ Add the following javascript and stylesheet to you template
 
 To enable ratings for a model add the following tag in your template
 
-    {% load  ratings %}
+    {% load ratings %}
     <html>
     ...
     {% ratings object %}
