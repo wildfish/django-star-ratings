@@ -75,3 +75,21 @@ class RatingsTest(TestCase):
         self.assertEqual(ratings.rating_count, 1)
         self.assertEqual(ratings.rating_total, 4)
         self.assertEqual(ratings.rating_average, 4)
+
+    def test_order_by_average_rating(self):
+        foo_a = self.foo = Foo.objects.create(bar='foo a')
+        foo_b = self.foo = Foo.objects.create(bar='foo b')
+        rating_a = RateableModel.objects.ratings_for_item(foo_a)
+        rating_b = RateableModel.objects.ratings_for_item(foo_b)
+
+        # Avg. rating: 3.5
+        RateableModel.objects.rate(rating_a, 4, self.user_a, '127.0.0.1')
+        RateableModel.objects.rate(rating_b, 3, self.user_b, '127.0.0.1')
+
+        # Avg. rating: 1.5
+        RateableModel.objects.rate(rating_a, 1, self.user_a, '127.0.0.1')
+        RateableModel.objects.rate(rating_b, 2, self.user_b, '127.0.0.1')
+
+        foos = Foo.objects.filter(ratings__isnull=False).order_by('ratings__rating_average')
+        self.assertEqual(foos[0].pk, foo_a.pk)
+        self.assertEqual(foos[1].pk, foo_b.pk)

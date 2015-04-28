@@ -32,6 +32,7 @@ class RateableModelManager(models.Manager):
             instance = self.get(pk=instance.pk)
             instance.rating_count = Rating.objects.filter(ratable_model=instance).count()
             instance.rating_total = Rating.objects.filter(ratable_model=instance).aggregate(total_score=Sum('score')).get('total_score') or 0
+            instance.rating_average = instance.rating_total / instance.rating_count
             instance.save()
         return instance
 
@@ -42,6 +43,7 @@ class RateableModelManager(models.Manager):
 class RateableModel(models.Model):
     rating_count = models.PositiveIntegerField(default=0)
     rating_total = models.PositiveIntegerField(default=0)
+    rating_average = models.PositiveIntegerField(default=0)
     max_value = models.PositiveIntegerField()
 
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
@@ -49,12 +51,6 @@ class RateableModel(models.Model):
     content_object = GenericForeignKey()
 
     objects = RateableModelManager()
-
-    @property
-    def rating_average(self):
-        if self.rating_total is 0 or self.rating_count is 0:
-            return 0
-        return self.rating_total / self.rating_count
 
     def to_dict(self):
         return {
@@ -76,3 +72,8 @@ class Rating(TimeStampedModel):
 
     def __str__(self):
         return 'User {} rating of {} for {}'.format(self.user_id, self.content_object)
+
+
+# class RatingManagerMixin(models.Manager):
+#     def sort_by_average(self):
+#         self.order_by()

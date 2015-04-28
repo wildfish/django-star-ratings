@@ -66,3 +66,15 @@ To set a rating between 1 and 10 with an icon size of 16px: `{% ratings object 1
 
 To change the star graphic, add a sprite sheet to `/static/wildfish-ratings/images/stars.png` with the states aligned horizontally.
 The stars should be laid out in three states: full, empty and active.
+
+
+## Ordering by ratings
+
+The easiest way to order by ratings is to add a `GenericRelation` to the `RateableModel` model from your model:
+
+
+    class Foo(models.Model):
+        bar = models.CharField(max_length=100)
+        ratings = GenericRelation(RateableModel, related_query_name='foos')
+
+    Foo.objects.filter(ratings__isnull=False).order_by('ratings__rating_average')
