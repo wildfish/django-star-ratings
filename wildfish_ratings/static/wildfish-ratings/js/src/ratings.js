@@ -50,7 +50,7 @@ function ratingClick(ev) {
 function rate(id, score, sender) {
     var url = '/ratings/' + id + '/' + score + '/';
 
-    rest.get(url, {}, function (rating) {
+    rest.post(url, {}, function (rating) {
         updateRating(rating, sender);
     }, function (errors) {
         showError(errors, sender);
