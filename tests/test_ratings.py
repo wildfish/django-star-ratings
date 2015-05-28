@@ -62,7 +62,7 @@ class RatingsTest(TestCase):
         with self.assertRaises(ValidationError):
             RateableModel.objects.rate(ratings, 2, self.inactive_user, '127.0.0.1')
 
-    @override_settings(WILDFISH_RATINGS_RERATE = False)
+    @override_settings(WILDFISH_RATINGS_RERATE=False)
     def test_rerating_disabled(self):
         """
         If re-rating is disabled the rating should not count

@@ -8,7 +8,7 @@ register = template.Library()
 @register.inclusion_tag('ratings/widget.html', takes_context=True)
 def ratings(context, item, icon_height=32, icon_width=32, star_count=5):
     rating = RateableModel.objects.ratings_for_item(item)
-    stars = [i for i in range(1, star_count+1)]
+    stars = [i for i in range(1, star_count + 1)]
     request = context.get('request')
 
     if request is None:
