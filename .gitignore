@@ -13,3 +13,5 @@ pubpypi.sh
 node_modules/
 .sass-cache/
 .tox/
+.ropeproject
+.coverage
