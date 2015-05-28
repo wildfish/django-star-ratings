@@ -1,17 +1,15 @@
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect, JsonResponse
-from django.views.generic.edit import UpdateView
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic import View
 from braces.views import LoginRequiredMixin
 from .models import RateableModel
 
 
-class RatingCreate(LoginRequiredMixin,  UpdateView):
+class RatingCreate(LoginRequiredMixin, SingleObjectMixin, View):
     model = RateableModel
 
-    def get_object(self, queryset=None):
-        return self.model.objects.get(pk=self.kwargs[self.pk_url_kwarg])
-
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         return_url = request.GET.get('return') or '/'
         value = kwargs['rating_value']
         try:
