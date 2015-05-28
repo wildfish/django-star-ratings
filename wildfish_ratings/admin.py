@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import RateableModel, Rating
 
-# Register your models here.
+
+admin.site.register(RateableModel)
+admin.site.register(Rating)
