@@ -44,7 +44,7 @@ def pytest_configure():
             'django.contrib.auth.hashers.CryptPasswordHasher',
         ),
 
-        WILDFISH_RATINGS_RERATE = True
+        WILDFISH_RATINGS_RERATE=True
     )
 
     try:
