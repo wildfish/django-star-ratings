@@ -41,6 +41,9 @@ class RateableModelManager(models.Manager):
 
 
 class RateableModel(models.Model):
+    """
+    Attaches Rating models and running counts to the model being rated via a generic relation.
+    """
     rating_count = models.PositiveIntegerField(default=0)
     rating_total = models.PositiveIntegerField(default=0)
     rating_average = models.PositiveIntegerField(default=0)
@@ -62,6 +65,9 @@ class RateableModel(models.Model):
 
 
 class Rating(TimeStampedModel):
+    """
+    An individual rating of a user against a RateableModel.
+    """
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     ip_address = models.IPAddressField(blank=True)  # TODO
     score = models.IntegerField()
