@@ -32,7 +32,7 @@ class RateableModelManager(models.Manager):
             instance = self.get(pk=instance.pk)
             instance.rating_count = Rating.objects.filter(ratable_model=instance).count()
             instance.rating_total = Rating.objects.filter(ratable_model=instance).aggregate(total_score=Sum('score')).get('total_score') or 0
-            instance.rating_average = instance.rating_total / instance.rating_count
+            instance.rating_average = float(instance.rating_total) / instance.rating_count
             instance.save()
         return instance
 
