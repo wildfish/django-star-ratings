@@ -25,16 +25,9 @@ class RateableModelManager(models.Manager):
                 raise ValidationError('Already rated')
             rating.score = score
             rating.save()
+            return rating.ratable_model
         else:
-            Rating.objects.create(user=user, score=score, ratable_model=instance, ip_address=ip_address)
-
-        with transaction.atomic():
-            instance = self.get(pk=instance.pk)
-            instance.rating_count = Rating.objects.filter(ratable_model=instance).count()
-            instance.rating_total = Rating.objects.filter(ratable_model=instance).aggregate(total_score=Sum('score')).get('total_score') or 0
-            instance.rating_average = float(instance.rating_total) / instance.rating_count
-            instance.save()
-        return instance
+            return Rating.objects.create(user=user, score=score, ratable_model=instance, ip_address=ip_address).ratable_model
 
     def has_rated(self, user, instance):
         return self.filter(pk=instance.pk, user=user).exists()
@@ -82,7 +75,13 @@ class Rating(TimeStampedModel):
     def __str__(self):
         return 'User {} rating of {} for {}'.format(self.user_id, self.score, self.ratable_model)
 
+    def save(self, *args, **kwargs):
+        res = super(Rating, self).save(*args, **kwargs)
 
-# class RatingManagerMixin(models.Manager):
-#     def sort_by_average(self):
-#         self.order_by()
+        with transaction.atomic():
+            self.ratable_model.rating_count = Rating.objects.filter(ratable_model=self.ratable_model).count()
+            self.ratable_model.rating_total = Rating.objects.filter(ratable_model=self.ratable_model).aggregate(total_score=Sum('score')).get('total_score') or 0
+            self.ratable_model.rating_average = float(self.ratable_model.rating_total) / self.ratable_model.rating_count
+            self.ratable_model.save()
+
+        return res
