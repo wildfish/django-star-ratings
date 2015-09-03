@@ -18,7 +18,7 @@ setup(
     long_description=read('README.md'),
     include_package_data=True,
     install_requires=[
-        "Django >= 1.6, < 1.8",
+        "Django >= 1.6, <= 1.8.4",
         "django-model-utils",
         "django-braces"
     ],

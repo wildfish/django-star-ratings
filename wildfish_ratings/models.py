@@ -81,8 +81,3 @@ class Rating(TimeStampedModel):
 
     def __str__(self):
         return 'User {} rating of {} for {}'.format(self.user_id, self.score, self.ratable_model)
-
-
-# class RatingManagerMixin(models.Manager):
-#     def sort_by_average(self):
-#         self.order_by()
