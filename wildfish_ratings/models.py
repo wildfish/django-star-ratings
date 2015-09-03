@@ -63,6 +63,9 @@ class RateableModel(models.Model):
             'max_value': self.max_value
         }
 
+    def __str__(self):
+        return str(self.content_object)
+
 
 class Rating(TimeStampedModel):
     """
