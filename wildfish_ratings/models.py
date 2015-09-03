@@ -80,7 +80,7 @@ class Rating(TimeStampedModel):
         unique_together = ['user', 'ratable_model']
 
     def __str__(self):
-        return 'User {} rating of {} for {}'.format(self.user_id, self.content_object)
+        return 'User {} rating of {} for {}'.format(self.user_id, self.score, self.ratable_model)
 
 
 # class RatingManagerMixin(models.Manager):
