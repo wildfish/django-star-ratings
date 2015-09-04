@@ -15,11 +15,11 @@ class RateableModelManager(models.Manager):
             return rateable
         return self.create(content_type=ct, object_id=item.pk, max_value=max_value)
 
-    def rate(self, item, score, user, ip_address):
+    def rate(self, instance, score, user, ip_address):
         if not user.is_active:
             raise ValidationError('User is not active')
 
-        rating = Rating.objects.filter(user=user, ratable_model=item).first()
+        rating = Rating.objects.filter(user=user, ratable_model=instance).first()
         if rating:
             if getattr(settings, 'WILDFISH_RATINGS_RERATE', True) is False:
                 raise ValidationError('Already rated')
@@ -27,10 +27,10 @@ class RateableModelManager(models.Manager):
             rating.save()
             return rating.ratable_model
         else:
-            return Rating.objects.create(user=user, score=score, ratable_model=item, ip_address=ip_address).ratable_model
+            return Rating.objects.create(user=user, score=score, ratable_model=instance, ip_address=ip_address).ratable_model
 
-    def has_rated(self, item, user):
-        return self.filter(pk=item.pk, user=user).exists()
+    def has_rated(self, instance, user):
+        return Rating.objects.filter(pk=instance.pk, user=user).exists()
 
 
 class RateableModel(models.Model):
