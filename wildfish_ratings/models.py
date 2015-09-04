@@ -39,7 +39,7 @@ class AggregateRating(models.Model):
     """
     rating_count = models.PositiveIntegerField(default=0)
     rating_total = models.PositiveIntegerField(default=0)
-    rating_average = models.PositiveIntegerField(default=0)
+    rating_average = models.FloatField(default=0.0)
     max_value = models.PositiveIntegerField()
 
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
