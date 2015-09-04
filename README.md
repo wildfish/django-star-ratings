@@ -85,11 +85,11 @@ The stars should be laid out in three states: full, empty and active.
 
 ## Ordering by ratings
 
-The easiest way to order by ratings is to add a `GenericRelation` to the `RateableModel` model from your model:
+The easiest way to order by ratings is to add a `GenericRelation` to the `AggregateRating` model from your model:
 
 
     class Foo(models.Model):
         bar = models.CharField(max_length=100)
-        ratings = GenericRelation(RateableModel, related_query_name='foos')
+        ratings = GenericRelation(AggregateRating, related_query_name='foos')
 
     Foo.objects.filter(ratings__isnull=False).order_by('ratings__rating_average')

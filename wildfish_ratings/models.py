@@ -7,33 +7,33 @@ from django.db.models import Sum
 from model_utils.models import TimeStampedModel
 
 
-class RateableModelManager(models.Manager):
+class AggregateRatingManager(models.Manager):
     def ratings_for_item(self, item, max_value=5):
         ct = ContentType.objects.get_for_model(item)
-        rateable = self.filter(content_type=ct, object_id=item.pk).first()
-        if rateable:
-            return rateable
+        aggregate = self.filter(content_type=ct, object_id=item.pk).first()
+        if aggregate:
+            return aggregate
         return self.create(content_type=ct, object_id=item.pk, max_value=max_value)
 
     def rate(self, instance, score, user, ip_address):
         if not user.is_active:
             raise ValidationError('User is not active')
 
-        rating = Rating.objects.filter(user=user, ratable_model=instance).first()
+        rating = Rating.objects.filter(user=user, aggregate=instance).first()
         if rating:
             if getattr(settings, 'WILDFISH_RATINGS_RERATE', True) is False:
                 raise ValidationError('Already rated')
             rating.score = score
             rating.save()
-            return rating.ratable_model
+            return rating.aggregate
         else:
-            return Rating.objects.create(user=user, score=score, ratable_model=instance, ip_address=ip_address).ratable_model
+            return Rating.objects.create(user=user, score=score, aggregate=instance, ip_address=ip_address).aggregate
 
     def has_rated(self, instance, user):
         return Rating.objects.filter(pk=instance.pk, user=user).exists()
 
 
-class RateableModel(models.Model):
+class AggregateRating(models.Model):
     """
     Attaches Rating models and running counts to the model being rated via a generic relation.
     """
@@ -46,7 +46,7 @@ class RateableModel(models.Model):
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey()
 
-    objects = RateableModelManager()
+    objects = AggregateRatingManager()
 
     def to_dict(self):
         return {
@@ -62,26 +62,26 @@ class RateableModel(models.Model):
 
 class Rating(TimeStampedModel):
     """
-    An individual rating of a user against a RateableModel.
+    An individual rating of a user against a AggregateRating.
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     ip_address = models.IPAddressField(blank=True)  # TODO
     score = models.IntegerField()
-    ratable_model = models.ForeignKey(RateableModel, related_name='ratings')
+    aggregate = models.ForeignKey(AggregateRating, related_name='ratings')
 
     class Meta:
-        unique_together = ['user', 'ratable_model']
+        unique_together = ['user', 'aggregate']
 
     def __str__(self):
-        return 'User {} rating of {} for {}'.format(self.user_id, self.score, self.ratable_model)
+        return 'User {} rating of {} for {}'.format(self.user_id, self.score, self.aggregate)
 
     def save(self, *args, **kwargs):
         res = super(Rating, self).save(*args, **kwargs)
 
         with transaction.atomic():
-            self.ratable_model.rating_count = Rating.objects.filter(ratable_model=self.ratable_model).count()
-            self.ratable_model.rating_total = Rating.objects.filter(ratable_model=self.ratable_model).aggregate(total_score=Sum('score')).get('total_score') or 0
-            self.ratable_model.rating_average = float(self.ratable_model.rating_total) / self.ratable_model.rating_count
-            self.ratable_model.save()
+            self.aggregate.rating_count = Rating.objects.filter(aggregate=self.aggregate).count()
+            self.aggregate.rating_total = Rating.objects.filter(aggregate=self.aggregate).aggregate(total_score=Sum('score')).get('total_score') or 0
+            self.aggregate.rating_average = float(self.aggregate.rating_total) / self.aggregate.rating_count
+            self.aggregate.save()
 
         return res

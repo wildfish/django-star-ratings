@@ -3,11 +3,11 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import View
 from braces.views import LoginRequiredMixin
-from .models import RateableModel
+from .models import AggregateRating
 
 
 class RatingCreate(LoginRequiredMixin, SingleObjectMixin, View):
-    model = RateableModel
+    model = AggregateRating
 
     def post(self, request, *args, **kwargs):
         return_url = request.GET.get('return') or '/'

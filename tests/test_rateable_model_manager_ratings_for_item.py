@@ -1,22 +1,22 @@
 from django.test import TestCase
 from model_mommy import mommy
-from wildfish_ratings.models import RateableModel
+from wildfish_ratings.models import AggregateRating
 from .models import Foo
 
 
-class RateableModelManagerRatingsForItem(TestCase):
-    def test_ratable_model_object_exists_for_item___that_object_is_returned(self):
+class AggregateRatingManagerRatingsForItem(TestCase):
+    def test_aggregate_object_exists_for_item___that_object_is_returned(self):
         item = mommy.make(Foo)
-        ratable_object = mommy.make(RateableModel, content_object=item)
+        aggregate = mommy.make(AggregateRating, content_object=item)
 
-        res = RateableModel.objects.ratings_for_item(item)
+        res = AggregateRating.objects.ratings_for_item(item)
 
-        self.assertEqual(ratable_object, res)
+        self.assertEqual(aggregate, res)
 
-    def test_ratable_model_object_does_not_exist_for_item___object_is_created_and_returned(self):
+    def test_aggregate_object_does_not_exist_for_item___object_is_created_and_returned(self):
         item = mommy.make(Foo)
 
-        res = RateableModel.objects.ratings_for_item(item)
+        res = AggregateRating.objects.ratings_for_item(item)
 
-        self.assertIsInstance(res, RateableModel)
+        self.assertIsInstance(res, AggregateRating)
         self.assertEqual(item, res.content_object)
