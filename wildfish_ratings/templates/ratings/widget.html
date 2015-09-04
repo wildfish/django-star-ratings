@@ -13,7 +13,6 @@
         background-position: -{{ icon_width|add:icon_width }}px 0;
     }
     {% endif %}
-
 </style>
 <div id="{{ id }}" class="wildfish-ratings" data-max-rating="{{ rating.max_value }}" data-avg-rating="{{ rating.rating_average }}">
     <ul class="wildfish-ratings-rating-background">
@@ -24,7 +23,7 @@
                     <span class="wildfish-ratings-rating-empty"></span>
                 </a>
                 {% else %}
-                    <span class="wildfish-ratings-rating-empty"></span>
+                    <span class="wildfish-ratings-rating-empty" title="Log in to rate"></span>
                 {% endif %}
             </li>
         {% endfor %}
@@ -38,7 +37,7 @@
                 <span class="wildfish-ratings-rating-full"></span>
             </a>
             {% else %}
-                <span class="wildfish-ratings-rating-full"></span>
+                <span class="wildfish-ratings-rating-full" title="Log in to rate"></span>
             {% endif %}
             </li>
         {% endfor %}
