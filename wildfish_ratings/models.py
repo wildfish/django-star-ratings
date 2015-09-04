@@ -62,7 +62,7 @@ class AggregateRating(models.Model):
 
 class Rating(TimeStampedModel):
     """
-    An individual rating of a user against a AggregateRating.
+    An individual rating of a user against a model.
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     ip_address = models.IPAddressField(blank=True)  # TODO
