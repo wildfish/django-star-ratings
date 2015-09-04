@@ -10,7 +10,7 @@ class RatingCreate(LoginRequiredMixin, SingleObjectMixin, View):
     model = AggregateRating
 
     def post(self, request, *args, **kwargs):
-        return_url = request.GET.get('return') or '/'
+        return_url = request.GET.get('next', '/')
         value = kwargs['rating_value']
         try:
             ip_address = self.request.META.get('REMOTE_ADDR') or '0.0.0.0'
