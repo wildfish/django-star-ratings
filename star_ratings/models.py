@@ -73,7 +73,7 @@ class Rating(TimeStampedModel):
         unique_together = ['user', 'aggregate']
 
     def __str__(self):
-        return 'User {} rating of {} for {}'.format(self.user_id, self.score, self.aggregate)
+        return 'User {} rating for {}'.format(self.user_id, self.aggregate)
 
     def save(self, *args, **kwargs):
         res = super(Rating, self).save(*args, **kwargs)
