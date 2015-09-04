@@ -23,6 +23,21 @@ add the following to your urls.py:
 Make sure `'django.core.context_processors.request',` is in `TEMPLATE_CONTEXT_PROCESSORS`.
 
 
+## Running Tests
+
+To run the test first install tox using:
+
+```
+$> pip install tox
+```
+
+Then to run the tests use:
+ 
+```
+$> tox
+```
+
+
 ## Usage
 
 Add the following javascript and stylesheet to you template
