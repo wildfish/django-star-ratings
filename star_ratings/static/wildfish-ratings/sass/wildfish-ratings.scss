@@ -1,6 +1,6 @@
 @import "compass/css3/transition";
 
-.wildfish-ratings {
+.star-ratings {
     display: inline-block;
     position: relative;
 
@@ -17,12 +17,12 @@
     }
 }
 
-.wildfish-ratings-rating-full, .wildfish-ratings-rating-empty {
+.star-ratings-rating-full, .star-ratings-rating-empty {
     display: block;
-    background: url('/static/wildfish-ratings/images/stars.png') no-repeat;
+    background: url('/static/star-ratings/images/stars.png') no-repeat;
 }
 
-.wildfish-ratings-rating-foreground {
+.star-ratings-rating-foreground {
     top: 0;
     position: absolute;
     @include transition-property(width);

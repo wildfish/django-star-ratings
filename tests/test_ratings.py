@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 from .models import Foo
-from wildfish_ratings.models import AggregateRating
+from star_ratings.models import AggregateRating
 
 
 class RatingsTest(TestCase):
@@ -62,7 +62,7 @@ class RatingsTest(TestCase):
         with self.assertRaises(ValidationError):
             AggregateRating.objects.rate(ratings, 2, self.inactive_user, '127.0.0.1')
 
-    @override_settings(WILDFISH_RATINGS_RERATE=False)
+    @override_settings(STAR_RATINGS_RERATE=False)
     def test_rerating_disabled(self):
         """
         If re-rating is disabled the rating should not count

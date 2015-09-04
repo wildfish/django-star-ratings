@@ -1,7 +1,7 @@
 from random import random, randint
 from django.test import TestCase
 from model_mommy import mommy
-from wildfish_ratings.models import AggregateRating
+from star_ratings.models import AggregateRating
 
 
 class AggregateRatingToDict(TestCase):

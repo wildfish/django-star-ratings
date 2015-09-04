@@ -1,23 +1,22 @@
-# Wildfish ratings
+# django-star-ratings
 
 Add ratings to any model with a template tag.
-You can have multiple ratings on one page (but only one rating per model instance)
 
 
 ## Installation
 
-`pip install wildfish-ratings`
+`pip install django-star-ratings`
 
-add `wildfish_ratings` to `INSTALLED_APPS`
+add `star_ratings` to `INSTALLED_APPS`
 
     INSTALLED_APPS = (
         ...
-        'wildfish_ratings'
+        'star_ratings'
     )
 
 add the following to your urls.py:
 
-    url(r'^ratings/', include('wildfish_ratings.urls', namespace='ratings', app_name='ratings')),
+    url(r'^ratings/', include('star_ratings.urls', namespace='ratings', app_name='ratings')),
 
 
 Make sure `'django.core.context_processors.request',` is in `TEMPLATE_CONTEXT_PROCESSORS`.
@@ -45,8 +44,8 @@ Add the following javascript and stylesheet to you template
     {% load static %}
     <html>
     ...
-    <link rel="stylesheet" href="{% static 'wildfish-ratings/css/wildfish-ratings.css' %}">
-    <script type="text/javascript" src="{% static 'wildfish-ratings/js/dist/wildfish-ratings.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+    <script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.js' %}"></script>
     ...
     </html>
 
@@ -63,7 +62,7 @@ To enable ratings for a model add the following tag in your template
     
 ## Settings
 
-To prohibit users from altering their ratings set `WILDFISH_RATINGS_RERATE = False` in settings.py
+To prohibit users from altering their ratings set `STAR_RATINGS_RERATE = False` in settings.py
 
 
 ## Template tags
@@ -79,7 +78,7 @@ To set a rating between 1 and 10 with an icon size of 16px: `{% ratings object 1
 
 ## Changing the star graphics
 
-To change the star graphic, add a sprite sheet to `/static/wildfish-ratings/images/stars.png` with the states aligned horizontally.
+To change the star graphic, add a sprite sheet to `/static/star-ratings/images/stars.png` with the states aligned horizontally.
 The stars should be laid out in three states: full, empty and active.
 
 

@@ -3,7 +3,7 @@ from model_mommy import mommy
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from .models import Foo
-from wildfish_ratings.models import AggregateRating
+from star_ratings.models import AggregateRating
 
 
 class RatableModelHasRated(TestCase):

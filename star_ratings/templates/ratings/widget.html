@@ -1,0 +1,46 @@
+<style>
+    #{{ id }} .star-ratings-rating-full, #{{ id }} .star-ratings-rating-empty {
+        width: {{ icon_width }}px;
+        height: {{ icon_height }}px;
+    }
+
+    #{{ id }} .star-ratings-rating-empty {
+        background-position: -{{ icon_width }}px 0;
+    }
+
+    {% if user.is_authenticated %}
+    #{{ id }} .star-ratings-rating-full:hover, #{{ id }} .star-ratings-rating-empty:hover {
+        background-position: -{{ icon_width|add:icon_width }}px 0;
+    }
+    {% endif %}
+</style>
+<div id="{{ id }}" class="star-ratings" data-max-rating="{{ rating.max_value }}" data-avg-rating="{{ rating.rating_average }}">
+    <ul class="star-ratings-rating-background">
+        {% for star in stars %}
+            <li>
+                {% if user.is_authenticated %}
+                <a href="{% url 'ratings:rate' rating.pk star %}?return={{ request.path }}" data-for="{{ rating.pk }}" data-score="{{ star }}" class="star-ratings-rate-action">
+                    <span class="star-ratings-rating-empty"></span>
+                </a>
+                {% else %}
+                    <span class="star-ratings-rating-empty" title="Log in to rate"></span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <ul class="star-ratings-rating-foreground" style="width: {{ percentage }}%">
+        {% for star in stars %}
+            <li>
+            {% if user.is_authenticated %}
+            <a href="{% url 'ratings:rate' rating.pk star %}?return={{ request.path }}" data-for="{{ rating.pk }}" data-score="{{ star }}" class="star-ratings-rate-action">
+                <span class="star-ratings-rating-full"></span>
+            </a>
+            {% else %}
+                <span class="star-ratings-rating-full" title="Log in to rate"></span>
+            {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="star-ratings-errors"></div>
+</div>

@@ -6,7 +6,7 @@ var utils = require('./utils');
  * Initialise ratings
  *********************/
 function init() {
-    var ratingActions = document.querySelectorAll(".wildfish-ratings-rate-action"),
+    var ratingActions = document.querySelectorAll(".star-ratings-rate-action"),
         i;
 
     // Add click events to stars
@@ -16,17 +16,17 @@ function init() {
         ratingActions[i].onmouseenter = function () {
             var maxRating = getMaxRating(this);
             var score = this.getAttribute('data-score');
-            var parent = utils.findParent(this, "wildfish-ratings");
-            parent.querySelector(".wildfish-ratings-rating-foreground").style.width = 100 / maxRating * score + "%";
+            var parent = utils.findParent(this, "star-ratings");
+            parent.querySelector(".star-ratings-rating-foreground").style.width = 100 / maxRating * score + "%";
         };
 
         ratingActions[i].onmouseleave = function () {
             var avgRating = getAvgRating(this);
             var maxRating = getMaxRating(this);
             var score = this.getAttribute('data-score');
-            var parent = utils.findParent(this, "wildfish-ratings");
+            var parent = utils.findParent(this, "star-ratings");
             var percentage = 100 / maxRating * avgRating + "%";
-            parent.querySelector(".wildfish-ratings-rating-foreground").style.width = percentage;
+            parent.querySelector(".star-ratings-rating-foreground").style.width = percentage;
         };
     }
 }
@@ -59,7 +59,7 @@ function rate(id, score, sender) {
 
 
 function getMaxRating(el) {
-    var parent = utils.findParent(el, "wildfish-ratings");
+    var parent = utils.findParent(el, "star-ratings");
     if (parent) {
         return parseInt(parent.getAttribute('data-max-rating'));
     }
@@ -69,7 +69,7 @@ function getMaxRating(el) {
 
 
 function getAvgRating(el) {
-    var parent = utils.findParent(el, "wildfish-ratings");
+    var parent = utils.findParent(el, "star-ratings");
     if (parent) {
         return parent.getAttribute('data-avg-rating');
     }
@@ -82,24 +82,24 @@ function getAvgRating(el) {
  * Update rating
  *********************/
 function updateRating(rating, sender) {
-    var parent = utils.findParent(sender, "wildfish-ratings");
+    var parent = utils.findParent(sender, "star-ratings");
     if (parent === undefined || parent === null) {
         return;
     }
 
     parent.setAttribute("data-avg-rating", rating.rating_average);
-    parent.querySelector(".wildfish-ratings-rating-foreground").style.width = 100 / rating.max_value * rating.rating_average + "%";
+    parent.querySelector(".star-ratings-rating-foreground").style.width = 100 / rating.max_value * rating.rating_average + "%";
 }
 
 
 function showError (errors, sender) {
-    var parent = utils.findParent(sender, "wildfish-ratings");
+    var parent = utils.findParent(sender, "star-ratings");
     if (parent === undefined || parent === null) {
         return;
     }
-    parent.querySelector(".wildfish-ratings-errors").innerHTML = errors.error;
+    parent.querySelector(".star-ratings-errors").innerHTML = errors.error;
     setTimeout(function () {
-        parent.querySelector(".wildfish-ratings-errors").innerHTML = "";
+        parent.querySelector(".star-ratings-errors").innerHTML = "";
     }, 2500);
 }
 
@@ -107,6 +107,6 @@ function showError (errors, sender) {
  * Only initialise ratings
  * if there is something to rate
  *********************/
-if (document.querySelector(".wildfish-ratings")) {
+if (document.querySelector(".star-ratings")) {
     init();
 }

@@ -6,14 +6,14 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name="wildfish-ratings",
+    name="star-ratings",
     version="0.1.0",
     author="Wildfish",
     author_email="rolo@wildfish.com",
     description=("Django ratings"),
     license="BSD",
     keywords="ratings",
-    url="https://github.com/wildfish/wildfish-ratings",
+    url="https://github.com/wildfish/star-ratings",
     packages=find_packages(),
     long_description=read('README.md'),
     include_package_data=True,

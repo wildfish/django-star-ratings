@@ -21,7 +21,7 @@ class AggregateRatingManager(models.Manager):
 
         rating = Rating.objects.filter(user=user, aggregate=instance).first()
         if rating:
-            if getattr(settings, 'WILDFISH_RATINGS_RERATE', True) is False:
+            if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
                 raise ValidationError('Already rated')
             rating.score = score
             rating.save()

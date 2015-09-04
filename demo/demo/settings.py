@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'wildfish_ratings',
+    'star_ratings',
 
     'demo.app',
 )
@@ -112,4 +112,4 @@ TEMPLATE_DIRS = [
     join(BASE_DIR, 'templates')
 ]
 
-WILDFISH_RATINGS_RERATE = True
+STAR_RATINGS_RERATE = True

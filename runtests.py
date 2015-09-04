@@ -14,7 +14,7 @@ PYTEST_ARGS = {
     'fast': ['tests', '--tb=short', '-q'],
 }
 
-FLAKE8_ARGS = ['wildfish_ratings', 'tests', '--ignore=E501']
+FLAKE8_ARGS = ['star_ratings', 'tests', '--ignore=E501']
 
 
 sys.path.append(os.path.dirname(__file__))

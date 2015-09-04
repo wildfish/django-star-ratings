@@ -1,4 +1,4 @@
 django==1.7.7
 django-model-utils
 django-braces
-wildfish_ratings
+star_ratings

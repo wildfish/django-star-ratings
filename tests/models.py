@@ -1,6 +1,6 @@
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
-from wildfish_ratings.models import AggregateRating
+from star_ratings.models import AggregateRating
 
 
 class Foo(models.Model):

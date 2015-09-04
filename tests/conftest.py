@@ -33,7 +33,7 @@ def pytest_configure():
             'model_utils',
 
             'tests',
-            'wildfish_ratings',
+            'star_ratings',
         ),
         PASSWORD_HASHERS=(
             'django.contrib.auth.hashers.SHA1PasswordHasher',
@@ -44,7 +44,7 @@ def pytest_configure():
             'django.contrib.auth.hashers.CryptPasswordHasher',
         ),
 
-        WILDFISH_RATINGS_RERATE=True
+        STAR_RATINGS_RERATE=True
     )
 
     try:
