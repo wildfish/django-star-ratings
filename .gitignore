@@ -1,17 +1,9 @@
-*.log
-*.pot
-*.pyc
-.idea/
-db.sqlite3
-static_root/
-media/
+*.egg-info
+*.py[co]
+__pycache__
+MANIFEST
+dist/
+docs/_build/
 build/
 .coverage
-pubpypi.sh
-
-# JS / CSS
-node_modules/
-.sass-cache/
-.tox/
-.ropeproject
-.coverage
+.tox
