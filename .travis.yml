@@ -2,15 +2,13 @@ language: python
 
 sudo: false
 
-before_install:
-  - pip install codecov
-
 python:
   - "2.7"
   - "3.4"
 
 install:
-  - pip install tox
+  - pip install codecov
+  - pip install -r test/requirements.txt
 
 script:
   - coverage run --source='star_ratings' runtests.py
