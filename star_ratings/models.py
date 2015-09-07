@@ -64,7 +64,7 @@ class Rating(TimeStampedModel):
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     ip = models.GenericIPAddressField(blank=True, null=True)
-    score = models.IntegerField()
+    score = models.PositiveSmallIntegerField()
     aggregate = models.ForeignKey(AggregateRating, related_name='ratings')
 
     class Meta:
