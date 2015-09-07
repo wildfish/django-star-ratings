@@ -6,8 +6,17 @@ python:
   - "2.7"
   - "3.4"
 
+env:
+  - DJANGO_VERSION_NUMBER=1.7
+  - DJANGO_VERSION_NUMBER=1.8
+
 install:
-  - pip install tox
+  - pip install codecov
+  - pip install django==$DJANGO_VERSION_NUMBER
+  - pip install -r requirements.txt
 
 script:
-  - tox
+  - coverage run --source='star_ratings' runtests.py
+
+after_success:
+  - codecov

@@ -20,7 +20,7 @@ setup(
     author_email='developers@wildfish.com',
     keywords='ratings',
     install_requires=[
-        'Django >= 1.6, <= 1.8.4',
+        'Django >= 1.7, <= 1.8.4',
         'django-model-utils',
         'django-braces'
     ],
