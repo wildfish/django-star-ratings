@@ -59,7 +59,7 @@ class RatingCreateView(WebTest):
 
         self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
 
-    def test_user_is_logged_in_and_doesnt_already_request_is_ajax___rating_is_created(self):
+    def test_user_is_logged_in_and_doesnt_already_have_a_rating_request_is_ajax___rating_is_created(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = AggregateRating.objects.ratings_for_item(foo)
@@ -72,7 +72,7 @@ class RatingCreateView(WebTest):
         ct = ContentType.objects.get_for_model(foo)
         self.assertTrue(Rating.objects.filter(user=user, aggregate__object_id=foo.pk, aggregate__content_type=ct, score=score).exists())
 
-    def test_user_is_logged_in_and_doesnt_already_request_is_ajax___response_is_updated_aggregate_data(self):
+    def test_user_is_logged_in_and_doesnt_already_have_a_rating_request_is_ajax___response_is_updated_aggregate_data(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = AggregateRating.objects.ratings_for_item(foo)
