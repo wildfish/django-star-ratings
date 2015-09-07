@@ -16,9 +16,6 @@ class AggregateRatingManager(models.Manager):
         return self.create(content_type=ct, object_id=item.pk, max_value=max_value)
 
     def rate(self, instance, score, user, ip_address):
-        if not user.is_active:
-            raise ValidationError('User is not active')
-
         rating = Rating.objects.filter(user=user, aggregate=instance).first()
         if rating:
             if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
@@ -79,6 +76,9 @@ class Rating(TimeStampedModel):
         return 'User {} rating for {}'.format(self.user_id, self.aggregate)
 
     def save(self, *args, **kwargs):
+        if not self.user.is_active:
+            raise ValidationError('User is not active')
+
         res = super(Rating, self).save(*args, **kwargs)
 
         with transaction.atomic():
