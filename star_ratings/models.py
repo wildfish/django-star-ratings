@@ -15,7 +15,7 @@ class AggregateRatingManager(models.Manager):
             return aggregate
         return self.create(content_type=ct, object_id=item.pk, max_value=max_value)
 
-    def rate(self, instance, score, user, ip):
+    def rate(self, instance, score, user, ip=None):
         rating = Rating.objects.filter(user=user, aggregate=instance).first()
         if rating:
             if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
