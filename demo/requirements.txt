@@ -1,4 +1,4 @@
 django==1.8
 django-model-utils
 django-braces
-star_ratings
+django-star-ratings
