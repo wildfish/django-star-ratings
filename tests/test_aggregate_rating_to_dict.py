@@ -14,14 +14,14 @@ class AggregateRatingToDict(TestCase):
         rating = mommy.make(
             AggregateRating,
             max_value=max_value,
-            rating_count=count,
-            rating_total=total,
-            rating_average=avg,
+            count=count,
+            total=total,
+            average=avg,
         )
 
         self.assertEqual(dict(
             max_value=max_value,
-            rating_count=count,
-            rating_total=total,
-            rating_average=avg
+            count=count,
+            total=total,
+            average=avg
         ), rating.to_dict())

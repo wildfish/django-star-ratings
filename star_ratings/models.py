@@ -37,9 +37,9 @@ class AggregateRating(models.Model):
     """
     Attaches Rating models and running counts to the model being rated via a generic relation.
     """
-    rating_count = models.PositiveIntegerField(default=0)
-    rating_total = models.PositiveIntegerField(default=0)
-    rating_average = models.FloatField(default=0.0)
+    count = models.PositiveIntegerField(default=0)
+    total = models.PositiveIntegerField(default=0)
+    average = models.FloatField(default=0.0)
     max_value = models.PositiveIntegerField()
 
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
@@ -50,9 +50,9 @@ class AggregateRating(models.Model):
 
     def to_dict(self):
         return {
-            'rating_count': self.rating_count,
-            'rating_total': self.rating_total,
-            'rating_average': self.rating_average,
+            'count': self.count,
+            'total': self.total,
+            'average': self.average,
             'max_value': self.max_value
         }
 
@@ -79,9 +79,9 @@ class Rating(TimeStampedModel):
         res = super(Rating, self).save(*args, **kwargs)
 
         with transaction.atomic():
-            self.aggregate.rating_count = Rating.objects.filter(aggregate=self.aggregate).count()
-            self.aggregate.rating_total = Rating.objects.filter(aggregate=self.aggregate).aggregate(total_score=Sum('score')).get('total_score') or 0
-            self.aggregate.rating_average = float(self.aggregate.rating_total) / self.aggregate.rating_count
+            self.aggregate.count = Rating.objects.filter(aggregate=self.aggregate).count()
+            self.aggregate.total = Rating.objects.filter(aggregate=self.aggregate).aggregate(total_score=Sum('score')).get('total_score') or 0
+            self.aggregate.average = float(self.aggregate.total) / self.aggregate.count
             self.aggregate.save()
 
         return res

@@ -21,7 +21,7 @@ class AggregateRatingAdmin(admin.ModelAdmin):
         html += "<span style='position: absolute; top: 0; left: 0; width: {}px; height: 10px; " + \
                 "background: url(/static/star-ratings/images/admin_stars.png)'>&nbsp;</span>"
         html += "</div>"
-        return html.format(obj.max_value * 10, obj.rating_average * 10)
+        return html.format(obj.max_value * 10, obj.average * 10)
 
     stars.allow_tags = True
     stars.short_description = "Rating average"

@@ -21,9 +21,9 @@ class RatingsTest(TestCase):
         Auto generate an aggregate model for an object
         """
         ratings = AggregateRating.objects.ratings_for_item(self.foo)
-        self.assertEqual(ratings.rating_count, 0)
-        self.assertEqual(ratings.rating_total, 0)
-        self.assertEqual(ratings.rating_average, 0)
+        self.assertEqual(ratings.count, 0)
+        self.assertEqual(ratings.total, 0)
+        self.assertEqual(ratings.average, 0)
 
     def test_rate_model(self):
         """
@@ -32,14 +32,14 @@ class RatingsTest(TestCase):
         ratings = AggregateRating.objects.ratings_for_item(self.foo)
 
         ratings = AggregateRating.objects.rate(ratings, 4, self.user_a, '127.0.0.1')
-        self.assertEqual(ratings.rating_count, 1)
-        self.assertEqual(ratings.rating_total, 4)
-        self.assertEqual(ratings.rating_average, 4)
+        self.assertEqual(ratings.count, 1)
+        self.assertEqual(ratings.total, 4)
+        self.assertEqual(ratings.average, 4)
 
         ratings = AggregateRating.objects.rate(ratings, 3, self.user_b, '127.0.0.2')
-        self.assertEqual(ratings.rating_count, 2)
-        self.assertEqual(ratings.rating_total, 7)
-        self.assertEqual(ratings.rating_average, 3.5)
+        self.assertEqual(ratings.count, 2)
+        self.assertEqual(ratings.total, 7)
+        self.assertEqual(ratings.average, 3.5)
 
     def test_same_user_rate_twice(self):
         """
@@ -47,14 +47,14 @@ class RatingsTest(TestCase):
         """
         ratings = AggregateRating.objects.ratings_for_item(self.foo)
         ratings = AggregateRating.objects.rate(ratings, 4, self.user_a, '127.0.0.1')
-        self.assertEqual(ratings.rating_count, 1)
-        self.assertEqual(ratings.rating_total, 4)
-        self.assertEqual(ratings.rating_average, 4)
+        self.assertEqual(ratings.count, 1)
+        self.assertEqual(ratings.total, 4)
+        self.assertEqual(ratings.average, 4)
 
         ratings = AggregateRating.objects.rate(ratings, 2, self.user_a, '127.0.0.1')
-        self.assertEqual(ratings.rating_count, 1)
-        self.assertEqual(ratings.rating_total, 2)
-        self.assertEqual(ratings.rating_average, 2)
+        self.assertEqual(ratings.count, 1)
+        self.assertEqual(ratings.total, 2)
+        self.assertEqual(ratings.average, 2)
 
     def test_unverified_cant_rate(self):
         """
@@ -74,9 +74,9 @@ class RatingsTest(TestCase):
         with self.assertRaises(ValidationError):
             ratings = AggregateRating.objects.rate(ratings, 2, self.user_a, '127.0.0.1')
 
-        self.assertEqual(ratings.rating_count, 1)
-        self.assertEqual(ratings.rating_total, 4)
-        self.assertEqual(ratings.rating_average, 4)
+        self.assertEqual(ratings.count, 1)
+        self.assertEqual(ratings.total, 4)
+        self.assertEqual(ratings.average, 4)
 
     def test_order_by_average_rating(self):
         foo_a = self.foo = Foo.objects.create(bar='foo a')
@@ -92,7 +92,7 @@ class RatingsTest(TestCase):
         AggregateRating.objects.rate(rating_a, 1, self.user_a, '127.0.0.1')
         AggregateRating.objects.rate(rating_b, 2, self.user_b, '127.0.0.1')
 
-        foos = Foo.objects.filter(ratings__isnull=False).order_by('ratings__rating_average')
+        foos = Foo.objects.filter(ratings__isnull=False).order_by('ratings__average')
         self.assertEqual(foos[0].pk, foo_a.pk)
         self.assertEqual(foos[1].pk, foo_b.pk)
 

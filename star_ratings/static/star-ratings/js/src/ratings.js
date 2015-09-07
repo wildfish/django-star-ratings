@@ -87,8 +87,8 @@ function updateRating(rating, sender) {
         return;
     }
 
-    parent.setAttribute("data-avg-rating", rating.rating_average);
-    parent.querySelector(".star-ratings-rating-foreground").style.width = 100 / rating.max_value * rating.rating_average + "%";
+    parent.setAttribute("data-avg-rating", rating.average);
+    parent.querySelector(".star-ratings-rating-foreground").style.width = 100 / rating.max_value * rating.average + "%";
 }
 
 

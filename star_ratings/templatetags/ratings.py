@@ -23,7 +23,7 @@ def ratings(context, item, icon_height=32, icon_width=32, star_count=None):
         'user': request.user,
         'stars': stars,
         'star_count': star_count,
-        'percentage': 100 / rating.max_value * rating.rating_average,
+        'percentage': 100 / rating.max_value * rating.average,
         'icon_height': icon_height,
         'icon_width': icon_width,
         'id': 'wfr{}'.format(uuid.uuid4().hex)
