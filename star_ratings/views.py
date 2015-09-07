@@ -11,10 +11,10 @@ class RatingCreate(LoginRequiredMixin, SingleObjectMixin, View):
 
     def post(self, request, *args, **kwargs):
         return_url = request.GET.get('next', '/')
-        value = kwargs['rating_value']
+        score = kwargs['score']
         try:
             ip = self.request.META.get('REMOTE_ADDR') or '0.0.0.0'
-            rated_model = self.model.objects.rate(self.get_object(), value, request.user, ip)
+            rated_model = self.model.objects.rate(self.get_object(), score, request.user, ip)
             if request.is_ajax():
                 return JsonResponse(data=rated_model.to_dict(), status=200)
             else:
