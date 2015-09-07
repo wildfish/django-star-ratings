@@ -1,5 +1,7 @@
 # django-star-ratings
 
+[![Build Status](https://travis-ci.org/wildfish/django-star-ratings.svg)](https://travis-ci.org/wildfish/django-star-ratings)
+
 Add ratings to any model with a template tag.
 
 
