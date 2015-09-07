@@ -5,6 +5,7 @@ from .. import app_settings
 
 register = template.Library()
 
+
 @register.inclusion_tag('ratings/widget.html', takes_context=True)
 def ratings(context, item, icon_height=32, icon_width=32, star_count=None):
     if not star_count:
