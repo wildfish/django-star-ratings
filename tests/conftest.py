@@ -44,7 +44,7 @@ def pytest_configure():
             'django.contrib.auth.hashers.CryptPasswordHasher',
         ),
 
-        STAR_RATINGS_RERATE=True
+        STAR_RATINGS_RERATE=True,
     )
 
     try:

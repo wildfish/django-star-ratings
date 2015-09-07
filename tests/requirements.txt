@@ -8,3 +8,4 @@ git+git://github.com/mverteuil/pytest-ipdb.git
 django-model-utils
 path.py==7.7.1
 model-mommy
+django-webtest
