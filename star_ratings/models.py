@@ -77,7 +77,7 @@ class Rating(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if not self.user.is_active:
-            raise ValidationError('User is not active')
+            raise ValidationError('User is not active.')
 
         res = super(Rating, self).save(*args, **kwargs)
 
