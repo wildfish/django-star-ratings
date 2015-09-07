@@ -65,7 +65,7 @@ class Rating(TimeStampedModel):
     An individual rating of a user against a model.
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    ip = models.IPAddressField(blank=True, null=True)
+    ip = models.GenericIPAddressField(blank=True, null=True)
     score = models.IntegerField()
     aggregate = models.ForeignKey(AggregateRating, related_name='ratings')
 
