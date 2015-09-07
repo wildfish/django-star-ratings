@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 from .models import AggregateRating, Rating
 
 
@@ -9,7 +10,7 @@ class RatingAdmin(admin.ModelAdmin):
         return html.format(obj.score * 10)
 
     stars.allow_tags = True
-    stars.short_description = "Score"
+    stars.short_description = _('Score')
     list_display = ('__str__', 'stars')
 
 
@@ -24,7 +25,7 @@ class AggregateRatingAdmin(admin.ModelAdmin):
         return html.format(obj.max_value * 10, obj.average * 10)
 
     stars.allow_tags = True
-    stars.short_description = "Rating average"
+    stars.short_description = _('Rating average')
     list_display = ('__str__', 'stars')
 
 
