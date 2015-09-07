@@ -1,8 +1,10 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
-from .models import Foo
+from model_mommy import mommy
 from star_ratings.models import AggregateRating
+from .models import Foo
 
 
 class RatingsTest(TestCase):
@@ -93,3 +95,24 @@ class RatingsTest(TestCase):
         foos = Foo.objects.filter(ratings__isnull=False).order_by('ratings__rating_average')
         self.assertEqual(foos[0].pk, foo_a.pk)
         self.assertEqual(foos[1].pk, foo_b.pk)
+
+
+class AggregateRatingStr(TestCase):
+    def test_result_is_the_same_as_the_context_object(self):
+        foo = mommy.make(Foo)
+
+        ratings = AggregateRating.objects.ratings_for_item(foo)
+
+        self.assertEqual(str(foo), str(ratings))
+
+
+class RatingStr(TestCase):
+    def test_result_contains_user_id_and_aggregate_rating_name(self):
+        user = mommy.make(get_user_model())
+        foo = mommy.make(Foo)
+
+        ratings = AggregateRating.objects.ratings_for_item(foo)
+        AggregateRating.objects.rate(ratings, 1, user, '0.0.0.0')
+        rating = ratings.ratings.get(user=user)
+
+        self.assertEqual('User {} rating for {}'.format(user.pk, ratings), str(rating))
