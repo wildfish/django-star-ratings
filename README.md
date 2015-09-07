@@ -1,6 +1,7 @@
 # django-star-ratings
 
 [![Build Status](https://travis-ci.org/wildfish/django-star-ratings.svg)](https://travis-ci.org/wildfish/django-star-ratings)
+[![codecov.io](http://codecov.io/github/wildfish/django-star-ratings/coverage.svg?branch=master)](http://codecov.io/github/wildfish/django-star-ratings?branch=master)
 
 Add ratings to any model with a template tag.
 
