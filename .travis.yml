@@ -6,10 +6,15 @@ python:
   - "2.7"
   - "3.4"
 
+env:
+  - DJANGO_VERSION_NUMBER=1.6
+  - DJANGO_VERSION_NUMBER=1.7
+  - DJANGO_VERSION_NUMBER=1.8
+
 install:
   - pip install codecov
-  - pip install -r tests/requirements.txt
-  - pip install -e .
+  - pip install django==$DJANGO_VERSION_NUMBER
+  - pip install -r requirements.txt
 
 script:
   - coverage run --source='star_ratings' runtests.py

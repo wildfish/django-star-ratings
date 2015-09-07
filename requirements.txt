@@ -1,4 +1,4 @@
-django==1.7.7
+django
 coverage
 pytest
 pytest-django==2.8.0
@@ -9,3 +9,4 @@ django-model-utils
 path.py==7.7.1
 model-mommy
 django-webtest
+django-braces
