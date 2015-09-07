@@ -48,6 +48,9 @@ class AggregateRating(models.Model):
 
     objects = AggregateRatingManager()
 
+    class Meta:
+        unique_together = ['content_type', 'object_id']
+
     def to_dict(self):
         return {
             'count': self.count,
