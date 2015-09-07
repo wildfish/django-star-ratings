@@ -15,7 +15,7 @@ class AggregateRatingManager(models.Manager):
             return aggregate
         return self.create(content_type=ct, object_id=item.pk, max_value=max_value)
 
-    def rate(self, instance, score, user, ip_address):
+    def rate(self, instance, score, user, ip):
         rating = Rating.objects.filter(user=user, aggregate=instance).first()
         if rating:
             if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
@@ -24,7 +24,7 @@ class AggregateRatingManager(models.Manager):
             rating.save()
             return rating.aggregate
         else:
-            return Rating.objects.create(user=user, score=score, aggregate=instance, ip_address=ip_address).aggregate
+            return Rating.objects.create(user=user, score=score, aggregate=instance, ip=ip).aggregate
 
     def has_rated(self, instance, user):
         return Rating.objects.filter(pk=instance.pk, user=user).exists()
@@ -65,7 +65,7 @@ class Rating(TimeStampedModel):
     An individual rating of a user against a model.
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    ip_address = models.IPAddressField(blank=True, null=True)  # TODO
+    ip = models.IPAddressField(blank=True, null=True)  # TODO
     score = models.IntegerField()
     aggregate = models.ForeignKey(AggregateRating, related_name='ratings')
 
