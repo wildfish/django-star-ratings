@@ -4,6 +4,7 @@ from django.db import models, transaction
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Sum
+from django.utils.encoding import python_2_unicode_compatible
 from model_utils.models import TimeStampedModel
 
 
@@ -28,6 +29,7 @@ class AggregateRatingManager(models.Manager):
         return Rating.objects.filter(pk=instance.pk, user=user).exists()
 
 
+@python_2_unicode_compatible
 class AggregateRating(models.Model):
     """
     Attaches Rating models and running counts to the model being rated via a generic relation.
@@ -58,6 +60,7 @@ class AggregateRating(models.Model):
         return str(self.content_object)
 
 
+@python_2_unicode_compatible
 class Rating(TimeStampedModel):
     """
     An individual rating of a user against a model.
