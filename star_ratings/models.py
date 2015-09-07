@@ -74,9 +74,6 @@ class Rating(TimeStampedModel):
         return 'User {} rating for {}'.format(self.user_id, self.aggregate)
 
     def save(self, *args, **kwargs):
-        if not self.user.is_active:
-            raise ValidationError('User is not active.')
-
         res = super(Rating, self).save(*args, **kwargs)
 
         with transaction.atomic():

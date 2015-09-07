@@ -11,9 +11,6 @@ class RatingsTest(TestCase):
     def setUp(self):
         self.user_a = User.objects.create_user(username='user_a', password='pwd')
         self.user_b = User.objects.create_user(username='user_b', password='pwd')
-        self.inactive_user = User.objects.create_user(username='user_c', password='pwd')
-        self.inactive_user.is_active = False
-        self.inactive_user.save()
         self.foo = Foo.objects.create()
 
     def test_auto_create_ratings(self):
@@ -55,14 +52,6 @@ class RatingsTest(TestCase):
         self.assertEqual(ratings.count, 1)
         self.assertEqual(ratings.total, 2)
         self.assertEqual(ratings.average, 2)
-
-    def test_unverified_cant_rate(self):
-        """
-        Ensure that a user that is not verified can't rate
-        """
-        ratings = AggregateRating.objects.ratings_for_item(self.foo)
-        with self.assertRaises(ValidationError):
-            AggregateRating.objects.rate(ratings, 2, self.inactive_user, '127.0.0.1')
 
     @override_settings(STAR_RATINGS_RERATE=False)
     def test_rerating_disabled(self):
