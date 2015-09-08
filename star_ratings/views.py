@@ -6,7 +6,7 @@ from braces.views import LoginRequiredMixin
 from .models import AggregateRating
 
 
-class RatingCreate(LoginRequiredMixin, SingleObjectMixin, View):
+class Rate(LoginRequiredMixin, SingleObjectMixin, View):
     model = AggregateRating
 
     def post(self, request, *args, **kwargs):
