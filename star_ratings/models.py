@@ -1,9 +1,10 @@
+from __future__ import division
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.db import models, transaction
+from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Sum
+from django.db.models import Avg, Count, Sum
 from django.utils.encoding import python_2_unicode_compatible
 from model_utils.models import TimeStampedModel
 
@@ -59,6 +60,16 @@ class AggregateRating(models.Model):
     def __str__(self):
         return str(self.content_object)
 
+    def calculate(self):
+        """
+        Recalculate the totals, and save.
+        """
+        aggregates = self.ratings.aggregate(total=Sum('score'), average=Avg('score'), count=Count('score'))
+        self.count = aggregates.get('count') or 0
+        self.total = aggregates.get('total') or 0
+        self.average = aggregates.get('average') or 0.0
+        self.save()
+
 
 @python_2_unicode_compatible
 class Rating(TimeStampedModel):
@@ -77,12 +88,6 @@ class Rating(TimeStampedModel):
         return 'User {} rating for {}'.format(self.user_id, self.aggregate)
 
     def save(self, *args, **kwargs):
-        res = super(Rating, self).save(*args, **kwargs)
-
-        with transaction.atomic():
-            self.aggregate.count = Rating.objects.filter(aggregate=self.aggregate).count()
-            self.aggregate.total = Rating.objects.filter(aggregate=self.aggregate).aggregate(total_score=Sum('score')).get('total_score') or 0
-            self.aggregate.average = float(self.aggregate.total) / self.aggregate.count
-            self.aggregate.save()
-
-        return res
+        rating = super(Rating, self).save(*args, **kwargs)
+        self.aggregate.calculate()
+        return rating
