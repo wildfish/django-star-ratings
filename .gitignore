@@ -8,3 +8,4 @@ build/
 .coverage
 .tox
 .hypothesis
+*.sqlite3
