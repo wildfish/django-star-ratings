@@ -16,17 +16,23 @@ class AggregateRatingManager(models.Manager):
         return aggregate
 
     def rate(self, instance, score, user, ip=None):
-        rating = Rating.objects.filter(user=user, aggregate=instance).first()
-        if rating:
+        if isinstance(instance, AggregateRating):
+            raise Exception('AggregateRating manager expects model to be rated, not AggregateRating model.')
+        ct = ContentType.objects.get_for_model(instance)
+        aggregate, created = self.get_or_create(content_type=ct, object_id=instance.pk, defaults={'max_value': 5})
+        existing_rating = Rating.objects.filter(aggregate__content_type=ct, user=user).first()
+        if existing_rating:
             if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
                 raise ValidationError('Already rated.')
-            rating.score = score
-            rating.save()
-            return rating.aggregate
+            existing_rating.score = score
+            existing_rating.save()
+            return existing_rating.aggregate
         else:
-            return Rating.objects.create(user=user, score=score, aggregate=instance, ip=ip).aggregate
+            return Rating.objects.create(user=user, score=score, aggregate=aggregate, ip=ip).aggregate
 
     def has_rated(self, instance, user):
+        if isinstance(instance, AggregateRating):
+            raise Exception('AggregateRating manager expects model to be rated, not AggregateRating model.')
         return Rating.objects.filter(pk=instance.pk, user=user).exists()
 
 
