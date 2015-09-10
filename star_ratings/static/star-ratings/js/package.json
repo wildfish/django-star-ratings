@@ -8,7 +8,7 @@
         "watch": "watchify index.js -o ./dist/star-ratings.js -d -v"
     },
     "author": "Jonas Hagstedt <hagstedt@gmail.com> (https://github.com/jonashagstedt)",
-    "license": "MIT",
+    "license": "BSD",
     "devDependencies": {
         "browserify": "^10.2.4",
         "yuglify": "^0.1.4"
