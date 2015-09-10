@@ -41,18 +41,15 @@ function init() {
 function ratingClick(ev) {
     ev.stopPropagation();
     ev.preventDefault();
-    var score = this.getAttribute('data-score');
-    var ratingId = this.getAttribute('data-for');
-    rate(ratingId, score, this);
+    var url = this.getAttribute('href');
+    rate(url, this);
 }
 
 
 /*********************
  * Rate instance
  *********************/
-function rate(id, score, sender) {
-    var url = '/ratings/' + id + '/' + score + '/';
-
+function rate(url, sender) {
     rest.post(url, {}, function (rating) {
         updateRating(rating, sender);
     }, function (errors) {
