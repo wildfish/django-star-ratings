@@ -1,22 +1,29 @@
 from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, JsonResponse
-from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import View
 from braces.views import LoginRequiredMixin
 from .models import AggregateRating
 
 
-class Rate(LoginRequiredMixin, SingleObjectMixin, View):
+class Rate(LoginRequiredMixin, View):
     model = AggregateRating
+
+    def get_object(self):
+        """
+        Returns the model instance we're rating from the URL params.
+        """
+        content_type = ContentType.objects.get_for_id(self.kwargs.get('content_type_id'))
+        return content_type.get_object_for_this_type(pk=self.kwargs.get('object_id'))
 
     def post(self, request, *args, **kwargs):
         return_url = request.GET.get('next', '/')
         score = kwargs['score']
         try:
             ip = self.request.META.get('REMOTE_ADDR') or '0.0.0.0'
-            rated_model = self.model.objects.rate(self.get_object(), score, request.user, ip)
+            aggregate = self.model.objects.rate(self.get_object(), score, request.user, ip)
             if request.is_ajax():
-                return JsonResponse(data=rated_model.to_dict(), status=200)
+                return JsonResponse(data=aggregate.to_dict(), status=200)
             else:
                 return HttpResponseRedirect(return_url)
         except ValidationError as err:

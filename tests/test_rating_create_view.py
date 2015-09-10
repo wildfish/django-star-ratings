@@ -17,7 +17,7 @@ class RatingCreateView(WebTest):
         foo = mommy.make(Foo)
         ratings = AggregateRating.objects.ratings_for_model(foo)
 
-        url = reverse('ratings:rate', args=(ratings.pk, 3))
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, 3))
         response = self.app.get(url)
 
         self.assertRedirects(response, settings.LOGIN_URL + '?next=' + url, fetch_redirect_response=False)
@@ -29,7 +29,7 @@ class RatingCreateView(WebTest):
 
         score = randint(1, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score))
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
         self.app.post(url, user=user)
 
         ct = ContentType.objects.get_for_model(foo)
@@ -42,7 +42,7 @@ class RatingCreateView(WebTest):
 
         score = randint(1, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score))
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
         response = self.app.post(url, user=user)
 
         self.assertRedirects(response, '/', fetch_redirect_response=False)
@@ -54,7 +54,7 @@ class RatingCreateView(WebTest):
 
         score = randint(1, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score)) + '?next=/foo/bar'
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score)) + '?next=/foo/bar'
         response = self.app.post(url, user=user)
 
         self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
@@ -66,7 +66,7 @@ class RatingCreateView(WebTest):
 
         score = randint(1, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score))
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
         self.app.post(url, user=user, xhr=True)
 
         ct = ContentType.objects.get_for_model(foo)
@@ -79,7 +79,7 @@ class RatingCreateView(WebTest):
 
         score = randint(1, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score))
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
         response = self.app.post(url, user=user, xhr=True)
 
         ratings = AggregateRating.objects.get(pk=ratings.pk)
@@ -94,7 +94,7 @@ class RatingCreateView(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score))
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
         self.app.post(url, user=user)
 
         rating = Rating.objects.get(pk=rating.pk)
@@ -109,7 +109,7 @@ class RatingCreateView(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score))
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
         response = self.app.post(url, user=user)
 
         self.assertRedirects(response, '/', fetch_redirect_response=False)
@@ -123,7 +123,7 @@ class RatingCreateView(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score)) + '?next=/foo/bar'
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score)) + '?next=/foo/bar'
         response = self.app.post(url, user=user)
 
         self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
@@ -137,7 +137,7 @@ class RatingCreateView(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score))
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
         self.app.post(url, user=user, xhr=True)
 
         rating = Rating.objects.get(pk=rating.pk)
@@ -152,7 +152,7 @@ class RatingCreateView(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score))
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
         response = self.app.post(url, user=user, xhr=True)
 
         ratings = AggregateRating.objects.get(pk=ratings.pk)
@@ -168,7 +168,7 @@ class RatingCreateView(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score))
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
         self.app.post(url, user=user)
 
         rating = Rating.objects.get(pk=rating.pk)
@@ -183,7 +183,7 @@ class RatingCreateView(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score)) + '?next=/foo/bar'
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score)) + '?next=/foo/bar'
         response = self.app.post(url, user=user)
 
         self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
@@ -198,7 +198,7 @@ class RatingCreateView(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score))
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
         self.app.post(url, user=user, xhr=True, expect_errors=True)
 
         rating = Rating.objects.get(pk=rating.pk)
@@ -213,7 +213,7 @@ class RatingCreateView(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.pk, score)) + '?next=/foo/bar'
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score)) + '?next=/foo/bar'
         response = self.app.post(url, user=user, xhr=True, expect_errors=True)
 
         self.assertEqual(400, response.status_code)
