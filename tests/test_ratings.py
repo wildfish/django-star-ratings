@@ -1,8 +1,7 @@
 from random import randint
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from model_mommy import mommy
 from star_ratings.models import AggregateRating, Rating
 from .models import Foo, Bar
@@ -22,63 +21,6 @@ class RatingsTest(TestCase):
         self.assertEqual(ratings.count, 0)
         self.assertEqual(ratings.total, 0)
         self.assertEqual(ratings.average, 0)
-
-    def test_rate_model(self):
-        """
-        Two different users rating the same model
-        """
-        ratings = AggregateRating.objects.rate(self.foo, 4, self.user_a, '127.0.0.1')
-        self.assertEqual(ratings.count, 1)
-        self.assertEqual(ratings.total, 4)
-        self.assertEqual(ratings.average, 4)
-
-        ratings = AggregateRating.objects.rate(self.foo, 3, self.user_b, '127.0.0.2')
-        self.assertEqual(ratings.count, 2)
-        self.assertEqual(ratings.total, 7)
-        self.assertEqual(ratings.average, 3.5)
-
-    def test_same_user_rate_twice(self):
-        """
-        Same user rating a model twice
-        """
-        ratings = AggregateRating.objects.rate(self.foo, 4, self.user_a, '127.0.0.1')
-        self.assertEqual(ratings.count, 1)
-        self.assertEqual(ratings.total, 4)
-        self.assertEqual(ratings.average, 4)
-
-        ratings = AggregateRating.objects.rate(self.foo, 2, self.user_a, '127.0.0.1')
-        self.assertEqual(ratings.count, 1)
-        self.assertEqual(ratings.total, 2)
-        self.assertEqual(ratings.average, 2)
-
-    @override_settings(STAR_RATINGS_RERATE=False)
-    def test_rerating_disabled(self):
-        """
-        If re-rating is disabled the rating should not count
-        """
-        ratings = AggregateRating.objects.rate(self.foo, 4, self.user_a, '127.0.0.1')
-        with self.assertRaises(ValidationError):
-            ratings = AggregateRating.objects.rate(self.foo, 2, self.user_a, '127.0.0.1')
-
-        self.assertEqual(ratings.count, 1)
-        self.assertEqual(ratings.total, 4)
-        self.assertEqual(ratings.average, 4)
-
-    def test_order_by_average_rating(self):
-        foo_a = self.foo = Foo.objects.create(name='foo a')
-        foo_b = self.foo = Foo.objects.create(name='foo b')
-
-        # Avg. rating: 3.5
-        AggregateRating.objects.rate(foo_a, 4, self.user_a, '127.0.0.1')
-        AggregateRating.objects.rate(foo_b, 3, self.user_b, '127.0.0.1')
-
-        # Avg. rating: 1.5
-        AggregateRating.objects.rate(foo_a, 1, self.user_a, '127.0.0.1')
-        AggregateRating.objects.rate(foo_b, 2, self.user_b, '127.0.0.1')
-
-        foos = Foo.objects.filter(ratings__isnull=False).order_by('ratings__average')
-        self.assertEqual(foos[0].pk, foo_a.pk)
-        self.assertEqual(foos[1].pk, foo_b.pk)
 
 
 class RatingStr(TestCase):
