@@ -27,6 +27,9 @@ class AggregateRatingManagerRatingsForItem(TestCase):
 
         self.assertIsInstance(res, AggregateRating)
         self.assertEqual(item, res.content_object)
+        self.assertEqual(0, res.count)
+        self.assertEqual(0, res.total)
+        self.assertEqual(0, res.average)
 
 
 class AggregateRatingManagerRate(TestCase):

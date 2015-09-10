@@ -1,26 +1,9 @@
 from random import randint
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from django.test import TestCase
 from model_mommy import mommy
 from star_ratings.models import AggregateRating, Rating
 from .models import Foo, Bar
-
-
-class RatingsTest(TestCase):
-    def setUp(self):
-        self.user_a = User.objects.create_user(username='user_a', password='pwd')
-        self.user_b = User.objects.create_user(username='user_b', password='pwd')
-        self.foo = Foo.objects.create()
-
-    def test_auto_create_ratings(self):
-        """
-        Auto generate an aggregate model for an object
-        """
-        ratings = AggregateRating.objects.ratings_for_model(self.foo)
-        self.assertEqual(ratings.count, 0)
-        self.assertEqual(ratings.total, 0)
-        self.assertEqual(ratings.average, 0)
 
 
 class RatingStr(TestCase):
