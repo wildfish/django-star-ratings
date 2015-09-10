@@ -10,7 +10,7 @@ from .models import Foo
 from star_ratings.models import AggregateRating, Rating
 
 
-class RatingCreateView(WebTest):
+class ViewRate(WebTest):
     csrf_checks = False
 
     def test_view_is_called_when_nobody_is_logged_in___user_is_forwarded_to_login(self):
