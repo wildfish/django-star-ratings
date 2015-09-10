@@ -64,8 +64,8 @@ class RatingsTest(TestCase):
         self.assertEqual(ratings.average, 4)
 
     def test_order_by_average_rating(self):
-        foo_a = self.foo = Foo.objects.create(bar='foo a')
-        foo_b = self.foo = Foo.objects.create(bar='foo b')
+        foo_a = self.foo = Foo.objects.create(name='foo a')
+        foo_b = self.foo = Foo.objects.create(name='foo b')
 
         # Avg. rating: 3.5
         AggregateRating.objects.rate(foo_a, 4, self.user_a, '127.0.0.1')
