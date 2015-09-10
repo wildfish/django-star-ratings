@@ -19,8 +19,7 @@ class AggregateRatingManager(models.Manager):
         if isinstance(instance, AggregateRating):
             raise Exception('AggregateRating manager expects model to be rated, not AggregateRating model.')
         ct = ContentType.objects.get_for_model(instance)
-        aggregate, created = self.get_or_create(content_type=ct, object_id=instance.pk, defaults={'max_value': 5})
-        existing_rating = Rating.objects.filter(aggregate__content_type=ct, user=user).first()
+        existing_rating =  Rating.objects.for_instance_by_user(instance, user)
         if existing_rating:
             if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
                 raise ValidationError('Already rated.')
@@ -28,12 +27,8 @@ class AggregateRatingManager(models.Manager):
             existing_rating.save()
             return existing_rating.aggregate
         else:
+            aggregate, created = self.get_or_create(content_type=ct, object_id=instance.pk, defaults={'max_value': 5})
             return Rating.objects.create(user=user, score=score, aggregate=aggregate, ip=ip).aggregate
-
-    def has_rated(self, instance, user):
-        if isinstance(instance, AggregateRating):
-            raise Exception('AggregateRating manager expects model to be rated, not AggregateRating model.')
-        return Rating.objects.filter(pk=instance.pk, user=user).exists()
 
 
 @python_2_unicode_compatible
@@ -77,6 +72,18 @@ class AggregateRating(models.Model):
         self.save()
 
 
+class RatingManager(models.Manager):
+    def for_instance_by_user(self, instance, user):
+        ct = ContentType.objects.get_for_model(instance)
+        return self.filter(aggregate__content_type=ct, aggregate__object_id=instance.pk, user=user).first()
+
+    def has_rated(self, instance, user):
+        if isinstance(instance, AggregateRating):
+            raise Exception('Rating manager has_rated expects model to be rated, not AggregateRating model.')
+        rating = self.for_instance_by_user(instance, user)
+        return rating is not None
+
+
 @python_2_unicode_compatible
 class Rating(TimeStampedModel):
     """
@@ -86,6 +93,8 @@ class Rating(TimeStampedModel):
     ip = models.GenericIPAddressField(blank=True, null=True)
     score = models.PositiveSmallIntegerField()
     aggregate = models.ForeignKey(AggregateRating, related_name='ratings')
+
+    objects = RatingManager()
 
     class Meta:
         unique_together = ['user', 'aggregate']
