@@ -17,7 +17,7 @@ class RatingsTest(TestCase):
         """
         Auto generate an aggregate model for an object
         """
-        ratings = AggregateRating.objects.ratings_for_item(self.foo)
+        ratings = AggregateRating.objects.ratings_for_model(self.foo)
         self.assertEqual(ratings.count, 0)
         self.assertEqual(ratings.total, 0)
         self.assertEqual(ratings.average, 0)
@@ -26,7 +26,7 @@ class RatingsTest(TestCase):
         """
         Two different users rating the same model
         """
-        ratings = AggregateRating.objects.ratings_for_item(self.foo)
+        ratings = AggregateRating.objects.ratings_for_model(self.foo)
 
         ratings = AggregateRating.objects.rate(ratings, 4, self.user_a, '127.0.0.1')
         self.assertEqual(ratings.count, 1)
@@ -42,7 +42,7 @@ class RatingsTest(TestCase):
         """
         Same user rating a model twice
         """
-        ratings = AggregateRating.objects.ratings_for_item(self.foo)
+        ratings = AggregateRating.objects.ratings_for_model(self.foo)
         ratings = AggregateRating.objects.rate(ratings, 4, self.user_a, '127.0.0.1')
         self.assertEqual(ratings.count, 1)
         self.assertEqual(ratings.total, 4)
@@ -58,7 +58,7 @@ class RatingsTest(TestCase):
         """
         If re-rating is disabled the rating should not count
         """
-        ratings = AggregateRating.objects.ratings_for_item(self.foo)
+        ratings = AggregateRating.objects.ratings_for_model(self.foo)
         ratings = AggregateRating.objects.rate(ratings, 4, self.user_a, '127.0.0.1')
         with self.assertRaises(ValidationError):
             ratings = AggregateRating.objects.rate(ratings, 2, self.user_a, '127.0.0.1')
@@ -70,8 +70,8 @@ class RatingsTest(TestCase):
     def test_order_by_average_rating(self):
         foo_a = self.foo = Foo.objects.create(bar='foo a')
         foo_b = self.foo = Foo.objects.create(bar='foo b')
-        rating_a = AggregateRating.objects.ratings_for_item(foo_a)
-        rating_b = AggregateRating.objects.ratings_for_item(foo_b)
+        rating_a = AggregateRating.objects.ratings_for_model(foo_a)
+        rating_b = AggregateRating.objects.ratings_for_model(foo_b)
 
         # Avg. rating: 3.5
         AggregateRating.objects.rate(rating_a, 4, self.user_a, '127.0.0.1')
@@ -90,7 +90,7 @@ class AggregateRatingStr(TestCase):
     def test_result_is_the_same_as_the_context_object(self):
         foo = mommy.make(Foo)
 
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
 
         self.assertEqual(str(foo), str(ratings))
 
@@ -100,7 +100,7 @@ class RatingStr(TestCase):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
 
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
         AggregateRating.objects.rate(ratings, 1, user, '0.0.0.0')
         rating = ratings.ratings.get(user=user)
 

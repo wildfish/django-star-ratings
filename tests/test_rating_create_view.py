@@ -15,7 +15,7 @@ class RatingCreateView(WebTest):
 
     def test_view_is_called_when_nobody_is_logged_in___user_is_forwarded_to_login(self):
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
 
         url = reverse('ratings:rate', args=(ratings.pk, 3))
         response = self.app.get(url)
@@ -25,7 +25,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_and_doesnt_already_have_a_rating___rating_is_created(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
 
         score = randint(1, 5)
 
@@ -38,7 +38,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_no_next_url_is_given___redirected_to_root(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
 
         score = randint(1, 5)
 
@@ -50,7 +50,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_next_url_is_given___redirected_to_next(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
 
         score = randint(1, 5)
 
@@ -62,7 +62,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_request_is_ajax___rating_is_created(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
 
         score = randint(1, 5)
 
@@ -75,7 +75,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_request_is_ajax___response_is_updated_aggregate_data(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
 
         score = randint(1, 5)
 
@@ -89,7 +89,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true___rating_is_updated(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
         rating = mommy.make(Rating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)
@@ -104,7 +104,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true___redirected_to_root(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
         mommy.make(Rating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)
@@ -118,7 +118,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true___redirected_to_next(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
         mommy.make(Rating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)
@@ -132,7 +132,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true_request_is_ajax___rating_is_updated(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
         rating = mommy.make(Rating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)
@@ -147,7 +147,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true_request_is_ajax___response_is_updated_aggregate_data(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
         mommy.make(Rating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)
@@ -162,7 +162,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_false___rating_is_not_changed(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
         rating = mommy.make(Rating, aggregate=ratings, score=1, user=user)
         orig_score = rating.score
 
@@ -178,7 +178,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_false___redirected_to_next(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
         mommy.make(Rating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)
@@ -192,7 +192,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_false_request_is_ajax___rating_is_not_changed(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
         rating = mommy.make(Rating, aggregate=ratings, score=1, user=user)
         orig_score = rating.score
 
@@ -208,7 +208,7 @@ class RatingCreateView(WebTest):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_false_reuest_is_ajax___response_is_400(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_item(foo)
+        ratings = AggregateRating.objects.ratings_for_model(foo)
         mommy.make(Rating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)

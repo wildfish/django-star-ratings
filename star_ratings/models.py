@@ -10,7 +10,7 @@ from model_utils.models import TimeStampedModel
 
 
 class AggregateRatingManager(models.Manager):
-    def ratings_for_item(self, item, max_value=5):
+    def ratings_for_model(self, item, max_value=5):
         ct = ContentType.objects.get_for_model(item)
         aggregate, created = self.get_or_create(content_type=ct, object_id=item.pk, defaults={'max_value': max_value})
         return aggregate
