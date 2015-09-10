@@ -19,7 +19,7 @@ class AggregateRatingManager(models.Manager):
         if isinstance(instance, AggregateRating):
             raise Exception('AggregateRating manager expects model to be rated, not AggregateRating model.')
         ct = ContentType.objects.get_for_model(instance)
-        existing_rating =  Rating.objects.for_instance_by_user(instance, user)
+        existing_rating = Rating.objects.for_instance_by_user(instance, user)
         if existing_rating:
             if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
                 raise ValidationError('Already rated.')
