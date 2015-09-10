@@ -42,5 +42,8 @@
             </li>
         {% endfor %}
     </ul>
+    {% if not user.is_authenticated %}
+    <p>Please log in to rate.</p>
+    {% endif %}
     <div class="star-ratings-errors"></div>
 </div>
