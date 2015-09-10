@@ -6,7 +6,7 @@ from star_ratings.admin import AggregateRatingAdmin
 from star_ratings.models import AggregateRating
 
 
-class AggregateRatingAdmin(TestCase):
+class AdminAggregateRatingAdmin(TestCase):
     def test_stars_return_the_correct_html(self):
         average = 5 * random()
         max_val = 5
