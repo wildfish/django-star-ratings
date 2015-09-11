@@ -1,4 +1,5 @@
 from __future__ import division
+from decimal import Decimal
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -38,7 +39,7 @@ class AggregateRating(models.Model):
     """
     count = models.PositiveIntegerField(default=0)
     total = models.PositiveIntegerField(default=0)
-    average = models.DecimalField(max_digits=6, decimal_places=3, default=0.0)
+    average = models.DecimalField(max_digits=6, decimal_places=3, default=Decimal(0.0))
     max_value = models.PositiveIntegerField()
 
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
