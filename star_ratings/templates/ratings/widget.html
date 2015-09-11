@@ -42,12 +42,11 @@
             </li>
         {% endfor %}
     </ul>
-    <div class="star-ratings-rating-count">({{ rating.count }})</div>
+    <div class="star-ratings-rating-average">Average: {{ rating.average }}</div>
+    <div class="star-ratings-rating-count">Rating Count:{{ rating.count }}</div>
+    <div class="star-ratings-rating-average">You Rated: {% if user_rating %}{{ user_rating.score }}{% else %}Not rated{% endif %} </div>
     {% if not user.is_authenticated %}
         <p>Please log in to rate.</p>
-    {% endif %}
-    {% if user_rating %}
-        <p>You rated {{ user_rating.score }}.</p>
     {% endif %}
     <div class="star-ratings-errors"></div>
 </div>
