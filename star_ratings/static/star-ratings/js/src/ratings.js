@@ -85,12 +85,30 @@ function updateRating(rating, sender) {
     }
 
     parent.setAttribute("data-avg-rating", rating.average);
-    parent.getElementsByClassName("star-ratings-rating-average")[0]
-        .getElementsByClassName('star-ratings-rating-value')[0].innerHTML = rating.average;
-    parent.getElementsByClassName("star-ratings-rating-count")[0]
-        .getElementsByClassName('star-ratings-rating-value')[0].innerHTML = rating.count;
-    parent.getElementsByClassName("star-ratings-rating-user")[0]
-        .getElementsByClassName('star-ratings-rating-value')[0].innerHTML = rating.user_rating;
+
+    var avgElem = parent.getElementsByClassName("star-ratings-rating-average")[0];
+    if(avgElem) {
+        var valueElem = avgElem.getElementsByClassName('star-ratings-rating-value')[0];
+        if (valueElem) {
+            valueElem.innerHTML = rating.average;
+        }
+    }
+
+    var countElem = parent.getElementsByClassName("star-ratings-rating-count")[0];
+    if(countElem) {
+        var valueElem = countElem.getElementsByClassName('star-ratings-rating-value')[0];
+        if (valueElem) {
+            valueElem.innerHTML = rating.count;
+        }
+    }
+
+    var userElem = parent.getElementsByClassName("star-ratings-rating-user")[0];
+    if(userElem) {
+        var valueElem = userElem.getElementsByClassName('star-ratings-rating-value')[0];
+        if (valueElem) {
+            valueElem.innerHTML = rating.user_rating;
+        }
+    }
 
     parent.querySelector(".star-ratings-rating-foreground").style.width = 100 / rating.max_value * rating.average + "%";
 }
