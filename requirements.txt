@@ -10,3 +10,4 @@ path.py==7.7.1
 model-mommy
 django-webtest
 django-braces
+hypothesis
