@@ -85,6 +85,13 @@ function updateRating(rating, sender) {
     }
 
     parent.setAttribute("data-avg-rating", rating.average);
+    parent.getElementsByClassName("star-ratings-rating-average")[0]
+        .getElementsByClassName('star-ratings-rating-value')[0].innerHTML = rating.average;
+    parent.getElementsByClassName("star-ratings-rating-count")[0]
+        .getElementsByClassName('star-ratings-rating-value')[0].innerHTML = rating.count;
+    parent.getElementsByClassName("star-ratings-rating-user")[0]
+        .getElementsByClassName('star-ratings-rating-value')[0].innerHTML = rating.user_rating;
+
     parent.querySelector(".star-ratings-rating-foreground").style.width = 100 / rating.max_value * rating.average + "%";
 }
 

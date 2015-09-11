@@ -23,7 +23,9 @@ class Rate(LoginRequiredMixin, View):
             ip = self.request.META.get('REMOTE_ADDR') or '0.0.0.0'
             aggregate = self.model.objects.rate(self.get_object(), score, request.user, ip)
             if request.is_ajax():
-                return JsonResponse(data=aggregate.to_dict(), status=200)
+                result = aggregate.to_dict()
+                result['user_rating'] = int(score)
+                return JsonResponse(data=result, status=200)
             else:
                 return HttpResponseRedirect(return_url)
         except ValidationError as err:

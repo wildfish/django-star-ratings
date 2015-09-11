@@ -83,7 +83,9 @@ class ViewRate(WebTest):
         response = self.app.post(url, user=user, xhr=True)
 
         ratings = AggregateRating.objects.get(pk=ratings.pk)
-        self.assertEqual(ratings.to_dict(), response.json)
+        expected = ratings.to_dict()
+        expected['user_rating'] = score
+        self.assertEqual(expected, response.json)
 
     @override_settings(STAR_RATINGS_RERATE=True)
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true___rating_is_updated(self):
@@ -156,7 +158,9 @@ class ViewRate(WebTest):
         response = self.app.post(url, user=user, xhr=True)
 
         ratings = AggregateRating.objects.get(pk=ratings.pk)
-        self.assertEqual(ratings.to_dict(), response.json)
+        expected = ratings.to_dict()
+        expected['user_rating'] = score
+        self.assertEqual(expected, response.json)
 
     @override_settings(STAR_RATINGS_RERATE=False)
     def test_user_is_logged_in_already_has_a_rating_rerate_is_false___rating_is_not_changed(self):
