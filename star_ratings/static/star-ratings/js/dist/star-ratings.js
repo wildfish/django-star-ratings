@@ -161,7 +161,6 @@ var djangoRemarkRest = {
     },
 
     makeRequest: function (url, method, success, fail) {
-        url += "?format=json";
         var req = new XMLHttpRequest();
         if (req.overrideMimeType !== undefined) {
             req.overrideMimeType("application/json");
