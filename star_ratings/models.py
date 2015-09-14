@@ -60,7 +60,7 @@ class AggregateRating(models.Model):
         }
 
     def __str__(self):
-        return str(self.content_object)
+        return '{}'.format(self.content_object)
 
     def calculate(self):
         """
@@ -101,7 +101,7 @@ class Rating(TimeStampedModel):
         unique_together = ['user', 'aggregate']
 
     def __str__(self):
-        return 'User {} rating for {}'.format(self.user_id, self.aggregate)
+        return '{} rating {} for {}'.format(self.user, self.score, self.aggregate.content_object)
 
     def save(self, *args, **kwargs):
         rating = super(Rating, self).save(*args, **kwargs)

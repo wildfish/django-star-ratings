@@ -4,6 +4,9 @@ from .models import AggregateRating, Rating
 
 
 class RatingAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        return super(RatingAdmin, self).get_queryset(request).select_related('aggregate', 'user').prefetch_related('aggregate__content_object')
+
     def stars(self, obj):
         html = "<span style='display: block; width: {}px; height: 10px; " + \
                "background: url(/static/star-ratings/images/admin_stars.png)'>&nbsp;</span>"
@@ -15,6 +18,9 @@ class RatingAdmin(admin.ModelAdmin):
 
 
 class AggregateRatingAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        return super(AggregateRatingAdmin, self).get_queryset(request).prefetch_related('content_object')
+
     def stars(self, obj):
         html = "<div style='position: relative;'>"
         html += "<span style='position: absolute; top: 0; left: 0; width: {}px; height: 10px; " + \
