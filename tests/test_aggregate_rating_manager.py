@@ -55,6 +55,19 @@ class AggregateRatingManagerRate(TestCase):
         self.assertAlmostEqual(ratings.total, sum(scores))
         self.assertAlmostEqual(ratings.average, mean(scores))
 
+    @given(lists(scores(), min_size=2), settings=Settings(max_examples=5))
+    def test_deleting_the_rating___aggregates_are_updated(self, scores):
+        ratings = None
+        for score in scores:
+            ratings = AggregateRating.objects.rate(self.foo, score, mommy.make(get_user_model()), '127.0.0.1')
+
+        removed_score = scores.pop()
+        ratings.ratings.filter(score=removed_score).first().delete()
+
+        self.assertEqual(ratings.count, len(scores))
+        self.assertAlmostEqual(ratings.total, sum(scores))
+        self.assertAlmostEqual(ratings.average, mean(scores))
+
     @override_settings(STAR_RATINGS_RERATE=True)
     @given(tuples(scores(), scores()).filter(lambda x: x[0] != x[1]))
     def test_same_user_rate_twice_rerate_is_true___rating_is_changed(self, scores):
