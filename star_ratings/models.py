@@ -102,8 +102,3 @@ class Rating(TimeStampedModel):
 
     def __str__(self):
         return '{} rating {} for {}'.format(self.user, self.score, self.aggregate.content_object)
-
-    def save(self, *args, **kwargs):
-        rating = super(Rating, self).save(*args, **kwargs)
-        self.aggregate.calculate()
-        return rating
