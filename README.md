@@ -48,7 +48,7 @@ Add the following javascript and stylesheet to you template
     <html>
     ...
     <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
-    <script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.js' %}"></script>
+    <script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
     ...
     </html>
 
