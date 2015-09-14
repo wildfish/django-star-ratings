@@ -9,4 +9,3 @@ build/
 .tox
 .hypothesis
 *.sqlite3
-.idea/
