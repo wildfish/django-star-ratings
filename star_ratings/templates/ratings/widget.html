@@ -42,7 +42,7 @@
             </li>
         {% endfor %}
     </ul>
-    <div class="star-ratings-rating-average">Average: <span class='star-ratings-rating-value'>{{ rating.average }}</span></div>
+    <div class="star-ratings-rating-average">Average: <span class='star-ratings-rating-value'>{{ rating.average|floatformat:"-2" }}</span></div>
     <div class="star-ratings-rating-count">Rating Count: <span class='star-ratings-rating-value'>{{ rating.count }}</span></div>
     <div class="star-ratings-rating-user">You Rated: <span class='star-ratings-rating-value'>{% if user_rating %}{{ user_rating.score }}{% else %}Not rated{% endif %}</span></div>
     {% if not user.is_authenticated %}
