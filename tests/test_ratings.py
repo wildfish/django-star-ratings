@@ -11,10 +11,10 @@ class RatingStr(TestCase):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
 
-        ratings = AggregateRating.objects.rate(foo, 1, user, '0.0.0.0')
-        rating = ratings.ratings.get(user=user)
+        aggregate = AggregateRating.objects.rate(foo, 1, user, '0.0.0.0')
+        rating = aggregate.ratings.get(user=user)
 
-        self.assertEqual('User {} rating for {}'.format(user.pk, ratings), str(rating))
+        self.assertEqual('{} rating {} for {}'.format(user, rating.score, aggregate.content_object, aggregate.content_object), str(rating))
 
 
 class RatingHasRated(TestCase):
