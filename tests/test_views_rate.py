@@ -17,7 +17,7 @@ class ViewRate(WebTest):
         foo = mommy.make(Foo)
         ratings = AggregateRating.objects.ratings_for_model(foo)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, 3))
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
         response = self.app.get(url)
 
         self.assertRedirects(response, settings.LOGIN_URL + '?next=' + url, fetch_redirect_response=False)
@@ -29,8 +29,8 @@ class ViewRate(WebTest):
 
         score = randint(1, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
-        self.app.post(url, user=user)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        self.app.post(url, {'score': score}, user=user)
 
         ct = ContentType.objects.get_for_model(foo)
         self.assertTrue(Rating.objects.filter(user=user, aggregate__object_id=foo.pk, aggregate__content_type=ct, score=score).exists())
@@ -42,8 +42,8 @@ class ViewRate(WebTest):
 
         score = randint(1, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
-        response = self.app.post(url, user=user)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        response = self.app.post(url, {'score': score}, user=user)
 
         self.assertRedirects(response, '/', fetch_redirect_response=False)
 
@@ -54,8 +54,8 @@ class ViewRate(WebTest):
 
         score = randint(1, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score)) + '?next=/foo/bar'
-        response = self.app.post(url, user=user)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
+        response = self.app.post(url, {'score': score}, user=user)
 
         self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
 
@@ -66,8 +66,8 @@ class ViewRate(WebTest):
 
         score = randint(1, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
-        self.app.post(url, user=user, xhr=True)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        self.app.post(url, {'score': score}, user=user, xhr=True)
 
         ct = ContentType.objects.get_for_model(foo)
         self.assertTrue(Rating.objects.filter(user=user, aggregate__object_id=foo.pk, aggregate__content_type=ct, score=score).exists())
@@ -79,8 +79,8 @@ class ViewRate(WebTest):
 
         score = randint(1, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
-        response = self.app.post(url, user=user, xhr=True)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        response = self.app.post(url, {'score': score}, user=user, xhr=True)
 
         ratings = AggregateRating.objects.get(pk=ratings.pk)
         expected = ratings.to_dict()
@@ -96,8 +96,8 @@ class ViewRate(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
-        self.app.post(url, user=user)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        self.app.post(url, {'score': score}, user=user)
 
         rating = Rating.objects.get(pk=rating.pk)
         self.assertEqual(score, rating.score)
@@ -111,8 +111,8 @@ class ViewRate(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
-        response = self.app.post(url, user=user)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        response = self.app.post(url, {'score': score}, user=user)
 
         self.assertRedirects(response, '/', fetch_redirect_response=False)
 
@@ -125,8 +125,8 @@ class ViewRate(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score)) + '?next=/foo/bar'
-        response = self.app.post(url, user=user)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
+        response = self.app.post(url, {'score': score}, user=user)
 
         self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
 
@@ -139,8 +139,8 @@ class ViewRate(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
-        self.app.post(url, user=user, xhr=True)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        self.app.post(url, {'score': score}, user=user, xhr=True)
 
         rating = Rating.objects.get(pk=rating.pk)
         self.assertEqual(score, rating.score)
@@ -154,8 +154,8 @@ class ViewRate(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
-        response = self.app.post(url, user=user, xhr=True)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        response = self.app.post(url, {'score': score}, user=user, xhr=True)
 
         ratings = AggregateRating.objects.get(pk=ratings.pk)
         expected = ratings.to_dict()
@@ -172,8 +172,8 @@ class ViewRate(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
-        self.app.post(url, user=user)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        self.app.post(url, {'score': score}, user=user)
 
         rating = Rating.objects.get(pk=rating.pk)
         self.assertEqual(orig_score, rating.score)
@@ -187,8 +187,8 @@ class ViewRate(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score)) + '?next=/foo/bar'
-        response = self.app.post(url, user=user)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
+        response = self.app.post(url, {'score': score}, user=user)
 
         self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
 
@@ -202,8 +202,8 @@ class ViewRate(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score))
-        self.app.post(url, user=user, xhr=True, expect_errors=True)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        self.app.post(url, {'score': score}, user=user, xhr=True, expect_errors=True)
 
         rating = Rating.objects.get(pk=rating.pk)
         self.assertEqual(orig_score, rating.score)
@@ -217,7 +217,7 @@ class ViewRate(WebTest):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id, score)) + '?next=/foo/bar'
-        response = self.app.post(url, user=user, xhr=True, expect_errors=True)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
+        response = self.app.post(url, {'score': score}, user=user, xhr=True, expect_errors=True)
 
         self.assertEqual(400, response.status_code)

@@ -4,5 +4,5 @@ from .views import Rate
 
 urlpatterns = patterns(
     '',
-    url(r'(?P<content_type_id>\d+)/(?P<object_id>\d+)/(?P<score>\d+)/', Rate.as_view(), name='rate'),
+    url(r'(?P<content_type_id>\d+)/(?P<object_id>\d+)/', Rate.as_view(), name='rate'),
 )
