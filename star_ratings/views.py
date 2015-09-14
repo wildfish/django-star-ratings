@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import View
 from braces.views import LoginRequiredMixin
 from .models import AggregateRating
+import json
 
 
 class Rate(LoginRequiredMixin, View):
@@ -18,9 +19,10 @@ class Rate(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         return_url = request.GET.get('next', '/')
-        score = kwargs['score']
+        ip = self.request.META.get('REMOTE_ADDR') or '0.0.0.0'
+        data = json.loads(request.body.decode())
+        score = data.get('score')
         try:
-            ip = self.request.META.get('REMOTE_ADDR') or '0.0.0.0'
             aggregate = self.model.objects.rate(self.get_object(), score, request.user, ip)
             if request.is_ajax():
                 result = aggregate.to_dict()

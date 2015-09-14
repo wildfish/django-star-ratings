@@ -19,7 +19,7 @@
         {% for star in stars %}
             <li>
                 {% if user.is_authenticated %}
-                <a href="{% url 'ratings:rate' rating.content_type_id rating.object_id star %}?return={{ request.path }}" data-score="{{ star }}" class="star-ratings-rate-action">
+                <a href="{% url 'ratings:rate' rating.content_type_id rating.object_id %}?return={{ request.path }}" data-score="{{ star }}" class="star-ratings-rate-action">
                     <span class="star-ratings-rating-empty"></span>
                 </a>
                 {% else %}
@@ -33,7 +33,7 @@
         {% for star in stars %}
             <li>
             {% if user.is_authenticated %}
-            <a href="{% url 'ratings:rate' rating.content_type_id rating.object_id star %}?return={{ request.path }}" data-score="{{ star }}" class="star-ratings-rate-action">
+            <a href="{% url 'ratings:rate' rating.content_type_id rating.object_id %}?return={{ request.path }}" data-score="{{ star }}" class="star-ratings-rate-action">
                 <span class="star-ratings-rating-full"></span>
             </a>
             {% else %}

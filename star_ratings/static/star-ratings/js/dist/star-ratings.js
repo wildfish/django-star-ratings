@@ -42,15 +42,16 @@ function ratingClick(ev) {
     ev.stopPropagation();
     ev.preventDefault();
     var url = this.getAttribute('href');
-    rate(url, this);
+    var score = this.getAttribute('data-score');
+    rate(url, score, this);
 }
 
 
 /*********************
  * Rate instance
  *********************/
-function rate(url, sender) {
-    rest.post(url, {}, function (rating) {
+function rate(url, score, sender) {
+    rest.post(url, {'score': score}, function (rating) {
         updateRating(rating, sender);
     }, function (errors) {
         showError(errors, sender);
@@ -160,7 +161,6 @@ var djangoRemarkRest = {
     },
 
     makeRequest: function (url, method, success, fail) {
-        url += "?format=json";
         var req = new XMLHttpRequest();
         if (req.overrideMimeType !== undefined) {
             req.overrideMimeType("application/json");
