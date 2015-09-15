@@ -4,11 +4,11 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-from model_mommy import mommy
-from django_webtest import WebTest
 from django.test import override_settings
-from .models import Foo
+from django_webtest import WebTest
+from model_mommy import mommy
 from star_ratings.models import AggregateRating, Rating
+from .models import Foo
 
 
 class ViewRate(WebTest):
