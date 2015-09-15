@@ -13,15 +13,17 @@ from .app_settings import STAR_RATINGS_RANGE
 
 class AggregateRatingManager(models.Manager):
     def ratings_for_model(self, item):
+        if isinstance(item, AggregateRating):
+            raise TypeError("AggregateRating manager 'ratings_for_model' expects model to be rated, not AggregateRating model.")
         ct = ContentType.objects.get_for_model(item)
         aggregate, created = self.get_or_create(content_type=ct, object_id=item.pk)
         return aggregate
 
-    def rate(self, instance, score, user, ip=None):
-        if isinstance(instance, AggregateRating):
-            raise Exception('AggregateRating manager expects model to be rated, not AggregateRating model.')
-        ct = ContentType.objects.get_for_model(instance)
-        existing_rating = Rating.objects.for_instance_by_user(instance, user)
+    def rate(self, item, score, user, ip=None):
+        if isinstance(item, AggregateRating):
+            raise TypeError("AggregateRating manager 'rate' expects model to be rated, not AggregateRating model.")
+        ct = ContentType.objects.get_for_model(item)
+        existing_rating = Rating.objects.for_instance_by_user(item, user)
         if existing_rating:
             if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
                 raise ValidationError('Already rated.')
@@ -29,7 +31,7 @@ class AggregateRatingManager(models.Manager):
             existing_rating.save()
             return existing_rating.aggregate
         else:
-            aggregate, created = self.get_or_create(content_type=ct, object_id=instance.pk)
+            aggregate, created = self.get_or_create(content_type=ct, object_id=item.pk)
             return Rating.objects.create(user=user, score=score, aggregate=aggregate, ip=ip).aggregate
 
 
@@ -84,7 +86,7 @@ class RatingManager(models.Manager):
 
     def has_rated(self, instance, user):
         if isinstance(instance, AggregateRating):
-            raise Exception('Rating manager has_rated expects model to be rated, not AggregateRating model.')
+            raise TypeError("Rating manager 'has_rated' expects model to be rated, not AggregateRating model.")
         rating = self.for_instance_by_user(instance, user)
         return rating is not None
 
