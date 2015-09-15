@@ -2,30 +2,29 @@ from random import random, randint
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from model_mommy import mommy
+from star_ratings.app_settings import STAR_RATINGS_RANGE
 from star_ratings.models import AggregateRating
 from .models import Foo
 
 
 class AggregateRatingToDict(TestCase):
     def test_fields_are_present_and_correct(self):
-        max_value = randint(0, 10)
-        total = random() * max_value
+        total = random() * STAR_RATINGS_RANGE
         count = randint(1, 100)
-        avg = total / count
+        average = total / count
 
         rating = mommy.make(
             AggregateRating,
-            max_value=max_value,
             count=count,
             total=total,
-            average=avg,
+            average=average,
         )
 
         self.assertEqual(dict(
-            max_value=max_value,
             count=count,
             total=total,
-            average=avg
+            average=average,
+            percentage=rating.percentage,
         ), rating.to_dict())
 
 

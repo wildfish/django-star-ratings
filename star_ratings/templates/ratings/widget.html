@@ -14,7 +14,7 @@
     }
     {% endif %}
 </style>
-<div id="{{ id }}" class="star-ratings" data-max-rating="{{ rating.max_value }}" data-avg-rating="{{ rating.average }}">
+<div id="{{ id }}" class="star-ratings" data-max-rating="{{ star_count }}" data-avg-rating="{{ rating.average }}">
     <ul class="star-ratings-rating-background">
         {% for star in stars %}
             <li>
