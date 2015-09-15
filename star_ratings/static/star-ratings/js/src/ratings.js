@@ -91,7 +91,7 @@ function updateRating(rating, sender) {
     if(avgElem) {
         var valueElem = avgElem.getElementsByClassName('star-ratings-rating-value')[0];
         if (valueElem) {
-            valueElem.innerHTML = rating.average;
+            valueElem.innerHTML = rating.average.toFixed(2);
         }
     }
 
