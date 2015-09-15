@@ -70,13 +70,10 @@ To prohibit users from altering their ratings set `STAR_RATINGS_RERATE = False` 
 
 ## Template tags
 
-The template tag takes three arguments:
+The template tag takes two arguments:
 
 *  `icon_height`: defaults to 32
 *  `icon_width`: defaults to 32 
-*  `star_count`: defaults to 5. This is the max rating (this means a value between 1 and 5)
-
-To set a rating between 1 and 10 with an icon size of 16px: `{% ratings object 16 16 10 %}`
 
 
 ## Changing the star graphics

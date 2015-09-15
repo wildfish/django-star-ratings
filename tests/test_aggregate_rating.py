@@ -8,24 +8,23 @@ from .models import Foo
 
 class AggregateRatingToDict(TestCase):
     def test_fields_are_present_and_correct(self):
-        max_value = randint(0, 10)
+        max_value = randint(1, 10)
         total = random() * max_value
         count = randint(1, 100)
-        avg = total / count
+        average = total / count
 
         rating = mommy.make(
             AggregateRating,
-            max_value=max_value,
             count=count,
             total=total,
-            average=avg,
+            average=average,
         )
 
         self.assertEqual(dict(
-            max_value=max_value,
             count=count,
             total=total,
-            average=avg
+            average=average,
+            percentage=rating.percentage,
         ), rating.to_dict())
 
 

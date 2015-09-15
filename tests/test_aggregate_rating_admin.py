@@ -10,7 +10,7 @@ class AdminAggregateRatingAdmin(TestCase):
     def test_stars_return_the_correct_html(self):
         average = 5 * random()
         max_val = 5
-        rating = mommy.make(AggregateRating, average=average, max_value=max_val)
+        rating = mommy.make(AggregateRating, average=average)
 
         res = AggregateRatingAdmin(AggregateRating, site).stars(rating)
 

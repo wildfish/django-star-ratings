@@ -8,12 +8,13 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Avg, Count, Sum
 from django.utils.encoding import python_2_unicode_compatible
 from model_utils.models import TimeStampedModel
+from .app_settings import STAR_RATINGS_RANGE
 
 
 class AggregateRatingManager(models.Manager):
-    def ratings_for_model(self, item, max_value=5):
+    def ratings_for_model(self, item):
         ct = ContentType.objects.get_for_model(item)
-        aggregate, created = self.get_or_create(content_type=ct, object_id=item.pk, defaults={'max_value': max_value})
+        aggregate, created = self.get_or_create(content_type=ct, object_id=item.pk)
         return aggregate
 
     def rate(self, instance, score, user, ip=None):
@@ -28,7 +29,7 @@ class AggregateRatingManager(models.Manager):
             existing_rating.save()
             return existing_rating.aggregate
         else:
-            aggregate, created = self.get_or_create(content_type=ct, object_id=instance.pk, defaults={'max_value': 5})
+            aggregate, created = self.get_or_create(content_type=ct, object_id=instance.pk)
             return Rating.objects.create(user=user, score=score, aggregate=aggregate, ip=ip).aggregate
 
 
@@ -40,7 +41,6 @@ class AggregateRating(models.Model):
     count = models.PositiveIntegerField(default=0)
     total = models.PositiveIntegerField(default=0)
     average = models.DecimalField(max_digits=6, decimal_places=3, default=Decimal(0.0))
-    max_value = models.PositiveIntegerField()
 
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
@@ -51,12 +51,16 @@ class AggregateRating(models.Model):
     class Meta:
         unique_together = ['content_type', 'object_id']
 
+    @property
+    def percentage(self):
+        return (self.average / STAR_RATINGS_RANGE) * 100
+
     def to_dict(self):
         return {
             'count': self.count,
             'total': self.total,
             'average': self.average,
-            'max_value': self.max_value
+            'percentage': self.percentage,
         }
 
     def __str__(self):
