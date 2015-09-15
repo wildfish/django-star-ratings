@@ -3,7 +3,9 @@
 [![Build Status](https://travis-ci.org/wildfish/django-star-ratings.svg)](https://travis-ci.org/wildfish/django-star-ratings)
 [![codecov.io](http://codecov.io/github/wildfish/django-star-ratings/coverage.svg?branch=master)](http://codecov.io/github/wildfish/django-star-ratings?branch=master)
 
-Add ratings to any model with a template tag.
+Python 3 compatible ratings for Django.
+
+Add ratings to any Django model with a template tag.
 
 
 ## Installation
@@ -23,21 +25,6 @@ add the following to your urls.py:
 
 
 Make sure `'django.core.context_processors.request',` is in `TEMPLATE_CONTEXT_PROCESSORS`.
-
-
-## Running Tests
-
-To run the test first install tox using:
-
-```
-$> pip install tox
-```
-
-Then to run the tests use:
- 
-```
-$> tox
-```
 
 
 ## Usage
@@ -62,11 +49,6 @@ To enable ratings for a model add the following tag in your template
     ...
     </html>
     
-    
-## Settings
-
-To prohibit users from altering their ratings set `STAR_RATINGS_RERATE = False` in settings.py
-
 
 ## Template tags
 
@@ -74,6 +56,13 @@ The template tag takes two arguments:
 
 *  `icon_height`: defaults to 32
 *  `icon_width`: defaults to 32 
+
+    
+## Settings
+
+To prohibit users from altering their ratings set `STAR_RATINGS_RERATE = False` in settings.py
+
+To change the number of rating stars, set `STAR_RATINGS_RANGE` (defaults to 5)
 
 
 ## Changing the star graphics
@@ -92,3 +81,18 @@ The easiest way to order by ratings is to add a `GenericRelation` to the `Aggreg
         ratings = GenericRelation(AggregateRating, related_query_name='foos')
 
     Foo.objects.filter(ratings__isnull=False).order_by('ratings__average')
+
+
+## Running tests
+
+To run the test first install tox using:
+
+```
+$> pip install tox
+```
+
+Then to run the tests use:
+ 
+```
+$> tox
+```
