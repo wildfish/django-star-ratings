@@ -104,17 +104,11 @@ the ``AggregateRating`` model from your model:
 Running tests
 -------------
 
-To run the test first install tox using:
+To run the test use:
 
 ::
 
-    $> pip install tox
-
-Then to run the tests use:
-
-::
-
-    $> tox
+    $> ./runtests.py
 
 .. |Build Status| image:: https://travis-ci.org/wildfish/django-star-ratings.svg
    :target: https://travis-ci.org/wildfish/django-star-ratings
