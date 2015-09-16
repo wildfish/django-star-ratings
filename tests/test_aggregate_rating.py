@@ -32,7 +32,7 @@ class AggregateRatingStr(TestCase):
     def test_result_is_the_same_as_the_context_object(self):
         foo = mommy.make(Foo)
 
-        ratings = AggregateRating.objects.ratings_for_model(foo)
+        ratings = AggregateRating.objects.ratings_for_instance(foo)
 
         self.assertEqual(str(foo), str(ratings))
 
