@@ -130,6 +130,8 @@ function showError (errors, sender) {
  * Only initialise ratings
  * if there is something to rate
  *********************/
-if (document.querySelector(".star-ratings")) {
-    init();
-}
+document.addEventListener('DOMContentLoaded', function(event) {
+    if (document.querySelector('.star-ratings')) {
+        init();
+    };
+});
