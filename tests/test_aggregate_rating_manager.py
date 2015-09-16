@@ -16,14 +16,14 @@ class AggregateRatingManagerRatingsForItem(TestCase):
         item = mommy.make(Foo)
         aggregate = mommy.make(AggregateRating, content_object=item)
 
-        res = AggregateRating.objects.ratings_for_model(item)
+        res = AggregateRating.objects.ratings_for_instance(item)
 
         self.assertEqual(aggregate, res)
 
     def test_aggregate_object_does_not_exist_for_model___object_is_created_and_returned(self):
         item = mommy.make(Foo)
 
-        res = AggregateRating.objects.ratings_for_model(item)
+        res = AggregateRating.objects.ratings_for_instance(item)
 
         self.assertIsInstance(res, AggregateRating)
         self.assertEqual(item, res.content_object)
@@ -33,10 +33,10 @@ class AggregateRatingManagerRatingsForItem(TestCase):
 
     def test_passed_a_aggregate_rating_instance___type_error_is_raised(self):
         item = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_model(item)
+        ratings = AggregateRating.objects.ratings_for_instance(item)
 
         with self.assertRaisesRegex(TypeError, "AggregateRating manager 'ratings_for_model' expects model to be rated, not AggregateRating model."):
-            AggregateRating.objects.ratings_for_model(ratings)
+            AggregateRating.objects.ratings_for_instance(ratings)
 
 
 class AggregateRatingManagerRate(TestCase):
@@ -106,7 +106,7 @@ class AggregateRatingManagerRate(TestCase):
         self.assertEqual(ratings.average, 4)
 
     def test_rate_is_passed_a_aggregate_rating_instance___value_error_is_raised(self):
-        ratings = AggregateRating.objects.ratings_for_model(self.foo)
+        ratings = AggregateRating.objects.ratings_for_instance(self.foo)
 
         with self.assertRaisesRegex(TypeError, "AggregateRating manager 'rate' expects model to be rated, not AggregateRating model."):
             AggregateRating.objects.rate(ratings, 2, self.user_a, '127.0.0.1')

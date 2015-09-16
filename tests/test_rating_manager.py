@@ -9,7 +9,7 @@ class RatingManagerHasRated(TestCase):
     def test_has_rate_is_passed_a_aggregate_rating_instance___type_error_is_raised(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = AggregateRating.objects.ratings_for_model(foo)
+        ratings = AggregateRating.objects.ratings_for_instance(foo)
 
         with self.assertRaisesRegex(TypeError, "Rating manager 'has_rated' expects model to be rated, not AggregateRating model."):
             Rating.objects.has_rated(ratings, user)
