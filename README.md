@@ -80,7 +80,7 @@ The easiest way to order by ratings is to add a `GenericRelation` to the `Rating
         bar = models.CharField(max_length=100)
         rating = GenericRelation(Rating, related_query_name='foos')
 
-    Foo.objects.filter(rating__isnull=False).order_by('ratins__average')
+    Foo.objects.filter(rating__isnull=False).order_by('rating__average')
 
 
 ## Running tests
