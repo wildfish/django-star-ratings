@@ -1,4 +1,3 @@
-from statistics import mean
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import override_settings
@@ -9,6 +8,13 @@ from model_mommy import mommy
 from star_ratings.models import Rating
 from .models import Foo
 from tests.strategies import scores
+
+
+def mean(nums):
+    """
+    Our own mean function, as Python 2 doesn't include the statistics module.
+    """
+    return float(sum(nums)) / len(nums)
 
 
 class RatingManagerRatingsForItem(TestCase):
