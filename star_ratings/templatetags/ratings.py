@@ -1,7 +1,7 @@
 from decimal import Decimal
 import uuid
 from django import template
-from ..models import AggregateRating, UserRating
+from ..models import Rating, UserRating
 from ..app_settings import STAR_RATINGS_RANGE
 
 register = template.Library()
@@ -11,7 +11,7 @@ register = template.Library()
 def ratings(context, item, icon_height=32, icon_width=32):
     request = context.get('request')
 
-    rating = AggregateRating.objects.ratings_for_instance(item)
+    rating = Rating.objects.ratings_for_instance(item)
     if request.user.is_authenticated():
         user_rating = UserRating.objects.for_instance_by_user(item, request.user)
     else:

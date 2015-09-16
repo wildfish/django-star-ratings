@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from .app_settings import STAR_RATINGS_RANGE
-from .models import AggregateRating, UserRating
+from .models import Rating, UserRating
 
 
 class RatingAdmin(admin.ModelAdmin):
@@ -36,5 +36,5 @@ class AggregateRatingAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'stars')
 
 
-admin.site.register(AggregateRating, AggregateRatingAdmin)
+admin.site.register(Rating, AggregateRatingAdmin)
 admin.site.register(UserRating, RatingAdmin)

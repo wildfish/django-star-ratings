@@ -3,12 +3,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import View
 from braces.views import LoginRequiredMixin
-from .models import AggregateRating
+from .models import Rating
 import json
 
 
 class Rate(LoginRequiredMixin, View):
-    model = AggregateRating
+    model = Rating
 
     def get_object(self):
         """
