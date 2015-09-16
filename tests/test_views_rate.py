@@ -37,7 +37,7 @@ class ViewRate(WebTest):
         self.post_json(url, {'score': score}, user=user)
 
         ct = ContentType.objects.get_for_model(foo)
-        self.assertTrue(UserRating.objects.filter(user=user, aggregate__object_id=foo.pk, aggregate__content_type=ct, score=score).exists())
+        self.assertTrue(UserRating.objects.filter(user=user, rating__object_id=foo.pk, rating__content_type=ct, score=score).exists())
 
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_no_next_url_is_given___redirected_to_root(self):
         user = mommy.make(get_user_model())
@@ -75,7 +75,7 @@ class ViewRate(WebTest):
         self.post_json(url, {'score': score}, user=user, xhr=True)
 
         ct = ContentType.objects.get_for_model(foo)
-        self.assertTrue(UserRating.objects.filter(user=user, aggregate__object_id=foo.pk, aggregate__content_type=ct, score=score).exists())
+        self.assertTrue(UserRating.objects.filter(user=user, rating__object_id=foo.pk, rating__content_type=ct, score=score).exists())
 
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_request_is_ajax___response_is_updated_aggregate_data(self):
         user = mommy.make(get_user_model())
@@ -97,7 +97,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(foo)
-        rating = mommy.make(UserRating, aggregate=ratings, score=1, user=user)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
 
@@ -112,7 +112,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(foo)
-        mommy.make(UserRating, aggregate=ratings, score=1, user=user)
+        mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
 
@@ -126,7 +126,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(foo)
-        mommy.make(UserRating, aggregate=ratings, score=1, user=user)
+        mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
 
@@ -140,7 +140,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(foo)
-        rating = mommy.make(UserRating, aggregate=ratings, score=1, user=user)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
 
@@ -155,7 +155,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(foo)
-        mommy.make(UserRating, aggregate=ratings, score=1, user=user)
+        mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
 
@@ -172,7 +172,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(foo)
-        rating = mommy.make(UserRating, aggregate=ratings, score=1, user=user)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
         orig_score = rating.score
 
         score = randint(2, 5)
@@ -188,7 +188,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(foo)
-        mommy.make(UserRating, aggregate=ratings, score=1, user=user)
+        mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
 
@@ -202,7 +202,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(foo)
-        rating = mommy.make(UserRating, aggregate=ratings, score=1, user=user)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
         orig_score = rating.score
 
         score = randint(2, 5)
@@ -218,7 +218,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(foo)
-        mommy.make(UserRating, aggregate=ratings, score=1, user=user)
+        mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
 

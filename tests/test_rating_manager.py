@@ -18,15 +18,15 @@ def mean(nums):
 
 
 class RatingManagerRatingsForItem(TestCase):
-    def test_aggregate_object_exists_for_model___that_object_is_returned(self):
+    def test_rating_object_exists_for_model___that_object_is_returned(self):
         item = mommy.make(Foo)
-        aggregate = mommy.make(Rating, content_object=item)
+        rating = mommy.make(Rating, content_object=item)
 
         res = Rating.objects.ratings_for_instance(item)
 
-        self.assertEqual(aggregate, res)
+        self.assertEqual(rating, res)
 
-    def test_aggregate_object_does_not_exist_for_model___object_is_created_and_returned(self):
+    def test_rating_object_does_not_exist_for_model___object_is_created_and_returned(self):
         item = mommy.make(Foo)
 
         res = Rating.objects.ratings_for_instance(item)
@@ -37,7 +37,7 @@ class RatingManagerRatingsForItem(TestCase):
         self.assertEqual(0, res.total)
         self.assertEqual(0, res.average)
 
-    def test_passed_a_aggregate_rating_instance___type_error_is_raised(self):
+    def test_passed_a_rating_instance___type_error_is_raised(self):
         item = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(item)
 
@@ -111,7 +111,7 @@ class RatingManagerRate(TestCase):
         self.assertEqual(ratings.total, 4)
         self.assertEqual(ratings.average, 4)
 
-    def test_rate_is_passed_a_aggregate_rating_instance___value_error_is_raised(self):
+    def test_rate_is_passed_a_rating_instance___value_error_is_raised(self):
         ratings = Rating.objects.ratings_for_instance(self.foo)
 
         with self.assertRaisesRegex(TypeError, "Rating manager 'rate' expects model to be rated, not Rating model."):

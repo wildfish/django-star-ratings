@@ -16,8 +16,8 @@ class RatingManager(models.Manager):
         if isinstance(instance, Rating):
             raise TypeError("Rating manager 'ratings_for_instance' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
-        aggregate, created = self.get_or_create(content_type=ct, object_id=instance.pk)
-        return aggregate
+        ratings, created = self.get_or_create(content_type=ct, object_id=instance.pk)
+        return ratings
 
     def rate(self, instance, score, user, ip=None):
         if isinstance(instance, Rating):
@@ -29,10 +29,10 @@ class RatingManager(models.Manager):
                 raise ValidationError('Already rated.')
             existing_rating.score = score
             existing_rating.save()
-            return existing_rating.aggregate
+            return existing_rating.rating
         else:
-            aggregate, created = self.get_or_create(content_type=ct, object_id=instance.pk)
-            return UserRating.objects.create(user=user, score=score, aggregate=aggregate, ip=ip).aggregate
+            rating, created = self.get_or_create(content_type=ct, object_id=instance.pk)
+            return UserRating.objects.create(user=user, score=score, rating=rating, ip=ip).rating
 
 
 @python_2_unicode_compatible
@@ -82,7 +82,7 @@ class Rating(models.Model):
 class UserRatingManager(models.Manager):
     def for_instance_by_user(self, instance, user):
         ct = ContentType.objects.get_for_model(instance)
-        return self.filter(aggregate__content_type=ct, aggregate__object_id=instance.pk, user=user).first()
+        return self.filter(rating__content_type=ct, rating__object_id=instance.pk, user=user).first()
 
     def has_rated(self, instance, user):
         if isinstance(instance, Rating):
@@ -99,12 +99,12 @@ class UserRating(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     ip = models.GenericIPAddressField(blank=True, null=True)
     score = models.PositiveSmallIntegerField()
-    aggregate = models.ForeignKey(Rating, related_name='user_ratings')
+    rating = models.ForeignKey(Rating, related_name='user_ratings')
 
     objects = UserRatingManager()
 
     class Meta:
-        unique_together = ['user', 'aggregate']
+        unique_together = ['user', 'rating']
 
     def __str__(self):
-        return '{} rating {} for {}'.format(self.user, self.score, self.aggregate.content_object)
+        return '{} rating {} for {}'.format(self.user, self.score, self.rating.content_object)

@@ -6,7 +6,7 @@ from .models import Foo
 
 
 class RatingManagerHasRated(TestCase):
-    def test_has_rate_is_passed_a_aggregate_rating_instance___type_error_is_raised(self):
+    def test_has_rate_is_passed_a_rating_instance___type_error_is_raised(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(foo)

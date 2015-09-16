@@ -23,9 +23,9 @@ class Rate(LoginRequiredMixin, View):
         data = json.loads(request.body.decode())
         score = data.get('score')
         try:
-            aggregate = self.model.objects.rate(self.get_object(), score, request.user, ip)
+            rating = self.model.objects.rate(self.get_object(), score, request.user, ip)
             if request.is_ajax():
-                result = aggregate.to_dict()
+                result = rating.to_dict()
                 result['user_rating'] = int(score)
                 return JsonResponse(data=result, status=200)
             else:
