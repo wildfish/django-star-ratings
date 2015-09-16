@@ -48,7 +48,7 @@ class AggregateRatingManagerRate(TestCase):
     @given(scores())
     def test_user_rates_object___rating_object_is_create(self, score):
         ratings = AggregateRating.objects.rate(self.foo, score, self.user_a, '127.0.0.1')
-        rating = ratings.ratings.get(user=self.user_a)
+        rating = ratings.user_ratings.get(user=self.user_a)
 
         self.assertEqual(score, rating.score)
 
@@ -69,7 +69,7 @@ class AggregateRatingManagerRate(TestCase):
             ratings = AggregateRating.objects.rate(self.foo, score, mommy.make(get_user_model()), '127.0.0.1')
 
         removed_score = scores.pop()
-        ratings.ratings.filter(score=removed_score).first().delete()
+        ratings.user_ratings.filter(score=removed_score).first().delete()
 
         self.assertEqual(ratings.count, len(scores))
         self.assertAlmostEqual(ratings.total, sum(scores))
@@ -81,13 +81,13 @@ class AggregateRatingManagerRate(TestCase):
         first, second = scores
 
         ratings = AggregateRating.objects.rate(self.foo, first, self.user_a, '127.0.0.1')
-        self.assertTrue(ratings.ratings.filter(user=self.user_a, score=first))
+        self.assertTrue(ratings.user_ratings.filter(user=self.user_a, score=first))
         self.assertEqual(ratings.count, 1)
         self.assertEqual(ratings.total, first)
         self.assertEqual(ratings.average, first)
 
         ratings = AggregateRating.objects.rate(self.foo, second, self.user_a, '127.0.0.1')
-        self.assertTrue(ratings.ratings.filter(user=self.user_a, score=second))
+        self.assertTrue(ratings.user_ratings.filter(user=self.user_a, score=second))
         self.assertEqual(ratings.count, 1)
         self.assertEqual(ratings.total, second)
         self.assertEqual(ratings.average, second)

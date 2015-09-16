@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.test import override_settings
 from django_webtest import WebTest
 from model_mommy import mommy
-from star_ratings.models import AggregateRating, Rating
+from star_ratings.models import AggregateRating, UserRating
 from .models import Foo
 
 
@@ -37,7 +37,7 @@ class ViewRate(WebTest):
         self.post_json(url, {'score': score}, user=user)
 
         ct = ContentType.objects.get_for_model(foo)
-        self.assertTrue(Rating.objects.filter(user=user, aggregate__object_id=foo.pk, aggregate__content_type=ct, score=score).exists())
+        self.assertTrue(UserRating.objects.filter(user=user, aggregate__object_id=foo.pk, aggregate__content_type=ct, score=score).exists())
 
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_no_next_url_is_given___redirected_to_root(self):
         user = mommy.make(get_user_model())
@@ -75,7 +75,7 @@ class ViewRate(WebTest):
         self.post_json(url, {'score': score}, user=user, xhr=True)
 
         ct = ContentType.objects.get_for_model(foo)
-        self.assertTrue(Rating.objects.filter(user=user, aggregate__object_id=foo.pk, aggregate__content_type=ct, score=score).exists())
+        self.assertTrue(UserRating.objects.filter(user=user, aggregate__object_id=foo.pk, aggregate__content_type=ct, score=score).exists())
 
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_request_is_ajax___response_is_updated_aggregate_data(self):
         user = mommy.make(get_user_model())
@@ -97,14 +97,14 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = AggregateRating.objects.ratings_for_instance(foo)
-        rating = mommy.make(Rating, aggregate=ratings, score=1, user=user)
+        rating = mommy.make(UserRating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)
 
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
         self.post_json(url, {'score': score}, user=user)
 
-        rating = Rating.objects.get(pk=rating.pk)
+        rating = UserRating.objects.get(pk=rating.pk)
         self.assertEqual(score, rating.score)
 
     @override_settings(STAR_RATINGS_RERATE=True)
@@ -112,7 +112,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = AggregateRating.objects.ratings_for_instance(foo)
-        mommy.make(Rating, aggregate=ratings, score=1, user=user)
+        mommy.make(UserRating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)
 
@@ -126,7 +126,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = AggregateRating.objects.ratings_for_instance(foo)
-        mommy.make(Rating, aggregate=ratings, score=1, user=user)
+        mommy.make(UserRating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)
 
@@ -140,14 +140,14 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = AggregateRating.objects.ratings_for_instance(foo)
-        rating = mommy.make(Rating, aggregate=ratings, score=1, user=user)
+        rating = mommy.make(UserRating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)
 
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
         self.post_json(url, {'score': score}, user=user, xhr=True)
 
-        rating = Rating.objects.get(pk=rating.pk)
+        rating = UserRating.objects.get(pk=rating.pk)
         self.assertEqual(score, rating.score)
 
     @override_settings(STAR_RATINGS_RERATE=True)
@@ -155,7 +155,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = AggregateRating.objects.ratings_for_instance(foo)
-        mommy.make(Rating, aggregate=ratings, score=1, user=user)
+        mommy.make(UserRating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)
 
@@ -172,7 +172,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = AggregateRating.objects.ratings_for_instance(foo)
-        rating = mommy.make(Rating, aggregate=ratings, score=1, user=user)
+        rating = mommy.make(UserRating, aggregate=ratings, score=1, user=user)
         orig_score = rating.score
 
         score = randint(2, 5)
@@ -180,7 +180,7 @@ class ViewRate(WebTest):
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
         self.post_json(url, {'score': score}, user=user)
 
-        rating = Rating.objects.get(pk=rating.pk)
+        rating = UserRating.objects.get(pk=rating.pk)
         self.assertEqual(orig_score, rating.score)
 
     @override_settings(STAR_RATINGS_RERATE=False)
@@ -188,7 +188,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = AggregateRating.objects.ratings_for_instance(foo)
-        mommy.make(Rating, aggregate=ratings, score=1, user=user)
+        mommy.make(UserRating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)
 
@@ -202,7 +202,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = AggregateRating.objects.ratings_for_instance(foo)
-        rating = mommy.make(Rating, aggregate=ratings, score=1, user=user)
+        rating = mommy.make(UserRating, aggregate=ratings, score=1, user=user)
         orig_score = rating.score
 
         score = randint(2, 5)
@@ -210,7 +210,7 @@ class ViewRate(WebTest):
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
         self.post_json(url, {'score': score}, user=user, xhr=True, expect_errors=True)
 
-        rating = Rating.objects.get(pk=rating.pk)
+        rating = UserRating.objects.get(pk=rating.pk)
         self.assertEqual(orig_score, rating.score)
 
     @override_settings(STAR_RATINGS_RERATE=False)
@@ -218,7 +218,7 @@ class ViewRate(WebTest):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
         ratings = AggregateRating.objects.ratings_for_instance(foo)
-        mommy.make(Rating, aggregate=ratings, score=1, user=user)
+        mommy.make(UserRating, aggregate=ratings, score=1, user=user)
 
         score = randint(2, 5)
 

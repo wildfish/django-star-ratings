@@ -23,7 +23,7 @@ class AggregateRatingManager(models.Manager):
         if isinstance(instance, AggregateRating):
             raise TypeError("AggregateRating manager 'rate' expects model to be rated, not AggregateRating model.")
         ct = ContentType.objects.get_for_model(instance)
-        existing_rating = Rating.objects.for_instance_by_user(instance, user)
+        existing_rating = UserRating.objects.for_instance_by_user(instance, user)
         if existing_rating:
             if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
                 raise ValidationError('Already rated.')
@@ -32,7 +32,7 @@ class AggregateRatingManager(models.Manager):
             return existing_rating.aggregate
         else:
             aggregate, created = self.get_or_create(content_type=ct, object_id=instance.pk)
-            return Rating.objects.create(user=user, score=score, aggregate=aggregate, ip=ip).aggregate
+            return UserRating.objects.create(user=user, score=score, aggregate=aggregate, ip=ip).aggregate
 
 
 @python_2_unicode_compatible
@@ -72,7 +72,7 @@ class AggregateRating(models.Model):
         """
         Recalculate the totals, and save.
         """
-        aggregates = self.ratings.aggregate(total=Sum('score'), average=Avg('score'), count=Count('score'))
+        aggregates = self.user_ratings.aggregate(total=Sum('score'), average=Avg('score'), count=Count('score'))
         self.count = aggregates.get('count') or 0
         self.total = aggregates.get('total') or 0
         self.average = aggregates.get('average') or 0.0
@@ -92,14 +92,14 @@ class RatingManager(models.Manager):
 
 
 @python_2_unicode_compatible
-class Rating(TimeStampedModel):
+class UserRating(TimeStampedModel):
     """
     An individual rating of a user against a model.
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     ip = models.GenericIPAddressField(blank=True, null=True)
     score = models.PositiveSmallIntegerField()
-    aggregate = models.ForeignKey(AggregateRating, related_name='ratings')
+    aggregate = models.ForeignKey(AggregateRating, related_name='user_ratings')
 
     objects = RatingManager()
 

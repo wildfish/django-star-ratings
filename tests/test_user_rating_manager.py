@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from model_mommy import mommy
-from star_ratings.models import AggregateRating, Rating
+from star_ratings.models import AggregateRating, UserRating
 from .models import Foo
 
 
@@ -12,4 +12,4 @@ class RatingManagerHasRated(TestCase):
         ratings = AggregateRating.objects.ratings_for_instance(foo)
 
         with self.assertRaisesRegex(TypeError, "Rating manager 'has_rated' expects model to be rated, not AggregateRating model."):
-            Rating.objects.has_rated(ratings, user)
+            UserRating.objects.has_rated(ratings, user)

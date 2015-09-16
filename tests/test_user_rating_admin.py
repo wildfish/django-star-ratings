@@ -3,15 +3,15 @@ from django.contrib.admin import site
 from django.test import TestCase
 from model_mommy import mommy
 from star_ratings.admin import RatingAdmin
-from star_ratings.models import Rating
+from star_ratings.models import UserRating
 
 
 class AdminRatingAdmin(TestCase):
     def test_stars_return_the_correct_html(self):
         score = randint(1, 5)
-        rating = mommy.make(Rating, score=score)
+        rating = mommy.make(UserRating, score=score)
 
-        res = RatingAdmin(Rating, site).stars(rating)
+        res = RatingAdmin(UserRating, site).stars(rating)
 
         self.assertHTMLEqual(
             "<span style='display: block; width: {}px; height: 10px; background: url(/static/star-ratings/images/admin_stars.png)'>&nbsp;</span>".format(score * 10),
@@ -28,4 +28,4 @@ class AdminRatingAdmin(TestCase):
         self.assertEqual(('__str__', 'stars'), RatingAdmin.list_display)
 
     def test_rating_is_registered(self):
-        self.assertIsInstance(site._registry[Rating], RatingAdmin)
+        self.assertIsInstance(site._registry[UserRating], RatingAdmin)
