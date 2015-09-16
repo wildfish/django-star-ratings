@@ -11,5 +11,5 @@ class RatingManagerHasRated(TestCase):
         foo = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(foo)
 
-        with self.assertRaisesRegex(TypeError, "Rating manager 'has_rated' expects model to be rated, not AggregateRating model."):
+        with self.assertRaisesRegex(TypeError, "UserRating manager 'has_rated' expects model to be rated, not UserRating model."):
             UserRating.objects.has_rated(ratings, user)

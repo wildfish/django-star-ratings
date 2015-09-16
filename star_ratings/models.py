@@ -14,14 +14,14 @@ from .app_settings import STAR_RATINGS_RANGE
 class RatingManager(models.Manager):
     def ratings_for_instance(self, instance):
         if isinstance(instance, Rating):
-            raise TypeError("Rating manager 'ratings_for_instance' expects model to be rated, not AggregateRating model.")
+            raise TypeError("Rating manager 'ratings_for_instance' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
         aggregate, created = self.get_or_create(content_type=ct, object_id=instance.pk)
         return aggregate
 
     def rate(self, instance, score, user, ip=None):
         if isinstance(instance, Rating):
-            raise TypeError("Rating manager 'rate' expects model to be rated, not AggregateRating model.")
+            raise TypeError("Rating manager 'rate' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
         existing_rating = UserRating.objects.for_instance_by_user(instance, user)
         if existing_rating:
@@ -86,7 +86,7 @@ class UserRatingManager(models.Manager):
 
     def has_rated(self, instance, user):
         if isinstance(instance, Rating):
-            raise TypeError("UserRating manager 'has_rated' expects model to be rated, not AggregateRating model.")
+            raise TypeError("UserRating manager 'has_rated' expects model to be rated, not UserRating model.")
         rating = self.for_instance_by_user(instance, user)
         return rating is not None
 
