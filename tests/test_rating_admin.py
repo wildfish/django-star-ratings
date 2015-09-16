@@ -2,7 +2,7 @@ from random import random
 from django.contrib.admin import site
 from django.test import TestCase
 from model_mommy import mommy
-from star_ratings.admin import AggregateRatingAdmin
+from star_ratings.admin import RatingAdmin
 from star_ratings.models import Rating
 
 
@@ -12,7 +12,7 @@ class AdminRatingAdmin(TestCase):
         max_val = 5
         rating = mommy.make(Rating, average=average)
 
-        res = AggregateRatingAdmin(Rating, site).stars(rating)
+        res = RatingAdmin(Rating, site).stars(rating)
 
         self.assertHTMLEqual(
             """<div style='position: relative;'>
@@ -23,13 +23,13 @@ class AdminRatingAdmin(TestCase):
         )
 
     def test_allow_tags_is_set_on_stars_method(self):
-        self.assertTrue(AggregateRatingAdmin.stars.allow_tags)
+        self.assertTrue(RatingAdmin.stars.allow_tags)
 
     def test_short_description_is_set_on_stars_method(self):
-        self.assertEqual('Rating average', AggregateRatingAdmin.stars.short_description)
+        self.assertEqual('Rating average', RatingAdmin.stars.short_description)
 
     def test_list_display_contains_the_correct_columns(self):
-        self.assertEqual(('__str__', 'stars'), AggregateRatingAdmin.list_display)
+        self.assertEqual(('__str__', 'stars'), RatingAdmin.list_display)
 
     def test_rating_is_registered(self):
-        self.assertIsInstance(site._registry[Rating], AggregateRatingAdmin)
+        self.assertIsInstance(site._registry[Rating], RatingAdmin)

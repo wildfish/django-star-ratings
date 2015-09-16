@@ -2,7 +2,7 @@ from random import randint
 from django.contrib.admin import site
 from django.test import TestCase
 from model_mommy import mommy
-from star_ratings.admin import RatingAdmin
+from star_ratings.admin import UserRatingAdmin
 from star_ratings.models import UserRating
 
 
@@ -11,7 +11,7 @@ class AdminRatingAdmin(TestCase):
         score = randint(1, 5)
         rating = mommy.make(UserRating, score=score)
 
-        res = RatingAdmin(UserRating, site).stars(rating)
+        res = UserRatingAdmin(UserRating, site).stars(rating)
 
         self.assertHTMLEqual(
             "<span style='display: block; width: {}px; height: 10px; background: url(/static/star-ratings/images/admin_stars.png)'>&nbsp;</span>".format(score * 10),
@@ -19,13 +19,13 @@ class AdminRatingAdmin(TestCase):
         )
 
     def test_allow_tags_is_set_on_stars_method(self):
-        self.assertTrue(RatingAdmin.stars.allow_tags)
+        self.assertTrue(UserRatingAdmin.stars.allow_tags)
 
     def test_short_description_is_set_on_stars_method(self):
-        self.assertEqual('Score', RatingAdmin.stars.short_description)
+        self.assertEqual('Score', UserRatingAdmin.stars.short_description)
 
     def test_list_display_contains_the_correct_columns(self):
-        self.assertEqual(('__str__', 'stars'), RatingAdmin.list_display)
+        self.assertEqual(('__str__', 'stars'), UserRatingAdmin.list_display)
 
     def test_rating_is_registered(self):
-        self.assertIsInstance(site._registry[UserRating], RatingAdmin)
+        self.assertIsInstance(site._registry[UserRating], UserRatingAdmin)
