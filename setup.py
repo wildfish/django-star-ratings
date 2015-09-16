@@ -41,7 +41,7 @@ if sys.argv[-1] == 'publish':
 
 setup(
     name='django-star-ratings',
-    version='0.1.0',
+    version=version,
     packages=find_packages(),
     include_package_data=True,
     license='BSD License',
