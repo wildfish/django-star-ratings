@@ -47,7 +47,7 @@ setup(
     license='BSD License',
     description=('A Django app to add star ratings to models.'),
     long_description=README,
-    url='https://github.com/wildfish/star-ratings',
+    url='https://github.com/wildfish/django-star-ratings',
     author='Wildfish',
     author_email='developers@wildfish.com',
     keywords='ratings',
