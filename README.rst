@@ -21,6 +21,12 @@ add ``star_ratings`` to ``INSTALLED_APPS``
         'star_ratings'
     )
 
+sync your database:
+
+::
+
+    python manage.py migrate
+
 add the following to your urls.py:
 
 ::
