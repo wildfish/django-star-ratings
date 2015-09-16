@@ -1,12 +1,12 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from .app_settings import STAR_RATINGS_RANGE
-from .models import AggregateRating, Rating
+from .models import Rating, UserRating
 
 
-class RatingAdmin(admin.ModelAdmin):
+class UserRatingAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
-        return super(RatingAdmin, self).get_queryset(request).select_related('aggregate', 'user').prefetch_related('aggregate__content_object')
+        return super(UserRatingAdmin, self).get_queryset(request).select_related('rating', 'user').prefetch_related('rating__content_object')
 
     def stars(self, obj):
         html = "<span style='display: block; width: {}px; height: 10px; " + \
@@ -18,9 +18,9 @@ class RatingAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'stars')
 
 
-class AggregateRatingAdmin(admin.ModelAdmin):
+class RatingAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
-        return super(AggregateRatingAdmin, self).get_queryset(request).prefetch_related('content_object')
+        return super(RatingAdmin, self).get_queryset(request).prefetch_related('content_object')
 
     def stars(self, obj):
         html = "<div style='position: relative;'>"
@@ -36,5 +36,5 @@ class AggregateRatingAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'stars')
 
 
-admin.site.register(AggregateRating, AggregateRatingAdmin)
 admin.site.register(Rating, RatingAdmin)
+admin.site.register(UserRating, UserRatingAdmin)

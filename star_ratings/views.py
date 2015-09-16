@@ -3,12 +3,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import View
 from braces.views import LoginRequiredMixin
-from .models import AggregateRating
+from .models import Rating
 import json
 
 
 class Rate(LoginRequiredMixin, View):
-    model = AggregateRating
+    model = Rating
 
     def get_object(self):
         """
@@ -23,9 +23,9 @@ class Rate(LoginRequiredMixin, View):
         data = json.loads(request.body.decode())
         score = data.get('score')
         try:
-            aggregate = self.model.objects.rate(self.get_object(), score, request.user, ip)
+            rating = self.model.objects.rate(self.get_object(), score, request.user, ip)
             if request.is_ajax():
-                result = aggregate.to_dict()
+                result = rating.to_dict()
                 result['user_rating'] = int(score)
                 return JsonResponse(data=result, status=200)
             else:

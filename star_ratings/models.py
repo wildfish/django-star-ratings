@@ -11,32 +11,32 @@ from model_utils.models import TimeStampedModel
 from .app_settings import STAR_RATINGS_RANGE
 
 
-class AggregateRatingManager(models.Manager):
+class RatingManager(models.Manager):
     def ratings_for_instance(self, instance):
-        if isinstance(instance, AggregateRating):
-            raise TypeError("AggregateRating manager 'ratings_for_model' expects model to be rated, not AggregateRating model.")
+        if isinstance(instance, Rating):
+            raise TypeError("Rating manager 'ratings_for_instance' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
-        aggregate, created = self.get_or_create(content_type=ct, object_id=instance.pk)
-        return aggregate
+        ratings, created = self.get_or_create(content_type=ct, object_id=instance.pk)
+        return ratings
 
     def rate(self, instance, score, user, ip=None):
-        if isinstance(instance, AggregateRating):
-            raise TypeError("AggregateRating manager 'rate' expects model to be rated, not AggregateRating model.")
+        if isinstance(instance, Rating):
+            raise TypeError("Rating manager 'rate' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
-        existing_rating = Rating.objects.for_instance_by_user(instance, user)
+        existing_rating = UserRating.objects.for_instance_by_user(instance, user)
         if existing_rating:
             if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
                 raise ValidationError('Already rated.')
             existing_rating.score = score
             existing_rating.save()
-            return existing_rating.aggregate
+            return existing_rating.rating
         else:
-            aggregate, created = self.get_or_create(content_type=ct, object_id=instance.pk)
-            return Rating.objects.create(user=user, score=score, aggregate=aggregate, ip=ip).aggregate
+            rating, created = self.get_or_create(content_type=ct, object_id=instance.pk)
+            return UserRating.objects.create(user=user, score=score, rating=rating, ip=ip).rating
 
 
 @python_2_unicode_compatible
-class AggregateRating(models.Model):
+class Rating(models.Model):
     """
     Attaches Rating models and running counts to the model being rated via a generic relation.
     """
@@ -48,7 +48,7 @@ class AggregateRating(models.Model):
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey()
 
-    objects = AggregateRatingManager()
+    objects = RatingManager()
 
     class Meta:
         unique_together = ['content_type', 'object_id']
@@ -72,39 +72,39 @@ class AggregateRating(models.Model):
         """
         Recalculate the totals, and save.
         """
-        aggregates = self.ratings.aggregate(total=Sum('score'), average=Avg('score'), count=Count('score'))
+        aggregates = self.user_ratings.aggregate(total=Sum('score'), average=Avg('score'), count=Count('score'))
         self.count = aggregates.get('count') or 0
         self.total = aggregates.get('total') or 0
         self.average = aggregates.get('average') or 0.0
         self.save()
 
 
-class RatingManager(models.Manager):
+class UserRatingManager(models.Manager):
     def for_instance_by_user(self, instance, user):
         ct = ContentType.objects.get_for_model(instance)
-        return self.filter(aggregate__content_type=ct, aggregate__object_id=instance.pk, user=user).first()
+        return self.filter(rating__content_type=ct, rating__object_id=instance.pk, user=user).first()
 
     def has_rated(self, instance, user):
-        if isinstance(instance, AggregateRating):
-            raise TypeError("Rating manager 'has_rated' expects model to be rated, not AggregateRating model.")
+        if isinstance(instance, Rating):
+            raise TypeError("UserRating manager 'has_rated' expects model to be rated, not UserRating model.")
         rating = self.for_instance_by_user(instance, user)
         return rating is not None
 
 
 @python_2_unicode_compatible
-class Rating(TimeStampedModel):
+class UserRating(TimeStampedModel):
     """
     An individual rating of a user against a model.
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     ip = models.GenericIPAddressField(blank=True, null=True)
     score = models.PositiveSmallIntegerField()
-    aggregate = models.ForeignKey(AggregateRating, related_name='ratings')
+    rating = models.ForeignKey(Rating, related_name='user_ratings')
 
-    objects = RatingManager()
+    objects = UserRatingManager()
 
     class Meta:
-        unique_together = ['user', 'aggregate']
+        unique_together = ['user', 'rating']
 
     def __str__(self):
-        return '{} rating {} for {}'.format(self.user, self.score, self.aggregate.content_object)
+        return '{} rating {} for {}'.format(self.user, self.score, self.rating.content_object)
