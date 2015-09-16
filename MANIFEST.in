@@ -1,6 +1,7 @@
 recursive-include star_ratings/static *
+recursive-include star_ratings/templates *
 recursive-exclude star_ratings/static/star_ratings/js/node_modules *
-include README.md
+include README.rst
 include setup.cfg
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
