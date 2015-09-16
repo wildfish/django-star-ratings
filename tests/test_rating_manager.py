@@ -8,6 +8,7 @@ from model_mommy import mommy
 from star_ratings.models import Rating
 from .models import Foo
 from tests.strategies import scores
+from six import assertRaisesRegex
 
 
 def mean(nums):
@@ -41,7 +42,7 @@ class RatingManagerRatingsForItem(TestCase):
         item = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(item)
 
-        with self.assertRaisesRegex(TypeError, "Rating manager 'ratings_for_instance' expects model to be rated, not Rating model."):
+        with assertRaisesRegex(self, TypeError, "Rating manager 'ratings_for_instance' expects model to be rated, not Rating model."):
             Rating.objects.ratings_for_instance(ratings)
 
 
@@ -114,5 +115,5 @@ class RatingManagerRate(TestCase):
     def test_rate_is_passed_a_rating_instance___value_error_is_raised(self):
         ratings = Rating.objects.ratings_for_instance(self.foo)
 
-        with self.assertRaisesRegex(TypeError, "Rating manager 'rate' expects model to be rated, not Rating model."):
+        with assertRaisesRegex(self, TypeError, "Rating manager 'rate' expects model to be rated, not Rating model."):
             Rating.objects.rate(ratings, 2, self.user_a, '127.0.0.1')

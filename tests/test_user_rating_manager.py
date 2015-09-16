@@ -3,6 +3,7 @@ from django.test import TestCase
 from model_mommy import mommy
 from star_ratings.models import Rating, UserRating
 from .models import Foo
+from six import assertRaisesRegex
 
 
 class RatingManagerHasRated(TestCase):
@@ -11,5 +12,5 @@ class RatingManagerHasRated(TestCase):
         foo = mommy.make(Foo)
         ratings = Rating.objects.ratings_for_instance(foo)
 
-        with self.assertRaisesRegex(TypeError, "UserRating manager 'has_rated' expects model to be rated, not UserRating model."):
+        with assertRaisesRegex(self, TypeError, "UserRating manager 'has_rated' expects model to be rated, not UserRating model."):
             UserRating.objects.has_rated(ratings, user)
