@@ -18,7 +18,7 @@ def mean(nums):
     return float(sum(nums)) / len(nums)
 
 
-class RatingManagerRatingsForItem(TestCase):
+class RatingManagerForInstance(TestCase):
     def test_rating_object_exists_for_model___that_object_is_returned(self):
         item = mommy.make(Foo)
         rating = mommy.make(Rating, content_object=item)
