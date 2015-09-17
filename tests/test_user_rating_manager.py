@@ -10,7 +10,7 @@ class RatingManagerHasRated(TestCase):
     def test_has_rate_is_passed_a_rating_instance___type_error_is_raised(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = Rating.objects.ratings_for_instance(foo)
+        ratings = Rating.objects.for_instance(foo)
 
         with assertRaisesRegex(self, TypeError, "UserRating manager 'has_rated' expects model to be rated, not UserRating model."):
             UserRating.objects.has_rated(ratings, user)

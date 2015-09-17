@@ -14,7 +14,7 @@ def ratings(context, item, icon_height=32, icon_width=32):
     if request is None:
         raise Exception('Make sure you have "django.core.context_processors.request" in "TEMPLATE_CONTEXT_PROCESSORS"')
 
-    rating = Rating.objects.ratings_for_instance(item)
+    rating = Rating.objects.for_instance(item)
     if request.user.is_authenticated():
         user_rating = UserRating.objects.for_instance_by_user(item, request.user)
     else:

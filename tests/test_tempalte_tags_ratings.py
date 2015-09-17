@@ -30,7 +30,7 @@ class TemplateTagdRatings(TestCase):
     def test_item_is_rated___rating_object_for_item_is_returned(self):
         item = mommy.make(Foo)
 
-        rating = Rating.objects.ratings_for_instance(item)
+        rating = Rating.objects.for_instance(item)
 
         request = RequestFactory().get('/')
         request.user = mommy.make(get_user_model())
@@ -143,7 +143,7 @@ class TemplateTagdRatings(TestCase):
         for score in scores:
             Rating.objects.rate(item, score, mommy.make(get_user_model()))
 
-        rating = Rating.objects.ratings_for_instance(item)
+        rating = Rating.objects.for_instance(item)
 
         res = ratings({
             'request': request,

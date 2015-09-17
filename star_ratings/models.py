@@ -1,5 +1,6 @@
 from __future__ import division
 from decimal import Decimal
+from warnings import warn
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -12,12 +13,16 @@ from .app_settings import STAR_RATINGS_RANGE
 
 
 class RatingManager(models.Manager):
-    def ratings_for_instance(self, instance):
+    def for_instance(self, instance):
         if isinstance(instance, Rating):
-            raise TypeError("Rating manager 'ratings_for_instance' expects model to be rated, not Rating model.")
+            raise TypeError("Rating manager 'for_instance' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
         ratings, created = self.get_or_create(content_type=ct, object_id=instance.pk)
         return ratings
+
+    def ratings_for_instance(self, instance):
+        warn("RatingManager method 'for_instance' has been renamed to 'ratings_for_instance'. Please change uses of 'Rating.objects.ratings_for_instance' to 'Rating.objects.for_instance' in your code.", DeprecationWarning)
+        return self.for_instance(instance)
 
     def rate(self, instance, score, user, ip=None):
         if isinstance(instance, Rating):
