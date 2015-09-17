@@ -23,14 +23,14 @@ class RatingManagerRatingsForItem(TestCase):
         item = mommy.make(Foo)
         rating = mommy.make(Rating, content_object=item)
 
-        res = Rating.objects.ratings_for_instance(item)
+        res = Rating.objects.for_instance(item)
 
         self.assertEqual(rating, res)
 
     def test_rating_object_does_not_exist_for_model___object_is_created_and_returned(self):
         item = mommy.make(Foo)
 
-        res = Rating.objects.ratings_for_instance(item)
+        res = Rating.objects.for_instance(item)
 
         self.assertIsInstance(res, Rating)
         self.assertEqual(item, res.content_object)
@@ -40,10 +40,10 @@ class RatingManagerRatingsForItem(TestCase):
 
     def test_passed_a_rating_instance___type_error_is_raised(self):
         item = mommy.make(Foo)
-        ratings = Rating.objects.ratings_for_instance(item)
+        ratings = Rating.objects.for_instance(item)
 
-        with assertRaisesRegex(self, TypeError, "Rating manager 'ratings_for_instance' expects model to be rated, not Rating model."):
-            Rating.objects.ratings_for_instance(ratings)
+        with assertRaisesRegex(self, TypeError, "Rating manager 'for_instance' expects model to be rated, not Rating model."):
+            Rating.objects.for_instance(ratings)
 
 
 class RatingManagerRate(TestCase):
@@ -113,7 +113,14 @@ class RatingManagerRate(TestCase):
         self.assertEqual(ratings.average, 4)
 
     def test_rate_is_passed_a_rating_instance___value_error_is_raised(self):
-        ratings = Rating.objects.ratings_for_instance(self.foo)
+        ratings = Rating.objects.for_instance(self.foo)
 
         with assertRaisesRegex(self, TypeError, "Rating manager 'rate' expects model to be rated, not Rating model."):
             Rating.objects.rate(ratings, 2, self.user_a, '127.0.0.1')
+
+
+class RatingManagerDeprecations(TestCase):
+    def test_ratings_for_instance__deprecation_warning_is_raised(self):
+        foo = Foo.objects.create()
+        with self.assertWarns(DeprecationWarning):
+            Rating.objects.ratings_for_instance(foo)
