@@ -117,10 +117,3 @@ class RatingManagerRate(TestCase):
 
         with assertRaisesRegex(self, TypeError, "Rating manager 'rate' expects model to be rated, not Rating model."):
             Rating.objects.rate(ratings, 2, self.user_a, '127.0.0.1')
-
-
-class RatingManagerDeprecations(TestCase):
-    def test_ratings_for_instance__deprecation_warning_is_raised(self):
-        foo = Foo.objects.create()
-        with self.assertWarns(DeprecationWarning):
-            Rating.objects.ratings_for_instance(foo)
