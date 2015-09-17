@@ -110,7 +110,7 @@ To run the test use:
 
     $> ./runtests.py
 
-.. |Build Status| image:: https://travis-ci.org/wildfish/django-star-ratings.svg
+.. |Build Status| image:: https://travis-ci.org/wildfish/django-star-ratings.svg?branch=master
    :target: https://travis-ci.org/wildfish/django-star-ratings
 .. |codecov.io| image:: http://codecov.io/github/wildfish/django-star-ratings/coverage.svg?branch=master
    :target: http://codecov.io/github/wildfish/django-star-ratings?branch=master
