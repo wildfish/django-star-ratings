@@ -39,7 +39,7 @@ Make sure ``'django.core.context_processors.request',`` is in
 Usage
 -----
 
-Add the following javascript and stylesheet to you template
+Add the following javascript and stylesheet to your template
 
 ::
 
@@ -91,13 +91,13 @@ Ordering by ratings
 -------------------
 
 The easiest way to order by ratings is to add a ``GenericRelation`` to
-the ``AggregateRating`` model from your model:
+the ``Rating`` model from your model:
 
 ::
 
     class Foo(models.Model):
         bar = models.CharField(max_length=100)
-        ratings = GenericRelation(AggregateRating, related_query_name='foos')
+        ratings = GenericRelation(Rating, related_query_name='foos')
 
     Foo.objects.filter(ratings__isnull=False).order_by('ratings__average')
 
