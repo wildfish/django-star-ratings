@@ -10,9 +10,13 @@ Add ratings to any Django model with a template tag.
 Installation
 ------------
 
-``pip install django-star-ratings``
+Install from PyPI:
 
-add ``star_ratings`` to ``INSTALLED_APPS``
+::
+
+    pip install django-star-ratings
+
+add ``star_ratings`` to ``INSTALLED_APPS``:
 
 ::
 
