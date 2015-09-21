@@ -1,3 +1,4 @@
+{% load i18n %}
 <style>
     #{{ id }} .star-ratings-rating-full, #{{ id }} .star-ratings-rating-empty {
         width: {{ icon_width }}px;
@@ -23,7 +24,7 @@
                     <span class="star-ratings-rating-empty"></span>
                 </a>
                 {% else %}
-                    <span class="star-ratings-rating-empty" title="Log in to rate"></span>
+                    <span class="star-ratings-rating-empty" title="{% trans 'Log in to rate' as title_login %}{{ title_login|escape }}"></span>
                 {% endif %}
             </li>
         {% endfor %}
@@ -42,11 +43,11 @@
             </li>
         {% endfor %}
     </ul>
-    <div class="star-ratings-rating-average">Average: <span class='star-ratings-rating-value'>{{ rating.average|floatformat:"-2" }}</span></div>
-    <div class="star-ratings-rating-count">Rating Count: <span class='star-ratings-rating-value'>{{ rating.count }}</span></div>
-    <div class="star-ratings-rating-user">You Rated: <span class='star-ratings-rating-value'>{% if user_rating %}{{ user_rating.score }}{% else %}Not rated{% endif %}</span></div>
+    <div class="star-ratings-rating-average">{% trans 'Average: ' %} <span class='star-ratings-rating-value'>{{ rating.average|floatformat:"-2" }}</span></div>
+    <div class="star-ratings-rating-count">{% trans 'Rating Count: ' %} <span class='star-ratings-rating-value'>{{ rating.count }}</span></div>
+    <div class="star-ratings-rating-user">{% trans 'You Rated: ' %} <span class='star-ratings-rating-value'>{% if user_rating %}{{ user_rating.score }}{% else %}{% trans 'Not rated' %}{% endif %}</span></div>
     {% if not user.is_authenticated %}
-        <p>Please log in to rate.</p>
+        <p>{% trans 'Please log in to rate.' %}</p>
     {% endif %}
     <div class="star-ratings-errors"></div>
 </div>

@@ -8,6 +8,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Avg, Count, Sum
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 from .app_settings import STAR_RATINGS_RANGE
 
@@ -31,7 +32,7 @@ class RatingManager(models.Manager):
         existing_rating = UserRating.objects.for_instance_by_user(instance, user)
         if existing_rating:
             if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
-                raise ValidationError('Already rated.')
+                raise ValidationError(_('Already rated.'))
             existing_rating.score = score
             existing_rating.save()
             return existing_rating.rating
