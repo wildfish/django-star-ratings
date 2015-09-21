@@ -91,6 +91,20 @@ To change the star graphic, add a sprite sheet to
 horizontally. The stars should be laid out in three states: full, empty
 and active.
 
+Customize widget template
+-------------------------
+
+You can customize ratings widget by creating ``ratings/widget.html``. For example :
+
+::
+
+    {% extends "ratings/widget-base.html" %}
+    {% block ratings_detail %}
+    Whatever you want
+    {% endblock %}
+
+See ``ratings/widget-base.html`` for other blocks to be extended.
+
 Ordering by ratings
 -------------------
 
