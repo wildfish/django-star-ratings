@@ -94,16 +94,16 @@ and active.
 Customize widget template
 -------------------------
 
-You can customize ratings widget by creating ``ratings/widget.html``. For example :
+You can customize ratings widget by creating ``star_ratings/widget.html``. For example :
 
 ::
 
-    {% extends "ratings/widget_base.html" %}
+    {% extends "star_ratings/widget_base.html" %}
     {% block ratings_detail %}
     Whatever you want
     {% endblock %}
 
-See ``ratings/widget_base.html`` for other blocks to be extended.
+See ``star_ratings/widget_base.html`` for other blocks to be extended.
 
 Ordering by ratings
 -------------------

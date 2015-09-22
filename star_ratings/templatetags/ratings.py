@@ -7,7 +7,7 @@ from ..app_settings import STAR_RATINGS_RANGE
 register = template.Library()
 
 
-@register.inclusion_tag('ratings/widget.html', takes_context=True)
+@register.inclusion_tag('star_ratings/widget.html', takes_context=True)
 def ratings(context, item, icon_height=32, icon_width=32):
     request = context.get('request')
 
