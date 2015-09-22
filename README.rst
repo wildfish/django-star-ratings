@@ -98,12 +98,12 @@ You can customize ratings widget by creating ``ratings/widget.html``. For exampl
 
 ::
 
-    {% extends "ratings/widget-base.html" %}
+    {% extends "ratings/widget_base.html" %}
     {% block ratings_detail %}
     Whatever you want
     {% endblock %}
 
-See ``ratings/widget-base.html`` for other blocks to be extended.
+See ``ratings/widget_base.html`` for other blocks to be extended.
 
 Ordering by ratings
 -------------------
