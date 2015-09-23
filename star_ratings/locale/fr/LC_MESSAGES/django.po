@@ -30,26 +30,26 @@ msgstr "Note moyenne"
 msgid "Already rated."
 msgstr "Déjà noté·e"
 
-#: templates/ratings/widget.html:27
+#: templates/star_ratings/widget.html:27
 msgid "Log in to rate"
 msgstr "Vous devez être connecté·e pour noter."
 
-#: templates/ratings/widget.html:46
+#: templates/star_ratings/widget.html:46
 msgid "Average: "
 msgstr "Moyenne :"
 
-#: templates/ratings/widget.html:47
+#: templates/star_ratings/widget.html:47
 msgid "Rating Count: "
 msgstr "Nombre de notes :"
 
-#: templates/ratings/widget.html:48
+#: templates/star_ratings/widget.html:48
 msgid "You Rated: "
 msgstr "Votre note :"
 
-#: templates/ratings/widget.html:48
+#: templates/star_ratings/widget.html:48
 msgid "Not rated"
 msgstr "Pas encore noté·e"
 
-#: templates/ratings/widget.html:50
+#: templates/star_ratings/widget.html:50
 msgid "Please log in to rate."
 msgstr "Merci de vous connecter pour noter."
