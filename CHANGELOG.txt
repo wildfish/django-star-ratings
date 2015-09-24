@@ -1,0 +1,17 @@
+0.3.0 (2015-09-24)
+-------------------
+
+* Moved templates from /templates/ratings/ to /templates/star_ratings/ to match the package name.
+  Backwards incompatible change. If you've customised your template please rename from /templates/ratings/ to /templates/star_ratings/
+* Added translation support and French translations. (Thanks @ollb).
+* Split widget into separate templates to make customisation easier. (Thanks @ollb).
+
+0.2.1 (2015-09-16)
+-------------------
+
+* Renamed Rating manager ratings_for_instance method to for_instance and added deprecation warning to old method calls.
+
+0.2.0 (2015-09-16)
+-------------------
+
+* Initial PyPI release.
