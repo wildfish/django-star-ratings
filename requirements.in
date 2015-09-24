@@ -1,0 +1,14 @@
+django
+coverage
+pytest
+pytest-django
+pytest-cov
+flake8
+pdbpp
+django-model-utils
+path.py
+model-mommy
+django-webtest
+django-braces
+hypothesis
+pip-tools

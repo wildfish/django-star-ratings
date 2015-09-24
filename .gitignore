@@ -11,3 +11,4 @@ build/
 *.sqlite3
 node_modules/
 npm-debug.log
+.cache/
