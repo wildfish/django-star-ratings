@@ -8,6 +8,7 @@ env:
 - DJANGO_VERSION_NUMBER=1.7
 - DJANGO_VERSION_NUMBER=1.8
 install:
+- pip install pip -U
 - pip install codecov
 - pip install -r requirements.txt
 - pip install django==$DJANGO_VERSION_NUMBER
