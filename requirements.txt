@@ -4,7 +4,7 @@ pytest
 pytest-django==2.8.0
 pytest-cov==1.6
 flake8==2.2.2
-git+git://github.com/mverteuil/pytest-ipdb.git
+pdbpp
 django-model-utils
 path.py==7.7.1
 model-mommy
