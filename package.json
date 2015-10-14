@@ -1,0 +1,16 @@
+{
+    "name": "star-ratings",
+    "version": "0.0.1",
+    "description": "Wildfish ratings",
+    "main": "./star_ratings/static/star-ratings/js/index.js",
+    "scripts": {
+        "build": "browserify ./star_ratings/static/star-ratings/js/index.js -o ./star_ratings/static/star-ratings/js/dist/star-ratings.js -s starRatings && yuglify ./star_ratings/static/star-ratings/js/dist/star-ratings.js",
+        "watch": "watchify ./star_ratings/static/star-ratings/js/index.js -o ./star_ratings/static/star-ratings/js/dist/star-ratings.js -d -v"
+    },
+    "author": "Jonas Hagstedt <hagstedt@gmail.com> (https://github.com/jonashagstedt)",
+    "license": "BSD",
+    "devDependencies": {
+        "browserify": "^10.2.4",
+        "yuglify": "^0.1.4"
+    }
+}
