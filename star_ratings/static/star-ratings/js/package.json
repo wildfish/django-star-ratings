@@ -4,7 +4,7 @@
     "description": "Wildfish ratings",
     "main": "index.js",
     "scripts": {
-        "build": "browserify index.js -o ./dist/star-ratings.js && yuglify ./dist/star-ratings.js",
+        "build": "browserify index.js -o ./dist/star-ratings.js -s starRatings && yuglify ./dist/star-ratings.js",
         "watch": "watchify index.js -o ./dist/star-ratings.js -d -v"
     },
     "author": "Jonas Hagstedt <hagstedt@gmail.com> (https://github.com/jonashagstedt)",
