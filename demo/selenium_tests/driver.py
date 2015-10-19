@@ -2,6 +2,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import os
 import sys
 from selenium import webdriver
+from six import with_metaclass
 
 _sauce_username = os.environ.get('SAUCE_USERNAME', '')
 _sauce_access_key = os.environ.get('SAUCE_ACCESS_KEY', '')
@@ -35,6 +36,8 @@ class SeleniumTestCaseMeta(type):
                 if _use_remote_driver:
                     sauce_url = "http://%s:%s@ondemand.saucelabs.com:80/wd/hub".format(_sauce_username, _sauce_access_key)
                     for i, browser in enumerate(_remote_browsers):
+                        print(browser)
+
                         driver_fn = lambda: webdriver.Remote(
                             desired_capabilities=browser,
                             command_executor=sauce_url % (_sauce_username, _sauce_access_key)
@@ -71,5 +74,5 @@ class SeleniumTestCaseMeta(type):
         return _new
 
 
-class SeleniumTestCase(StaticLiveServerTestCase, metaclass=SeleniumTestCaseMeta):
+class SeleniumTestCase(StaticLiveServerTestCase, with_metaclass(SeleniumTestCaseMeta)):
     pass
