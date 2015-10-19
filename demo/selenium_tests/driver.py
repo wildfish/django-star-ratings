@@ -3,20 +3,23 @@ import os
 import sys
 from selenium import webdriver
 
-_use_remote_driver = os.environ.get('DJANGO_CONFIGURATION', '') == 'CI'
 _sauce_username = os.environ.get('SAUCE_USERNAME', '')
 _sauce_access_key = os.environ.get('SAUCE_ACCESS_KEY', '')
+_travis_job_number = os.environ.get('TRAVIS_JOB_NUMBER', None)
+_use_remote_driver = _travis_job_number is not None
 
 _remote_browsers = [
     {
-        "platform": "Mac OS X 10.9",
-        "browserName": "chrome",
-        "version": "31"
+        'platform': 'Mac OS X 10.9',
+        'browserName': 'chrome',
+        'version': '31',
+        'tunnelIdentifier': _travis_job_number,
     },
     {
-        "platform": "Windows 8.1",
-        "browserName": "internet explorer",
-        "version": "11"
+        'platform': 'Windows 8.1',
+        'browserName': 'internet explorer',
+        'version': '11',
+        'tunnelIdentifier': _travis_job_number,
     }
 ]
 
@@ -30,7 +33,7 @@ class SeleniumTestCaseMeta(type):
                 method = attr_value
 
                 if _use_remote_driver:
-                    sauce_url = "http://%s:%s@ondemand.saucelabs.com:80/wd/hub"
+                    sauce_url = "http://%s:%s@ondemand.saucelabs.com:80/wd/hub".format(_sauce_username, _sauce_access_key)
                     for i, browser in enumerate(_remote_browsers):
                         driver_fn = lambda: webdriver.Remote(
                             desired_capabilities=browser,
