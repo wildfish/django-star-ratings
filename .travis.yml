@@ -15,7 +15,7 @@ install:
 - pip install "$DJANGO_VERSION" -U
 script:
 - coverage run --source='star_ratings' runtests.py
-- cd demo; python manage.py test
+- cd demo; pytest -n 5
 after_success:
 - codecov
 notifications:
