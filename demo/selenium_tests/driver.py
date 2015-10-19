@@ -13,16 +13,27 @@ _remote_browsers = [
     {
         'platform': 'Mac OS X 10.9',
         'browserName': 'chrome',
-        'version': '31',
+        'version': '',
         'tunnelIdentifier': _travis_job_number,
+        'tunnel-identifier': _travis_job_number,
     },
     {
         'platform': 'Windows 8.1',
         'browserName': 'internet explorer',
-        'version': '11',
+        'version': '',
         'tunnelIdentifier': _travis_job_number,
+        'tunnel-identifier': _travis_job_number,
     }
 ]
+
+
+class RemoteDriverWrapper(object):
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+
+    def __call__(self, *args, **kwargs):
+        return webdriver.Remote(*self.args, **self.kwargs)
 
 
 class SeleniumTestCaseMeta(type):
@@ -34,13 +45,13 @@ class SeleniumTestCaseMeta(type):
                 method = attr_value
 
                 if _use_remote_driver:
-                    sauce_url = "http://%s:%s@ondemand.saucelabs.com:80/wd/hub"
+                    sauce_url = "http://%s:%s@ondemand.saucelabs.com:80/wd/hub" % (_sauce_username, _sauce_access_key)
                     for i, browser in enumerate(_remote_browsers):
                         print(browser)
 
-                        driver_fn = lambda: webdriver.Remote(
+                        driver_fn = RemoteDriverWrapper(
                             desired_capabilities=browser,
-                            command_executor=sauce_url % (_sauce_username, _sauce_access_key)
+                            command_executor=sauce_url
                         )
 
                         browser_tag = '{}_{}_{}'.format(
