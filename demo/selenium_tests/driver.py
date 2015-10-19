@@ -1,6 +1,5 @@
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import os
-import sys
 from selenium import webdriver
 from six import with_metaclass
 
@@ -157,8 +156,6 @@ class SeleniumTestCaseMeta(type):
                 if _use_remote_driver:
                     sauce_url = "http://%s:%s@ondemand.saucelabs.com:80/wd/hub" % (_sauce_username, _sauce_access_key)
                     for i, browser in enumerate(_remote_browsers):
-                        print(browser)
-
                         driver_fn = RemoteDriverWrapper(
                             desired_capabilities=browser,
                             command_executor=sauce_url
@@ -181,21 +178,15 @@ class SeleniumTestCaseMeta(type):
             else:
                 new_class_dict[attr_name] = attr_value
 
-        print(new_class_dict)
-
         return type.__new__(meta, classname, bases, new_class_dict)
 
     @classmethod
     def _new_method(cls, method, driver_fn):
         def _new(self):
-            print('Creating driver')
             driver = driver_fn()
             try:
-                print('running test', driver)
                 method(self, driver)
-                print('test ran')
             finally:
-                print('closing driver', driver)
                 driver.quit()
 
         return _new
