@@ -11,18 +11,86 @@ _use_remote_driver = _travis_job_number is not None
 
 _remote_browsers = [
     {
-        'platform': 'Mac OS X 10.9',
+        'platform': 'Linux',
         'browserName': 'chrome',
         'version': '',
         'tunnelIdentifier': _travis_job_number,
-        'tunnel-identifier': _travis_job_number,
     },
     {
-        'platform': 'Windows 8.1',
-        'browserName': 'internet explorer',
+        'platform': 'Linux',
+        'browserName': 'firefox',
         'version': '',
         'tunnelIdentifier': _travis_job_number,
-        'tunnel-identifier': _travis_job_number,
+    },
+    {
+        'platform': 'Linux',
+        'browserName': 'opera',
+        'version': '',
+        'tunnelIdentifier': _travis_job_number,
+    },
+    #
+    # disabled while ms work on the driver
+    #
+    # {
+    #     'platform': 'Windows 10',
+    #     'browserName': 'microsoftedge',
+    #     'version': '',
+    #     'tunnelIdentifier': _travis_job_number,
+    # },
+    #
+    # disabled while ms work on the driver
+    #
+    {
+        'platform': 'Windows 10',
+        'browserName': 'internet explorer',
+        'version': '11',
+        'tunnelIdentifier': _travis_job_number,
+    },
+    {
+        'platform': 'Windows 8',
+        'browserName': 'internet explorer',
+        'version': '10',
+        'tunnelIdentifier': _travis_job_number,
+    },
+    {
+        'platform': 'Windows 7',
+        'browserName': 'internet explorer',
+        'version': '9',
+        'tunnelIdentifier': _travis_job_number,
+    },
+    {
+        'platform': 'Mac OS X 10.11',
+        'browserName': 'safari',
+        'version': '',
+        'tunnelIdentifier': _travis_job_number,
+    },
+    {
+        'platform': 'Linux',
+        'browserName': 'android',
+        'deviceName': "Android Emulator",
+        'version': "5.0",
+        'tunnelIdentifier': _travis_job_number,
+    },
+    {
+        'platform': 'Linux',
+        'browserName': 'android',
+        'deviceName': "Android Emulator",
+        'version': "5.1",
+        'tunnelIdentifier': _travis_job_number,
+    },
+    {
+        'platform': 'OS X 10.10',
+        'browserName': 'iPhone',
+        'deviceName': 'iPhone Simulator',
+        'version': '',
+        'tunnelIdentifier': _travis_job_number,
+    },
+    {
+        'platform': 'OS X 10.10',
+        'browserName': 'iPhone',
+        'deviceName': 'iPad Simulator',
+        'version': '',
+        'tunnelIdentifier': _travis_job_number,
     }
 ]
 
