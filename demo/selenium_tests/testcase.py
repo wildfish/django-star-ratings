@@ -146,16 +146,24 @@ class RemoteDriverWrapper(object):
 
 
 class SeleniumTestCaseMeta(type):
+    """
+    Metaclass for the selenium test case. This handles creating the extra test cases when using remote drivers so
+    that multiple driver types can be used. When remote drives are not being used we fall back to Firefox
+    """
     def __new__(meta, classname, bases, class_dict):
+        sauce_url = "http://%s:%s@ondemand.saucelabs.com:80/wd/hub" % (_sauce_username, _sauce_access_key)
+
         new_class_dict = {}
 
+        # Add each attribute to the new class.
         for attr_name, attr_value in class_dict.items():
             if callable(attr_value) and attr_name.startswith('test_'):
+                # If the attribute is a test we wrap it passing a driver to it
                 method = attr_value
 
                 if _use_remote_driver:
-                    sauce_url = "http://%s:%s@ondemand.saucelabs.com:80/wd/hub" % (_sauce_username, _sauce_access_key)
-                    for i, browser in enumerate(_remote_browsers):
+                    # If we are using remote browsers loop over each specified browser and wrap the test in its driver
+                    for browser in _remote_browsers:
                         driver_fn = RemoteDriverWrapper(
                             desired_capabilities=browser,
                             command_executor=sauce_url
@@ -169,19 +177,27 @@ class SeleniumTestCaseMeta(type):
 
                         method_name = '{orig_name}___{tag}'.format(orig_name=attr_name, tag=browser_tag)
                         new_class_dict[method_name] = meta._new_method(method, driver_fn)
-
                 else:
-                    driver_fn = webdriver.Chrome
+                    # If we are not using remote drivers wrap each test with the firefox driver
+                    driver_fn = webdriver.Firefox
                     method_name = '{orig_name}___firefox'.format(orig_name=attr_name)
                     new_class_dict[method_name] = meta._new_method(method, driver_fn)
 
             else:
+                # If the attribute is not a test we do not modify it
                 new_class_dict[attr_name] = attr_value
 
         return type.__new__(meta, classname, bases, new_class_dict)
 
     @classmethod
     def _new_method(cls, method, driver_fn):
+        """
+        Method for wrapping the test cases with the driver. The driver is created, the test is ran, then the driver is
+        destroyed.
+
+        :param method: The test method to be wrapped
+        :param driver_fn: Function to generate the driver
+        """
         def _new(self):
             driver = driver_fn()
             try:
@@ -193,4 +209,7 @@ class SeleniumTestCaseMeta(type):
 
 
 class SeleniumTestCase(with_metaclass(SeleniumTestCaseMeta, StaticLiveServerTestCase)):
+    """
+    Class to handle creating a test server and creating test cases for each driver
+    """
     pass
