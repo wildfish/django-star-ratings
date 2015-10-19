@@ -30,7 +30,7 @@ class RateTest(SeleniumTestCase):
         count_elem = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@class="star-ratings-rating-count"]/*[@class="star-ratings-rating-value"]')))
         user_elem = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@class="star-ratings-rating-user"]/*[@class="star-ratings-rating-value"]')))
 
-        self.assertEqual('width: 20%;', foreground.get_attribute('style'))
+        self.assertEqual('width: 20%;', str(foreground.get_attribute('style')).strip())
         self.assertEqual('1.00', average_elem.text)
         self.assertEqual('1', count_elem.text)
         self.assertEqual('1', user_elem.text)
