@@ -34,7 +34,7 @@ class SeleniumTestCaseMeta(type):
                 method = attr_value
 
                 if _use_remote_driver:
-                    sauce_url = "http://%s:%s@ondemand.saucelabs.com:80/wd/hub".format(_sauce_username, _sauce_access_key)
+                    sauce_url = "http://%s:%s@ondemand.saucelabs.com:80/wd/hub"
                     for i, browser in enumerate(_remote_browsers):
                         print(browser)
 
@@ -60,15 +60,21 @@ class SeleniumTestCaseMeta(type):
             else:
                 new_class_dict[attr_name] = attr_value
 
+        print(new_class_dict)
+
         return type.__new__(meta, classname, bases, new_class_dict)
 
     @classmethod
     def _new_method(cls, method, driver_fn):
         def _new(self):
+            print('Creating driver')
             driver = driver_fn()
             try:
+                print('running test', driver)
                 method(self, driver)
+                print('test ran')
             finally:
+                print('closing driver', driver)
                 driver.quit()
 
         return _new
