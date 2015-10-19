@@ -12,3 +12,4 @@ django-webtest
 django-braces
 hypothesis
 pip-tools
+selenium
