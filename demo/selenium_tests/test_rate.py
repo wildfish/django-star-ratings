@@ -2,10 +2,9 @@ from time import sleep
 from django.contrib.auth import get_user_model
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 
-from .driver import SeleniumTestCase
+from .testcase import SeleniumTestCase
 
 
 class RateTest(SeleniumTestCase):
