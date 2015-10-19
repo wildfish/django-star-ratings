@@ -4,8 +4,8 @@ import sys
 from selenium import webdriver
 from six import with_metaclass
 
-_sauce_username = os.environ.get('SAUCE_USERNAME', '')
-_sauce_access_key = os.environ.get('SAUCE_ACCESS_KEY', '')
+_sauce_username = os.environ.get('SAUCE_USERNAME', None)
+_sauce_access_key = os.environ.get('SAUCE_ACCESS_KEY', None)
 _travis_job_number = os.environ.get('TRAVIS_JOB_NUMBER', None)
 _use_remote_driver = _travis_job_number is not None
 
@@ -68,6 +68,13 @@ _remote_browsers = [
         'platform': 'Linux',
         'browserName': 'android',
         'deviceName': "Android Emulator",
+        'version': "5.1",
+        'tunnelIdentifier': _travis_job_number,
+    },
+    {
+        'platform': 'Linux',
+        'browserName': 'android',
+        'deviceName': "Android Emulator",
         'version': "5.0",
         'tunnelIdentifier': _travis_job_number,
     },
@@ -75,7 +82,28 @@ _remote_browsers = [
         'platform': 'Linux',
         'browserName': 'android',
         'deviceName': "Android Emulator",
-        'version': "5.1",
+        'version': "4.4",
+        'tunnelIdentifier': _travis_job_number,
+    },
+    {
+        'platform': 'Linux',
+        'browserName': 'android',
+        'deviceName': "Android Emulator",
+        'version': "4.3",
+        'tunnelIdentifier': _travis_job_number,
+    },
+    {
+        'platform': 'Linux',
+        'browserName': 'android',
+        'deviceName': "Android Emulator",
+        'version': "4.2",
+        'tunnelIdentifier': _travis_job_number,
+    },
+    {
+        'platform': 'Linux',
+        'browserName': 'android',
+        'deviceName': "Android Emulator",
+        'version': "4.1",
         'tunnelIdentifier': _travis_job_number,
     },
     {
@@ -88,8 +116,22 @@ _remote_browsers = [
     {
         'platform': 'OS X 10.10',
         'browserName': 'iPhone',
+        'deviceName': 'iPhone Simulator',
+        'version': '8.4',
+        'tunnelIdentifier': _travis_job_number,
+    },
+    {
+        'platform': 'OS X 10.10',
+        'browserName': 'iPhone',
         'deviceName': 'iPad Simulator',
         'version': '',
+        'tunnelIdentifier': _travis_job_number,
+    },
+    {
+        'platform': 'OS X 10.10',
+        'browserName': 'iPhone',
+        'deviceName': 'iPad Simulator',
+        'version': '8.4',
         'tunnelIdentifier': _travis_job_number,
     }
 ]
