@@ -15,7 +15,7 @@ install:
 - pip install "$DJANGO_VERSION" -U
 script:
 - coverage run --source='star_ratings' runtests.py
-- cd demo; python manage.py test
+- ./run_selenium_tests.sh
 after_success:
 - codecov
 notifications:
