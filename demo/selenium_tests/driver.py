@@ -80,5 +80,5 @@ class SeleniumTestCaseMeta(type):
         return _new
 
 
-class SeleniumTestCase(StaticLiveServerTestCase, with_metaclass(SeleniumTestCaseMeta)):
+class SeleniumTestCase(with_metaclass(SeleniumTestCaseMeta, StaticLiveServerTestCase)):
     pass
