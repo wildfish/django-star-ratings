@@ -36,4 +36,3 @@ webob==1.4.1              # via webtest
 webtest==2.0.18           # via django-webtest
 wmctrl==0.2               # via pdbpp
 selenium
-pytest-xdist
