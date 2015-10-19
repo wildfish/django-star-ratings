@@ -2,6 +2,8 @@
 {% load ratings %}
 
 {% block content %}
+    <a id="login-link" href="{% url 'login' %}?next=/">Login</a>
+
     <h1>{{ object.bar }}</h1>
 
     {% ratings object %}
