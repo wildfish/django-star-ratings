@@ -114,4 +114,4 @@ TEMPLATE_DIRS = [
 
 STAR_RATINGS_RERATE = True
 
-TEST_RUNNER = 'selenium_tests.testcase.SeleniumTestRunner'
+TEST_RUNNER = 'selenium_tests.runner.SeleniumTestRunner'
