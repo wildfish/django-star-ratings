@@ -164,6 +164,7 @@ class SeleniumTestRunner(DiscoverRunner):
 
         result = TextTestResult(_WritelnDecorator(sys.stderr), True, self.verbosity)
         for tag, driver in self._drivers():
+            driver.implicitly_wait(30)
             try:
                 tests = []
 
