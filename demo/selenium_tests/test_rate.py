@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from hypothesis import given
 from hypothesis.extra.django import TestCase
-from hypothesis.strategies import integers, lists
+from hypothesis.strategies import integers, lists, builds, text
 from selenium.common.exceptions import NoSuchElementException
 
 
@@ -55,3 +55,32 @@ class RateTest(TestCase, StaticLiveServerTestCase):
             elements = background.find_elements_by_tag_name('li')
 
             self.assertEqual(value, len(elements))
+
+    @given(lists(integers(min_value=1, max_value=5), min_size=2, max_size=10))
+    def test_multiple_users_rate___average_count_and_user_are_correct(self, scores):
+        num_users = len(scores)
+
+        for i, score in enumerate(scores):
+            uname = 'user' + str(i)
+            password = 'pass' + str(i)
+
+            get_user_model().objects.create_user(
+                username=uname,
+                password=password,
+            )
+
+            self.login(uname, password)
+
+            self.driver.find_element_by_xpath('//*[@data-score="{}"]'.format(score)).click()
+
+            user_elem = self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-user"]/*[@class="star-ratings-rating-value"]')
+            self.assertEqual(score, int(user_elem.text))
+
+            self.logout()
+
+        average_elem = self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-average"]/*[@class="star-ratings-rating-value"]')
+        count_elem = self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-count"]/*[@class="star-ratings-rating-value"]')
+
+        expected_avg = sum(scores) / len(scores)
+        self.assertAlmostEqual(expected_avg, float(average_elem.text), places=2)
+        self.assertEqual(len(scores), int(count_elem.text))
