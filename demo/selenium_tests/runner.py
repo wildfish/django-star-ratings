@@ -160,11 +160,12 @@ class SeleniumTestRunner(DiscoverRunner):
             yield 'firefox', webdriver.Firefox()
 
     def run_suite(self, suite, **kwargs):
+        selenium_implicit_wait = 30
         orig_tests = list(suite._tests)
 
         result = TextTestResult(_WritelnDecorator(sys.stderr), True, self.verbosity)
         for tag, driver in self._drivers():
-            driver.implicitly_wait(30)
+            driver.implicitly_wait(selenium_implicit_wait)
             try:
                 tests = []
 
@@ -172,6 +173,7 @@ class SeleniumTestRunner(DiscoverRunner):
                 for t in orig_tests:
                     new_test = copy(t)
                     new_test.driver = driver
+                    new_test.selenium_implicit_wait = selenium_implicit_wait
                     new_test._testMethodDoc = 'Ran on "{}"'.format(tag)
                     tests.append(new_test)
 

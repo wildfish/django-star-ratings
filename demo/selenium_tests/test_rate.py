@@ -1,11 +1,12 @@
+from time import time
 from django.test import override_settings
 from mock import patch
 from django.contrib.auth import get_user_model
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from hypothesis import given, settings
 from hypothesis.extra.django import TestCase
-from hypothesis.strategies import integers, lists, builds, text
-from selenium.common.exceptions import NoSuchElementException
+from hypothesis.strategies import integers, lists
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 
 class RateTest(TestCase, StaticLiveServerTestCase):
@@ -17,9 +18,12 @@ class RateTest(TestCase, StaticLiveServerTestCase):
 
     def logout(self):
         try:
+            self.driver.implicitly_wait(0)
             self.driver.find_element_by_id('logout-link').click()
         except NoSuchElementException:
             pass
+        finally:
+            self.driver.implicitly_wait(self.selenium_implicit_wait)
 
     def tearDown(self):
         self.logout()
