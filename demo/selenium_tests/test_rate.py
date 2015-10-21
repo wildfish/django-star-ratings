@@ -24,6 +24,12 @@ class RateTest(TestCase, StaticLiveServerTestCase):
     def tearDown(self):
         self.logout()
 
+    def test_user_is_not_logged_in___user_cannot_rate(self):
+        self.driver.get(self.live_server_url)
+
+        with self.assertRaises(NoSuchElementException):
+            self.driver.find_element_by_xpath('//*[@data-score]').click()
+
     @given(integers(min_value=1, max_value=5))
     def test_click_first_star___rating_is_set_to_one(self, value):
         expected_percentage = 20 * value
