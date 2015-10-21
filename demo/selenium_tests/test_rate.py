@@ -104,3 +104,22 @@ class RateTest(TestCase, StaticLiveServerTestCase):
         user_elem = self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-user"]/*[@class="star-ratings-rating-value"]')
         self.assertEqual(1, int(count_elem.text))
         self.assertEqual(second, int(user_elem.text))
+
+    @override_settings(STAR_RATINGS_RERATE=False)
+    @given(lists(integers(min_value=1, max_value=5), unique_by=lambda x: x, min_size=2, max_size=2), settings=settings.Settings(max_examples=10))
+    def test_rerate_is_false___the_user_is_not_able_to_change_their_rating(self, values):
+        first, second = values
+
+        get_user_model().objects.create_user('user', password='pass')
+
+        self.driver.get(self.live_server_url)
+
+        self.login('user', 'pass')
+
+        self.driver.find_element_by_xpath('//*[@data-score="{}"]'.format(first)).click()
+        self.driver.find_element_by_xpath('//*[@data-score="{}"]'.format(second)).click()
+
+        count_elem = self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-count"]/*[@class="star-ratings-rating-value"]')
+        user_elem = self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-user"]/*[@class="star-ratings-rating-value"]')
+        self.assertEqual(1, int(count_elem.text))
+        self.assertEqual(first, int(user_elem.text))
