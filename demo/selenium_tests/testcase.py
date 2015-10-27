@@ -6,6 +6,7 @@ from selenium import webdriver
 _sauce_username = os.environ.get('SAUCE_USERNAME', None)
 _sauce_access_key = os.environ.get('SAUCE_ACCESS_KEY', None)
 _travis_job_number = os.environ.get('TRAVIS_JOB_NUMBER', None)
+_branch_name = os.environ.get('TRAVIS_BRANCH', None)
 _browser_tag = os.environ.get('BROWSER_TAG', None)
 _use_remote_driver = _browser_tag is not None
 
@@ -138,6 +139,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
                 sauce_url = 'http://%s:%s@ondemand.saucelabs.com:80/wd/hub' % (_sauce_username, _sauce_access_key)
                 browser = _remote_browsers[_browser_tag]
                 browser['tunnelIdentifier'] = _travis_job_number
+                browser['build'] = _travis_job_number
+                browser['tags'] = [_browser_tag, _branch_name]
 
                 SeleniumTestCase._driver = webdriver.Remote(
                     desired_capabilities=browser,
