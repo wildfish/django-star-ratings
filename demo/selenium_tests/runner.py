@@ -1,7 +1,5 @@
-from unittest import TextTestResult
-from unittest.runner import _WritelnDecorator
-import sys
-from django.test.runner import DiscoverRunner
+import atexit
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import os
 from selenium import webdriver
 
@@ -115,37 +113,39 @@ _remote_browsers = {
 }
 
 
-class SeleniumTestRunner(DiscoverRunner):
+class SeleniumTestCase(StaticLiveServerTestCase):
     selenium_implicit_wait = 30
+    _driver = None
 
-    def _driver(self):
-        if _use_remote_driver:
-            sauce_url = 'http://%s:%s@ondemand.saucelabs.com:80/wd/hub' % (_sauce_username, _sauce_access_key)
-            browser = _remote_browsers[_browser_tag]
-            browser['tunnelIdentifier'] = _travis_job_number
+    @property
+    def driver(self):
+        if not SeleniumTestCase._driver:
+            if _use_remote_driver:
+                sauce_url = 'http://%s:%s@ondemand.saucelabs.com:80/wd/hub' % (_sauce_username, _sauce_access_key)
+                browser = _remote_browsers[_browser_tag]
+                browser['tunnelIdentifier'] = _travis_job_number
 
-            driver = webdriver.Remote(
-                desired_capabilities=browser,
-                command_executor=sauce_url
-            )
-        else:
-            driver = webdriver.Firefox()
+                SeleniumTestCase._driver = webdriver.Remote(
+                    desired_capabilities=browser,
+                    command_executor=sauce_url
+                )
+            else:
+                SeleniumTestCase._driver = webdriver.Firefox()
 
-        driver.implicitly_wait(self.selenium_implicit_wait)
-        return driver
+            SeleniumTestCase._driver.implicitly_wait(self.selenium_implicit_wait)
 
-    def run_suite(self, suite, **kwargs):
-        result = TextTestResult(_WritelnDecorator(sys.stderr), True, self.verbosity)
-        driver = self._driver()
-        try:
-            # Modify each test so that they contain the correct browser
-            for t in suite._tests:
-                t.driver = driver
-                t.selenium_implicit_wait = self.selenium_implicit_wait
+        return SeleniumTestCase._driver
 
-            suite.run(result)
-        finally:
-            driver.quit()
+    def ignore_implicit_wait(self):
+        self.driver.implicitly_wait(0)
 
-        result.printErrors()
-        return result
+    def restore_implicit_wait(self):
+        self.driver.implicitly_wait(self.selenium_implicit_wait)
+
+    @classmethod
+    def cleanup_browser(cls):
+        if cls._driver:
+            cls._driver.quit()
+
+
+atexit.register(SeleniumTestCase.cleanup_browser)

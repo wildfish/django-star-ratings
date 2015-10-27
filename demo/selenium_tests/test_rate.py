@@ -1,15 +1,14 @@
-from time import time
 from django.test import override_settings
 from mock import patch
 from django.contrib.auth import get_user_model
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from hypothesis import given, settings
 from hypothesis.extra.django import TestCase
 from hypothesis.strategies import integers, lists
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException
+from .runner import SeleniumTestCase
 
 
-class RateTest(TestCase, StaticLiveServerTestCase):
+class RateTest(TestCase, SeleniumTestCase):
     def login(self, username, password):
         self.driver.find_element_by_id('login-link').click()
         self.driver.find_element_by_id('id_username').send_keys(username)
