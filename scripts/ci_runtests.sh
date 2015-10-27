@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+dirname="$(dirname "$0")"
+
 if [ "$RUN_WEB_TESTS" = "false" ]; then
-    ./runwithcoverage.sh;
+    . $dirname/runwithcoverage.sh;
 else
-    ./runseleniumtests.sh -f;
+    . $dirname/runseleniumtests.sh -f;
 fi
