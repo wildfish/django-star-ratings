@@ -26,14 +26,6 @@ env:
   - BROWSER_TAG=opera_latest
   - BROWSER_TAG=iphone_8.4
   - BROWSER_TAG=android_5.1
-matrix:
-  exclude:
-    - python: '2.7'
-      RUN_BROWSER: true
-    - python: '3.3'
-      RUN_BROWSER: true
-    - DJANGO_VERSION: "Django>=1.7,<1.8"
-      RUN_BROWSER: true
 install:
   - pip install pip -U
   - pip install codecov
