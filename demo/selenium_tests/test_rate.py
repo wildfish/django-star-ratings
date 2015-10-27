@@ -5,7 +5,7 @@ from hypothesis import given, settings
 from hypothesis.extra.django import TestCase
 from hypothesis.strategies import integers, lists
 from selenium.common.exceptions import NoSuchElementException
-from .runner import SeleniumTestCase
+from .testcase import SeleniumTestCase
 
 
 class RateTest(TestCase, SeleniumTestCase):
