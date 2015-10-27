@@ -5,6 +5,7 @@ from hypothesis import given, settings
 from hypothesis.extra.django import TestCase
 from hypothesis.strategies import integers, lists
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.wait import WebDriverWait
 from .testcase import SeleniumTestCase
 
@@ -134,7 +135,10 @@ class RateTest(TestCase, SeleniumTestCase):
             self.assertEqual(value, int(self.user_rating_elem.text))
 
     def click_score(self, score):
-        self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-background"]//*[@data-score="{}"]/..'.format(score)).click()
+        if 'android_' in self.browser_tag:
+            self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-background"]//*[@data-score="{}"]/..'.format(score)).click()
+        else:
+            self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-background"]//*[@data-score="{}"]'.format(score)).click()
 
     def login(self, username, password):
         self.driver.find_element_by_id('login-link').click()

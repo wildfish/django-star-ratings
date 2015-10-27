@@ -138,6 +138,10 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     selenium_implicit_wait = 30
     _driver = None
 
+    def __init__(self, *args, **kwargs):
+        self.browser_tag = _browser_tag
+        super().__init__(*args, **kwargs)
+
     @property
     def driver(self):
         if not SeleniumTestCase._driver:
