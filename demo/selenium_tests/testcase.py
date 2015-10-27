@@ -113,6 +113,20 @@ _remote_browsers = {
 }
 
 
+class IgnoreImplicitWait:
+    def __init__(self, driver, default_wait):
+        self._driver = driver
+        self._default_wait = default_wait
+
+        self._driver.implicitly_wait(0)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._driver.implicitly_wait(self._default_wait)
+
+
 class SeleniumTestCase(StaticLiveServerTestCase):
     selenium_implicit_wait = 30
     _driver = None
@@ -137,7 +151,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         return SeleniumTestCase._driver
 
     def ignore_implicit_wait(self):
-        self.driver.implicitly_wait(0)
+        return IgnoreImplicitWait(self.driver, self.selenium_implicit_wait)
 
     def restore_implicit_wait(self):
         self.driver.implicitly_wait(self.selenium_implicit_wait)

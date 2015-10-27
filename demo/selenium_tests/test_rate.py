@@ -16,13 +16,11 @@ class RateTest(TestCase, SeleniumTestCase):
         self.driver.find_element_by_id('id_submit').click()
 
     def logout(self):
-        try:
-            self.driver.implicitly_wait(0)
-            self.driver.find_element_by_id('logout-link').click()
-        except NoSuchElementException:
-            pass
-        finally:
-            self.driver.implicitly_wait(self.selenium_implicit_wait)
+        with self.ignore_implicit_wait():
+            try:
+                self.driver.find_element_by_id('logout-link').click()
+            except NoSuchElementException:
+                pass
 
     def tearDown(self):
         self.logout()
@@ -68,8 +66,6 @@ class RateTest(TestCase, SeleniumTestCase):
 
     @given(lists(integers(min_value=1, max_value=5), min_size=2, max_size=10), settings=settings.Settings(max_examples=10))
     def test_multiple_users_rate___average_count_and_user_are_correct(self, scores):
-        num_users = len(scores)
-
         for i, score in enumerate(scores):
             uname = 'user' + str(i)
             password = 'pass' + str(i)
