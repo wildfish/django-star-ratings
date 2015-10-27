@@ -47,11 +47,11 @@ setup(
     package_data={
         'star_ratings/static': ['*'],
         'star_ratings/templates': ['*'],
-        'star_ratings/static/star_ratings/js/node_modules': ['*'],
         '': ['README.rst', 'setup.cfg'],
     },
     exclude_package_data={
         '': ['__pycache__', '*.py[co]'],
+        'star_ratings/static/star_ratings/js/node_modules': ['*'],
     },
     license='BSD License',
     description=('A Django app to add star ratings to models.'),
