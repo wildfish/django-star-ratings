@@ -141,6 +141,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
                 browser['tunnelIdentifier'] = _travis_job_number
                 browser['build'] = _travis_job_number
                 browser['tags'] = [_browser_tag, _branch_name]
+                browser['name'] = '{} {} {}'.format(_travis_job_number, _browser_tag, _branch_name)
 
                 SeleniumTestCase._driver = webdriver.Remote(
                     desired_capabilities=browser,
