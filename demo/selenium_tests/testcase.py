@@ -1,12 +1,14 @@
 import atexit
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from hypothesis import Settings
+import hypothesis
 import os
 from selenium import webdriver
 
 _sauce_username = os.environ.get('SAUCE_USERNAME', None)
 _sauce_access_key = os.environ.get('SAUCE_ACCESS_KEY', None)
 _travis_job_number = os.environ.get('TRAVIS_JOB_NUMBER', None)
-_branch_name = os.environ.get('TRAVIS_BRANCH', None)
+_branch_name = os.environ.get('TRAVIS_BRANCH', 'No Branch')
 _browser_tag = os.environ.get('BROWSER_TAG', None)
 _use_remote_driver = _browser_tag is not None
 
@@ -126,6 +128,10 @@ class IgnoreImplicitWait:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._driver.implicitly_wait(self._default_wait)
+
+
+Settings.register_profile('selenium', Settings(max_examples=1, timeout=0))
+Settings.load_profile('selenium')
 
 
 class SeleniumTestCase(StaticLiveServerTestCase):
