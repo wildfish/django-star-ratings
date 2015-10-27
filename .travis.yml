@@ -1,9 +1,9 @@
 language: python
 sudo: false
 python:
-- '2.7'
-- '3.3'
-- '3.4'
+  - '2.7'
+  - '3.3'
+  - '3.4'
 env:
   - DJANGO_VERSION="Django>=1.7,<1.8"
   - DJANGO_VERSION="Django>=1.8,<1.9"
@@ -29,21 +29,20 @@ env:
 matrix:
   exclude:
     - python: '2.7'
-      - RUN_BROWSER: true
+      RUN_BROWSER: true
     - python: '3.3'
-      - RUN_BROWSER: true
+      RUN_BROWSER: true
     - DJANGO_VERSION: "Django>=1.7,<1.8"
-      - RUN_BROWSER: true
+      RUN_BROWSER: true
 install:
-- pip install pip -U
-- pip install codecov
-- pip install -r requirements.txt
-- pip install "$DJANGO_VERSION" -U
+  - pip install pip -U
+  - pip install codecov
+  - pip install -r requirements.txt
+  - pip install "$DJANGO_VERSION" -U
 script:
-- coverage run --source='star_ratings' runtests.py
-- ./run_selenium_tests.sh
+  - ./scripts/ci_runtests.sh
 after_success:
-- codecov
+  - codecov
 notifications:
   slack:
     secure: MlrEVotOd2wuf+mgur/ISn/bC41Abqk7YXA7887DBqESERjO7yLtvNbOTcaxXzj2tCW7cpUOjo7dcnU8Hvo9sCWYM9IIDdwlAg2REq/SN7j9JGdb0cl5Wzk5rH19muY8b93bCvQIRkoMvrnvqCve58o7LKrUsMhItiAUeFiVrq/u5LqtNjPNzVIEpfkIJzXFXMVMGHX8m8/IJmCA+gMNIC7R9zTEW72FmcAFBp/JfhGhuIW+vn3Vh8/8HHolu5xjtcf0e6WGijBhYyYtM51RT8eZbgoY5VyUD5XgsPX6CIwQy/cXUChsW+LQN9F10v1T2hKnPoLM+ytyI0p6pAGQeEUkFKRnqSXCBJQ1aQaPGVFpBmP45TEJlJmvb7BwLrJFWKb+Lu0eemza0tkXg8ULSiXxpDinJwLql2mQ6JP+4acsW8gXToBATjqXLpiYzuGLpAOCgDHHwirpRJ85m1KlbIQf8kdgyprRNMEdIzRW2chjvWgcpp/23Lqkbro+M/vjp0UtI8fr3aMFiW1JTiwA5MVQN1jqcW/qspK3jSKOg5AnYpKzcM6nMs9h6YgYWWAvaKiOh7puL2tV+5+8OJkoosj4a5lTNR+/M//GSSvPmpb+niu+vbXGq/2A82hK+v1dOLbEUgW2LaQua/Z7XsR0c0PCe7zXVihG50JW47Agywg=
