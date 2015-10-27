@@ -26,9 +26,9 @@ env:
   - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_5.1
 matrix:
   exclude:
-    - env: RUN_WEB_TESTS=true
+    - env: DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ie_10
       python: '2.7'
-    - env: RUN_WEB_TESTS=true
+    - env: DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ie_10
       python: '3.3'
 install:
   - pip install pip -U
