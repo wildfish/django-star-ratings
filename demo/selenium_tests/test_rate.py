@@ -32,7 +32,7 @@ class RateTest(TestCase, SeleniumTestCase):
             self.driver.find_element_by_xpath('//*[@data-score]').click()
 
     @given(integers(min_value=1, max_value=5))
-    def test_click_first_star___rating_is_set_to_one(self, value):
+    def test_click_star___rating_is_set_to_the_star_value(self, value):
         expected_percentage = 20 * value
         expected_style = 'width: {}%;'.format(expected_percentage)
 
