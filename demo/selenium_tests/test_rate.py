@@ -64,7 +64,9 @@ class RateTest(TestCase, SeleniumTestCase):
 
             self.assertEqual(value, len(elements))
 
-    @given(lists(integers(min_value=1, max_value=5), min_size=2, max_size=10), settings=settings.Settings(max_examples=10))
+    # remove the timeout on this test as it can take a while to run on remote browsers and there are no assumptions to
+    # stop it finding examples
+    @given(lists(integers(min_value=1, max_value=5), min_size=2, max_size=10), settings=settings.Settings(max_examples=10, timeout=0))
     def test_multiple_users_rate___average_count_and_user_are_correct(self, scores):
         for i, score in enumerate(scores):
             uname = 'user' + str(i)
