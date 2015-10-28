@@ -158,7 +158,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
                     command_executor=sauce_url
                 )
             else:
-                SeleniumTestCase._driver = webdriver.Firefox()
+                SeleniumTestCase._driver = webdriver.Chrome()
 
             SeleniumTestCase._driver.implicitly_wait(self.selenium_implicit_wait)
 

@@ -4,8 +4,7 @@ from django.contrib.auth import get_user_model
 from hypothesis import given, settings
 from hypothesis.extra.django import TestCase
 from hypothesis.strategies import integers, lists
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.support.wait import WebDriverWait
 from .testcase import SeleniumTestCase
 
@@ -53,6 +52,8 @@ class RateTest(TestCase, SeleniumTestCase):
     @given(lists(integers(min_value=1, max_value=5), min_size=2, max_size=10))
     def test_multiple_users_rate___average_count_and_user_are_correct(self, scores):
         for i, score in enumerate(scores):
+            self.driver.get(self.live_server_url)
+
             uname = 'user' + str(i)
             password = 'pass' + str(i)
 
@@ -135,10 +136,18 @@ class RateTest(TestCase, SeleniumTestCase):
             self.assertEqual(value, int(self.user_rating_elem.text))
 
     def click_score(self, score):
-        if 'android_' in self.browser_tag:
-            self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-background"]//*[@data-score="{}"]/..'.format(score)).click()
-        else:
-            self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-background"]//*[@data-score="{}"]'.format(score)).click()
+        try:
+            if self.browser_tag and 'android_' in self.browser_tag:
+                self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-background"]//*[@data-score="{}"]/..'.format(score)).click()
+            else:
+                self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-background"]//*[@data-score="{}"]'.format(score)).click()
+        except WebDriverException:
+            # if we arent able to click the background this is most likely because the foreground is getting in the
+            # way so try clicking that instead
+            if self.browser_tag and 'android_' in self.browser_tag:
+                self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-foreground"]//*[@data-score="{}"]/..'.format(score)).click()
+            else:
+                self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-foreground"]//*[@data-score="{}"]'.format(score)).click()
 
     def login(self, username, password):
         self.driver.find_element_by_id('login-link').click()
