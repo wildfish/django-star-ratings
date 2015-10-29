@@ -1,25 +1,23 @@
-from time import sleep
 from django.contrib.auth import get_user_model
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
-from .testcase import SeleniumTestCase
 
-
-class RateTest(SeleniumTestCase):
+class RateTest(StaticLiveServerTestCase):
     def login(self, wait, username, password):
         wait.until(EC.presence_of_element_located((By.ID, 'login-link'))).click()
         wait.until(EC.presence_of_element_located((By.ID, 'id_username'))).send_keys(username)
         wait.until(EC.presence_of_element_located((By.ID, 'id_password'))).send_keys(password)
         wait.until(EC.presence_of_element_located((By.ID, 'id_submit'))).click()
 
-    def test_click_first_star___rating_is_set_to_one(self, driver):
+    def test_click_first_star___rating_is_set_to_one(self):
         get_user_model().objects.create_user('user', password='pass')
 
-        driver.get(self.live_server_url)
+        self.driver.get(self.live_server_url)
 
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(self.driver, 30)
         self.login(wait, 'user', 'pass')
 
         wait.until(EC.presence_of_element_located((By.XPATH, '//*[@data-score="1"]'))).click()
