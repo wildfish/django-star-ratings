@@ -142,7 +142,7 @@ class RateTest(TestCase, SeleniumTestCase):
             else:
                 self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-background"]//*[@data-score="{}"]'.format(score)).click()
         except WebDriverException:
-            # if we arent able to click the background this is most likely because the foreground is getting in the
+            # if we aren't able to click the background this is most likely because the foreground is getting in the
             # way so try clicking that instead
             if self.browser_tag and 'android_' in self.browser_tag:
                 self.driver.find_element_by_xpath('//*[@class="star-ratings-rating-foreground"]//*[@data-score="{}"]/..'.format(score)).click()

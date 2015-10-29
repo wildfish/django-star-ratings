@@ -7,23 +7,23 @@ python:
 env:
   - DJANGO_VERSION="Django>=1.7,<1.8" RUN_WEB_TESTS=false
   - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=false
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ie_10
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=safari_latest
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_4.1
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_4.4
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ie_11
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ipad_8.4
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_5.0
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ie_10
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=safari_latest
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_4.1
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_4.4
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ie_11
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ipad_8.4
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_5.0
   - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ie_9
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=firefox_latest
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_4.2
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ipad_latest
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_4.3
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=iphone_latest
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=opera_latest
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=iphone_8.4
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_5.1
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ie_9
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=firefox_latest
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_4.2
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ipad_latest
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_4.3
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=iphone_latest
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=opera_latest
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=iphone_8.4
+#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_5.1
 matrix:
   exclude:
     - env: DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ie_10
