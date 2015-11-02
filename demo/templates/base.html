@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
 </head>
 <body>
+    {% if not request.user.is_authenticated %}
+        <a id="login-link" href="{% url 'login' %}?next=/">Login</a>
+    {% else %}
+        <a id="logout-link" href="{% url 'logout' %}?next=/">Logout</a>
+    {% endif %}
+
     {% block content %}
     {% endblock content %}
     <script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.js' %}"></script>

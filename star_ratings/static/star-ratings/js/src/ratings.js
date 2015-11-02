@@ -5,30 +5,38 @@ var utils = require('./utils');
 /*********************
  * Initialise ratings
  *********************/
-function init() {
+function init () {
     var ratingActions = document.querySelectorAll(".star-ratings-rate-action"),
         i;
 
     // Add click events to stars
     for (i = 0; i < ratingActions.length; i += 1) {
-        ratingActions[i].addEventListener("click", ratingClick);
-
-        ratingActions[i].onmouseenter = function () {
-            var maxRating = getMaxRating(this);
-            var score = this.getAttribute('data-score');
-            var parent = utils.findParent(this, "star-ratings");
-            parent.querySelector(".star-ratings-rating-foreground").style.width = 100 / maxRating * score + "%";
-        };
-
-        ratingActions[i].onmouseleave = function () {
-            var avgRating = getAvgRating(this);
-            var maxRating = getMaxRating(this);
-            var score = this.getAttribute('data-score');
-            var parent = utils.findParent(this, "star-ratings");
-            var percentage = 100 / maxRating * avgRating + "%";
-            parent.querySelector(".star-ratings-rating-foreground").style.width = percentage;
-        };
+        bindRatings(ratingActions[i]);
     }
+}
+
+
+/*********************
+ * Bind ratings
+ *********************/
+function bindRatings(el) {
+    el.addEventListener("click", ratingClick);
+
+    el.onmouseenter = function () {
+        var maxRating = getMaxRating(this);
+        var score = this.getAttribute('data-score');
+        var parent = utils.findParent(this, "star-ratings");
+        parent.querySelector(".star-ratings-rating-foreground").style.width = 100 / maxRating * score + "%";
+    };
+
+    el.onmouseleave = function () {
+        var avgRating = getAvgRating(this);
+        var maxRating = getMaxRating(this);
+        var score = this.getAttribute('data-score');
+        var parent = utils.findParent(this, "star-ratings");
+        var percentage = 100 / maxRating * avgRating + "%";
+        parent.querySelector(".star-ratings-rating-foreground").style.width = percentage;
+    };
 }
 
 
@@ -80,7 +88,9 @@ function getAvgRating(el) {
  * Update rating
  *********************/
 function updateRating(rating, sender) {
-    var parent = utils.findParent(sender, "star-ratings");
+    var parent = utils.findParent(sender, "star-ratings"),
+        valueElem;
+
     if (parent === undefined || parent === null) {
         return;
     }
@@ -89,7 +99,7 @@ function updateRating(rating, sender) {
 
     var avgElem = parent.getElementsByClassName("star-ratings-rating-average")[0];
     if(avgElem) {
-        var valueElem = avgElem.getElementsByClassName('star-ratings-rating-value')[0];
+        valueElem = avgElem.getElementsByClassName('star-ratings-rating-value')[0];
         if (valueElem) {
             valueElem.innerHTML = rating.average.toFixed(2);
         }
@@ -97,7 +107,7 @@ function updateRating(rating, sender) {
 
     var countElem = parent.getElementsByClassName("star-ratings-rating-count")[0];
     if(countElem) {
-        var valueElem = countElem.getElementsByClassName('star-ratings-rating-value')[0];
+        valueElem = countElem.getElementsByClassName('star-ratings-rating-value')[0];
         if (valueElem) {
             valueElem.innerHTML = rating.count;
         }
@@ -105,7 +115,7 @@ function updateRating(rating, sender) {
 
     var userElem = parent.getElementsByClassName("star-ratings-rating-user")[0];
     if(userElem) {
-        var valueElem = userElem.getElementsByClassName('star-ratings-rating-value')[0];
+        valueElem = userElem.getElementsByClassName('star-ratings-rating-value')[0];
         if (valueElem) {
             valueElem.innerHTML = rating.user_rating;
         }
@@ -133,5 +143,10 @@ function showError (errors, sender) {
 document.addEventListener('DOMContentLoaded', function(event) {
     if (document.querySelector('.star-ratings')) {
         init();
-    };
+    }
 });
+
+
+module.exports = {
+    bindRating: bindRatings
+};

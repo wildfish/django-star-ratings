@@ -1,1 +1,1 @@
-require('./src/ratings')
+module.exports = require('./src/ratings');
