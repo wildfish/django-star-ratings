@@ -1,215 +1,179 @@
+import atexit
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from hypothesis import Settings
+import hypothesis
 import os
 from selenium import webdriver
-from six import with_metaclass
 
 _sauce_username = os.environ.get('SAUCE_USERNAME', None)
 _sauce_access_key = os.environ.get('SAUCE_ACCESS_KEY', None)
 _travis_job_number = os.environ.get('TRAVIS_JOB_NUMBER', None)
-_use_remote_driver = _travis_job_number is not None
+_branch_name = os.environ.get('TRAVIS_BRANCH', 'No Branch')
+_browser_tag = os.environ.get('BROWSER_TAG', None)
+_use_remote_driver = _browser_tag is not None
 
-_remote_browsers = [
-    {
+_remote_browsers = {
+    'chrome_latest': {
         'platform': 'Linux',
         'browserName': 'chrome',
         'version': '',
-        'tunnelIdentifier': _travis_job_number,
     },
-    {
+    'firefox_latest': {
         'platform': 'Linux',
         'browserName': 'firefox',
         'version': '',
-        'tunnelIdentifier': _travis_job_number,
     },
-    {
+    'opera_latest': {
         'platform': 'Linux',
         'browserName': 'opera',
         'version': '',
-        'tunnelIdentifier': _travis_job_number,
     },
-    #
-    # disabled while ms work on the driver
-    #
-    # {
-    #     'platform': 'Windows 10',
-    #     'browserName': 'microsoftedge',
-    #     'version': '',
-    #     'tunnelIdentifier': _travis_job_number,
-    # },
-    #
-    # disabled while ms work on the driver
-    #
-    {
+    'edge_latest': {
+        'platform': 'Windows 10',
+        'browserName': 'microsoftedge',
+        'version': '',
+    },
+    'ie_11': {
         'platform': 'Windows 10',
         'browserName': 'internet explorer',
         'version': '11',
-        'tunnelIdentifier': _travis_job_number,
     },
-    {
+    'ie_10': {
         'platform': 'Windows 8',
         'browserName': 'internet explorer',
         'version': '10',
-        'tunnelIdentifier': _travis_job_number,
     },
-    {
+    'ie_9': {
         'platform': 'Windows 7',
         'browserName': 'internet explorer',
         'version': '9',
-        'tunnelIdentifier': _travis_job_number,
     },
-    {
+    'safari_latest': {
         'platform': 'Mac OS X 10.11',
         'browserName': 'safari',
         'version': '',
-        'tunnelIdentifier': _travis_job_number,
     },
-    {
+    'android_5.1': {
         'platform': 'Linux',
         'browserName': 'android',
-        'deviceName': "Android Emulator",
-        'version': "5.1",
-        'tunnelIdentifier': _travis_job_number,
+        'deviceName': 'Android Emulator',
+        'version': '5.1',
     },
-    {
+    'android_5.0': {
         'platform': 'Linux',
         'browserName': 'android',
-        'deviceName': "Android Emulator",
-        'version': "5.0",
-        'tunnelIdentifier': _travis_job_number,
+        'deviceName': 'Android Emulator',
+        'version': '5.0',
     },
-    {
+    'android_4.4': {
         'platform': 'Linux',
         'browserName': 'android',
-        'deviceName': "Android Emulator",
-        'version': "4.4",
-        'tunnelIdentifier': _travis_job_number,
+        'deviceName': 'Android Emulator',
+        'version': '4.4',
     },
-    {
+    'android_4.3': {
         'platform': 'Linux',
         'browserName': 'android',
-        'deviceName': "Android Emulator",
-        'version': "4.3",
-        'tunnelIdentifier': _travis_job_number,
+        'deviceName': 'Android Emulator',
+        'version': '4.3',
     },
-    {
+    'android_4.2': {
         'platform': 'Linux',
         'browserName': 'android',
-        'deviceName': "Android Emulator",
-        'version': "4.2",
-        'tunnelIdentifier': _travis_job_number,
+        'deviceName': 'Android Emulator',
+        'version': '4.2',
     },
-    {
+    'android_4.1':{
         'platform': 'Linux',
         'browserName': 'android',
-        'deviceName': "Android Emulator",
-        'version': "4.1",
-        'tunnelIdentifier': _travis_job_number,
+        'deviceName': 'Android Emulator',
+        'version': '4.1',
     },
-    {
+    'iphone_latest': {
         'platform': 'OS X 10.10',
         'browserName': 'iPhone',
         'deviceName': 'iPhone Simulator',
         'version': '',
-        'tunnelIdentifier': _travis_job_number,
     },
-    {
+    'iphone_8.4': {
         'platform': 'OS X 10.10',
         'browserName': 'iPhone',
         'deviceName': 'iPhone Simulator',
         'version': '8.4',
-        'tunnelIdentifier': _travis_job_number,
     },
-    {
+    'ipad_latest': {
         'platform': 'OS X 10.10',
         'browserName': 'iPhone',
         'deviceName': 'iPad Simulator',
         'version': '',
-        'tunnelIdentifier': _travis_job_number,
     },
-    {
+    'ipad_8.4': {
         'platform': 'OS X 10.10',
         'browserName': 'iPhone',
         'deviceName': 'iPad Simulator',
         'version': '8.4',
-        'tunnelIdentifier': _travis_job_number,
     }
-]
+}
 
 
-class RemoteDriverWrapper(object):
+class IgnoreImplicitWait:
+    def __init__(self, driver, default_wait):
+        self._driver = driver
+        self._default_wait = default_wait
+
+        self._driver.implicitly_wait(0)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._driver.implicitly_wait(self._default_wait)
+
+
+Settings.register_profile('selenium', Settings(max_examples=1, timeout=0))
+Settings.load_profile('selenium')
+
+
+class SeleniumTestCase(StaticLiveServerTestCase):
+    selenium_implicit_wait = 30
+    _driver = None
+
     def __init__(self, *args, **kwargs):
-        self.args = args
-        self.kwargs = kwargs
+        self.browser_tag = _browser_tag
+        super().__init__(*args, **kwargs)
 
-    def __call__(self, *args, **kwargs):
-        return webdriver.Remote(*self.args, **self.kwargs)
+    @property
+    def driver(self):
+        if not SeleniumTestCase._driver:
+            if _use_remote_driver:
+                sauce_url = 'http://%s:%s@ondemand.saucelabs.com:80/wd/hub' % (_sauce_username, _sauce_access_key)
+                browser = _remote_browsers[_browser_tag]
+                browser['tunnelIdentifier'] = _travis_job_number
+                browser['build'] = _travis_job_number
+                browser['tags'] = [_browser_tag, _branch_name]
+                browser['name'] = '{} {} {}'.format(_travis_job_number, _browser_tag, _branch_name)
 
-
-class SeleniumTestCaseMeta(type):
-    """
-    Metaclass for the selenium test case. This handles creating the extra test cases when using remote drivers so
-    that multiple driver types can be used. When remote drives are not being used we fall back to Firefox
-    """
-    def __new__(meta, classname, bases, class_dict):
-        sauce_url = "http://%s:%s@ondemand.saucelabs.com:80/wd/hub" % (_sauce_username, _sauce_access_key)
-
-        new_class_dict = {}
-
-        # Add each attribute to the new class.
-        for attr_name, attr_value in class_dict.items():
-            if callable(attr_value) and attr_name.startswith('test_'):
-                # If the attribute is a test we wrap it passing a driver to it
-                method = attr_value
-
-                if _use_remote_driver:
-                    # If we are using remote browsers loop over each specified browser and wrap the test in its driver
-                    for browser in _remote_browsers:
-                        driver_fn = RemoteDriverWrapper(
-                            desired_capabilities=browser,
-                            command_executor=sauce_url
-                        )
-
-                        browser_tag = '{}_{}_{}'.format(
-                            browser['platform'],
-                            browser['browserName'],
-                            browser['version']
-                        ).replace(' ', '_')
-
-                        method_name = '{orig_name}___{tag}'.format(orig_name=attr_name, tag=browser_tag)
-                        new_class_dict[method_name] = meta._new_method(method, driver_fn)
-                else:
-                    # If we are not using remote drivers wrap each test with the firefox driver
-                    driver_fn = webdriver.Firefox
-                    method_name = '{orig_name}___firefox'.format(orig_name=attr_name)
-                    new_class_dict[method_name] = meta._new_method(method, driver_fn)
-
+                SeleniumTestCase._driver = webdriver.Remote(
+                    desired_capabilities=browser,
+                    command_executor=sauce_url
+                )
             else:
-                # If the attribute is not a test we do not modify it
-                new_class_dict[attr_name] = attr_value
+                SeleniumTestCase._driver = webdriver.Chrome()
 
-        return type.__new__(meta, classname, bases, new_class_dict)
+            SeleniumTestCase._driver.implicitly_wait(self.selenium_implicit_wait)
+
+        return SeleniumTestCase._driver
+
+    def ignore_implicit_wait(self):
+        return IgnoreImplicitWait(self.driver, self.selenium_implicit_wait)
+
+    def restore_implicit_wait(self):
+        self.driver.implicitly_wait(self.selenium_implicit_wait)
 
     @classmethod
-    def _new_method(cls, method, driver_fn):
-        """
-        Method for wrapping the test cases with the driver. The driver is created, the test is ran, then the driver is
-        destroyed.
-
-        :param method: The test method to be wrapped
-        :param driver_fn: Function to generate the driver
-        """
-        def _new(self):
-            driver = driver_fn()
-            try:
-                method(self, driver)
-            finally:
-                driver.quit()
-
-        return _new
+    def cleanup_browser(cls):
+        if cls._driver:
+            cls._driver.quit()
 
 
-class SeleniumTestCase(with_metaclass(SeleniumTestCaseMeta, StaticLiveServerTestCase)):
-    """
-    Class to handle creating a test server and creating test cases for each driver
-    """
-    pass
+atexit.register(SeleniumTestCase.cleanup_browser)
