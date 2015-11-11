@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% load ratings %}
+
+{% block content %}
+    <h1>Block Sizes</h1>
+    <p>Page showing the ratings at different star sizes</p>
+    {% for size, object in sizes.items %}
+        <div id="star-size-{{ size }}">
+            <style>
+                #star-size-{{ size }} .star-ratings-rating-full, #star-size-{{ size }} .star-ratings-rating-empty {
+                    background-size: auto {{ size }}px;
+                }
+            </style>
+            <h2>{{ size }}px</h2>
+            {% ratings object size size %}
+        </div>
+    {% endfor %}
+{% endblock %}

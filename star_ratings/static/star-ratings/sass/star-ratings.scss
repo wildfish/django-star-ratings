@@ -29,3 +29,8 @@
     @include transition-duration(0.15s);
     @include transition-timing-function(ease-in);
 }
+
+.star-ratings-rating-stars-container {
+    display: inline-block;
+    position: relative;
+}

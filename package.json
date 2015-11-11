@@ -4,8 +4,11 @@
     "description": "Wildfish ratings",
     "main": "./star_ratings/static/star-ratings/js/index.js",
     "scripts": {
-        "build": "browserify ./star_ratings/static/star-ratings/js/index.js -o ./star_ratings/static/star-ratings/js/dist/star-ratings.js -s starRatings && yuglify ./star_ratings/static/star-ratings/js/dist/star-ratings.js",
-        "watch": "watchify ./star_ratings/static/star-ratings/js/index.js -o ./star_ratings/static/star-ratings/js/dist/star-ratings.js -d -v"
+        "build": "npm run build-js; npm run build-scss;",
+        "build-scss": "compass compile -I node_modules --sass-dir ./star_ratings/static/star-ratings/sass/ --css-dir ./star_ratings/static/star-ratings/css/",
+        "watch-scss": "compass watch -I node_modules --sass-dir ./star_ratings/static/star-ratings/sass/ --css-dir ./star_ratings/static/star-ratings/css/",
+        "build-js": "browserify ./star_ratings/static/star-ratings/js/index.js -o ./star_ratings/static/star-ratings/js/dist/star-ratings.js -s starRatings && yuglify ./star_ratings/static/star-ratings/js/dist/star-ratings.js",
+        "watch-js": "watchify ./star_ratings/static/star-ratings/js/index.js -o ./star_ratings/static/star-ratings/js/dist/star-ratings.js -d -v"
     },
     "author": "Jonas Hagstedt <hagstedt@gmail.com> (https://github.com/jonashagstedt)",
     "license": "BSD",
