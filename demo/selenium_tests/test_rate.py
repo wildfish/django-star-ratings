@@ -1,3 +1,4 @@
+from __future__ import division
 from django.test import override_settings
 from mock import patch
 from django.contrib.auth import get_user_model
