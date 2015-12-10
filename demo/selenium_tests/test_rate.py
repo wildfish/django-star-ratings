@@ -131,7 +131,7 @@ class RateTest(TestCase, SeleniumTestCase):
 
     def wait_for_user_to_equal(self, value):
         try:
-            WebDriverWait(self.driver, 30).until(lambda d: int(self.user_rating_elem.text) == value)
+            WebDriverWait(self.driver, 30).until(lambda d: self.user_rating_elem.text == str(value))
         except TimeoutException:
             self.assertEqual(value, int(self.user_rating_elem.text))
 
