@@ -140,7 +140,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def __init__(self, *args, **kwargs):
         self.browser_tag = _browser_tag
-        super().__init__(*args, **kwargs)
+        super(SeleniumTestCase, self).__init__(*args, **kwargs)
 
     @property
     def driver(self):
