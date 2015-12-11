@@ -10,7 +10,6 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
 # allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
-
 def get_version(package):
     """
     Return package version as listed in `__version__` in `init.py`.
@@ -38,7 +37,6 @@ if sys.argv[-1] == 'publish':
     shutil.rmtree('django_star_ratings.egg-info')
     sys.exit()
 
-
 setup(
     name='django-star-ratings',
     version=version,
@@ -61,7 +59,7 @@ setup(
     author_email='developers@wildfish.com',
     keywords='ratings',
     install_requires=[
-        'Django >= 1.7, <= 1.8.4',
+        'django',
         'django-model-utils',
         'django-braces'
     ],
