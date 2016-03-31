@@ -112,6 +112,7 @@ The easiest way to order by ratings is to add a ``GenericRelation`` to
 the ``Rating`` model from your model:
 
 ::
+
     from star_ratings.models import Rating
     
     class Foo(models.Model):
