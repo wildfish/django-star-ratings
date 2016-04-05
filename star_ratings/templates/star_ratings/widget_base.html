@@ -32,7 +32,7 @@
                 {% endfor %}
             </ul>
 
-            <ul class="star-ratings-rating-foreground" style="width: {{ percentage }}%">
+            <ul class="star-ratings-rating-foreground" style="width: {{ percentage|stringformat:"d" }}%">
                 {% for star in stars %}
                     <li>
                     {% if user.is_authenticated %}
