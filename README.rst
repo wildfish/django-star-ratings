@@ -113,6 +113,7 @@ the ``Rating`` model from your model:
 
 ::
 
+    from django.contrib.contenttypes.fields import GenericRelation
     from star_ratings.models import Rating
     
     class Foo(models.Model):
