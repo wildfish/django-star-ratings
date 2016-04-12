@@ -1,6 +1,15 @@
+0.5.2 (2016-04-12)
+------------------
+
+* Fixed issue where locales that use commas in floats would break the CSS width (thanks @spec45as and @JuanmaNatal)
+* Corrected docs (thanks @marcwebbie)
+
+
 0.5.0 (2015-12-11)
 -------------------
+
 * Django 1.9 support.
+
 
 0.3.0 (2015-09-24)
 -------------------
@@ -10,10 +19,12 @@
 * Added translation support and French translations. (Thanks @ollb).
 * Split widget into separate templates to make customisation easier. (Thanks @ollb).
 
+
 0.2.1 (2015-09-16)
 -------------------
 
 * Renamed Rating manager ratings_for_instance method to for_instance and added deprecation warning to old method calls.
+
 
 0.2.0 (2015-09-16)
 -------------------
