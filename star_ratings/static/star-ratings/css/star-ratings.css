@@ -19,7 +19,7 @@
 /* line 20, ../sass/star-ratings.scss */
 .star-ratings-rating-full, .star-ratings-rating-empty {
   display: block;
-  background: url("/static/star-ratings/images/stars.png") no-repeat;
+  background: url("../images/stars.png") no-repeat;
 }
 
 /* line 25, ../sass/star-ratings.scss */
