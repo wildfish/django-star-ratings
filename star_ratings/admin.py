@@ -1,12 +1,25 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from .app_settings import STAR_RATINGS_RANGE
-from .models import Rating, UserRating
+from .models import Rating, UserRating, AnonymousRating
 
 
 class UserRatingAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super(UserRatingAdmin, self).get_queryset(request).select_related('rating', 'user').prefetch_related('rating__content_object')
+
+    def stars(self, obj):
+        html = "<span style='display: block; width: {}px; height: 10px; " + \
+               "background: url(/static/star-ratings/images/admin_stars.png)'>&nbsp;</span>"
+        return html.format(obj.score * 10)
+
+    stars.allow_tags = True
+    stars.short_description = _('Score')
+    list_display = ('__str__', 'stars')
+
+class AnonymousRatingAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        return super(AnonymousRatingAdmin, self).get_queryset(request).select_related('rating', 'ip').prefetch_related('rating__content_object')
 
     def stars(self, obj):
         html = "<span style='display: block; width: {}px; height: 10px; " + \
@@ -38,3 +51,4 @@ class RatingAdmin(admin.ModelAdmin):
 
 admin.site.register(Rating, RatingAdmin)
 admin.site.register(UserRating, UserRatingAdmin)
+admin.site.register(AnonymousRating, AnonymousRatingAdmin)
