@@ -21,7 +21,7 @@
             <ul class="star-ratings-rating-background">
                 {% for star in stars %}
                     <li>
-                        {% if user.is_authenticated %}
+                        {% if user.is_authenticated or anonymous_ratings %}
                         <a href="{% url 'ratings:rate' rating.content_type_id rating.object_id %}?return={{ request.path }}" data-score="{{ star }}" class="star-ratings-rate-action">
                             <span class="star-ratings-rating-empty"></span>
                         </a>
@@ -35,7 +35,7 @@
             <ul class="star-ratings-rating-foreground" style="width: {{ percentage|floatformat }}%">
                 {% for star in stars %}
                     <li>
-                    {% if user.is_authenticated %}
+                    {% if user.is_authenticated or anonymous_ratings %}
                     <a href="{% url 'ratings:rate' rating.content_type_id rating.object_id %}?return={{ request.path }}" data-score="{{ star }}" class="star-ratings-rate-action">
                         <span class="star-ratings-rating-full"></span>
                     </a>
@@ -56,7 +56,7 @@
     {% endblock rating_count %}
     {% block rating_user %}
     <div class="star-ratings-rating-user">{% trans 'You Rated: ' %} <span class='star-ratings-rating-value'>{% if user_rating %}{{ user_rating.score }}{% else %}{% trans 'Not rated' %}{% endif %}</span></div>
-    {% if not user.is_authenticated %}
+    {% if not user.is_authenticated and not anonymous_ratings %}
         <p>{% trans 'Please log in to rate.' %}</p>
     {% endif %}
     {% endblock rating_user %}
