@@ -6,7 +6,7 @@ from .models import Rating, UserRating, AnonymousRating
 
 class UserRatingAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
-        return super(UserRatingAdmin, self).get_queryset(request).select_related('rating', 'user').prefetch_related('rating__content_object')
+        return super(UserRatingAdmin, self).get_queryset(request).select_related('rating').prefetch_related('rating__content_object')
 
     def stars(self, obj):
         html = "<span style='display: block; width: {}px; height: 10px; " + \
