@@ -151,7 +151,7 @@ class AnonymousRating(TimeStampedModel):
     score = models.PositiveSmallIntegerField()
     rating = models.ForeignKey(Rating, related_name='anonymous_ratings')
 
-    objects = UserRatingManager()
+    objects = AnonymousRatingManager()
 
     class Meta:
         unique_together = ['ip', 'rating']
