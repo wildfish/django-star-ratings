@@ -30,14 +30,11 @@ class RatingManager(models.Manager):
             raise TypeError("Rating manager 'rate' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
         
-        if getattr(settings, 'STAR_RATINGS_ANONYMOUS', True) is False:
-            if not user:
-                raise ValidationError(_('User is mandatory!'))
-            existing_rating = UserRating.objects.for_instance_by_user(instance, user)
-        elif ip:
-            existing_rating = AnonymousRating.objects.for_instance_by_anonymous(instance, ip)
-        else:
+        if not getattr(settings, 'STAR_RATINGS_ANONYMOUS', False) and not user:
+            raise ValidationError(_('User is mandatory!'))
+        elif not ip:
             raise ValidationError(_('IP address is mandatory!'))
+        existing_rating = UserRating.objects.for_instance_by_user(instance, user, ip)
         
         if existing_rating:
             if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
@@ -47,9 +44,7 @@ class RatingManager(models.Manager):
             return existing_rating.rating
         else:
             rating, created = self.get_or_create(content_type=ct, object_id=instance.pk)
-            if getattr(settings, 'STAR_RATINGS_ANONYMOUS', True) is False:
-                return UserRating.objects.create(user=user, score=score, rating=rating, ip=ip).rating
-            return AnonymousRating.objects.create(score=score, rating=rating, ip=ip).rating
+            return UserRating.objects.create(user=user, score=score, rating=rating, ip=ip).rating
 
 
 @python_2_unicode_compatible
@@ -89,10 +84,7 @@ class Rating(models.Model):
         """
         Recalculate the totals, and save.
         """
-        if getattr(settings, 'STAR_RATINGS_ANONYMOUS', True) is False:
-            aggregates = self.user_ratings.aggregate(total=Sum('score'), average=Avg('score'), count=Count('score'))
-        else:
-            aggregates = self.anonymous_ratings.aggregate(total=Sum('score'), average=Avg('score'), count=Count('score'))
+        aggregates = self.user_ratings.aggregate(total=Sum('score'), average=Avg('score'), count=Count('score'))
         self.count = aggregates.get('count') or 0
         self.total = aggregates.get('total') or 0
         self.average = aggregates.get('average') or 0.0
@@ -100,14 +92,14 @@ class Rating(models.Model):
 
 
 class UserRatingManager(models.Manager):
-    def for_instance_by_user(self, instance, user):
+    def for_instance_by_user(self, instance, user, ip):
         ct = ContentType.objects.get_for_model(instance)
-        return self.filter(rating__content_type=ct, rating__object_id=instance.pk, user=user).first()
+        return self.filter(rating__content_type=ct, rating__object_id=instance.pk, user=user, ip=ip).first()
 
-    def has_rated(self, instance, user):
+    def has_rated(self, instance, user, ip):
         if isinstance(instance, Rating):
             raise TypeError("UserRating manager 'has_rated' expects model to be rated, not UserRating model.")
-        rating = self.for_instance_by_user(instance, user)
+        rating = self.for_instance_by_user(instance, user, ip)
         return rating is not None
 
 
@@ -116,7 +108,7 @@ class UserRating(TimeStampedModel):
     """
     An individual rating of a user against a model.
     """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     ip = models.GenericIPAddressField(blank=True, null=True)
     score = models.PositiveSmallIntegerField()
     rating = models.ForeignKey(Rating, related_name='user_ratings')
@@ -124,37 +116,9 @@ class UserRating(TimeStampedModel):
     objects = UserRatingManager()
 
     class Meta:
-        unique_together = ['user', 'rating']
+        unique_together = ['user', 'rating', 'ip']
 
     def __str__(self):
-        return '{} rating {} for {}'.format(self.user, self.score, self.rating.content_object)
-
-
-class AnonymousRatingManager(models.Manager):
-    def for_instance_by_anonymous(self, instance, ip):
-        ct = ContentType.objects.get_for_model(instance)
-        return self.filter(rating__content_type=ct, rating__object_id=instance.pk, ip=ip).first()
-
-    def has_rated(self, instance, ip):
-        if isinstance(instance, Rating):
-            raise TypeError("AnonymousRating manager 'has_rated' expects model to be rated, not AnonymousRating model.")
-        rating = self.for_instance_by_anonymous(instance, ip)
-        return rating is not None
-
-
-@python_2_unicode_compatible
-class AnonymousRating(TimeStampedModel):
-    """
-    An anonymous rating against a model.
-    """
-    ip = models.GenericIPAddressField()
-    score = models.PositiveSmallIntegerField()
-    rating = models.ForeignKey(Rating, related_name='anonymous_ratings')
-
-    objects = AnonymousRatingManager()
-
-    class Meta:
-        unique_together = ['ip', 'rating']
-
-    def __str__(self):
+        if getattr(settings, 'STAR_RATINGS_ANONYMOUS', False) is False:
+            return '{} rating {} for {}'.format(self.user, self.score, self.rating.content_object)
         return '{} rating {} for {}'.format(self.ip, self.score, self.rating.content_object)

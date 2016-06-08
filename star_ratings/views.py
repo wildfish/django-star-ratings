@@ -7,7 +7,7 @@ from .models import Rating
 import json
 
 
-class Rate(LoginRequiredMixin, View):
+class Rate(View):
     model = Rating
 
     def get_object(self):
@@ -22,8 +22,9 @@ class Rate(LoginRequiredMixin, View):
         ip = self.request.META.get('REMOTE_ADDR') or '0.0.0.0'
         data = json.loads(request.body.decode())
         score = data.get('score')
+        user = request.user.is_authenticated() and request.user or None
         try:
-            rating = self.model.objects.rate(self.get_object(), score, request.user, ip)
+            rating = self.model.objects.rate(self.get_object(), score, user, ip)
             if request.is_ajax():
                 result = rating.to_dict()
                 result['user_rating'] = int(score)
