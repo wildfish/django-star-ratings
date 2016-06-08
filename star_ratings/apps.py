@@ -7,12 +7,8 @@ class StarRatingsAppConfig(AppConfig):
     name = 'star_ratings'
 
     def ready(self):
-        from .models import UserRating, AnonymousRating
+        from .models import UserRating
         from .signals import calculate_ratings
 
-        if getattr(settings, 'STAR_RATINGS_ANONYMOUS', True) is False:
-            post_save.connect(calculate_ratings, sender=UserRating)
-            post_delete.connect(calculate_ratings, sender=UserRating)
-        else:
-            post_save.connect(calculate_ratings, sender=AnonymousRating)
-            post_delete.connect(calculate_ratings, sender=AnonymousRating)
+        post_save.connect(calculate_ratings, sender=UserRating)
+        post_delete.connect(calculate_ratings, sender=UserRating)
