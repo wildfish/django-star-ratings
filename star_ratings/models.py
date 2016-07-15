@@ -93,13 +93,13 @@ class UserRatingManager(models.Manager):
         ct = ContentType.objects.get_for_model(instance)
 
         if not user:
-            if not getattr(settings, 'STAR_RATINGS_ANONYMOUS', False):
-                raise ValueError(_('User is mandatory. Enable "STAR_RATINGS_ANONYMOUS" for anonymous ratings.'))
+            if not app_settings.STAR_RATINGS_ANONYMOUS:
+                raise ValueError(_("User is mandatory. Enable 'STAR_RATINGS_ANONYMOUS' for anonymous ratings."))
 
             if not ip:
                 raise ValueError(_('IP is mandatory if no user is supplied.'))
 
-            return self.filter(rating__content_type=ct, rating__object_id=instance.pk, ip=ip).first()
+            return self.filter(rating__content_type=ct, rating__object_id=instance.pk, user=None, ip=ip).first()
 
         return self.filter(rating__content_type=ct, rating__object_id=instance.pk, user=user).first()
 
