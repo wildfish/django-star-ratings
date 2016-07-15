@@ -77,7 +77,7 @@ function getMaxRating(el) {
 function getAvgRating(el) {
     var parent = utils.findParent(el, "star-ratings");
     if (parent) {
-        return parent.getAttribute('data-avg-rating');
+        return parseFloat(parent.getAttribute('data-avg-rating'));
     }
 
     return -1;
