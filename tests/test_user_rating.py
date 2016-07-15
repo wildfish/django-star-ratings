@@ -1,13 +1,14 @@
 from random import randint
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from model_mommy import mommy
 from star_ratings.models import Rating, UserRating
 from .models import Foo, Bar
 
 
 class UserRatingStr(TestCase):
-    def test_result_contains_user_id_and_rating_name(self):
+    @override_settings(STAR_RATINGS_ANONYMOUS=False)
+    def test_anon_is_false___result_contains_user_id_and_rating_name(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
 
@@ -15,6 +16,16 @@ class UserRatingStr(TestCase):
         user_rating = rating.user_ratings.get(user=user)
 
         self.assertEqual('{} rating {} for {}'.format(user, user_rating.score, rating.content_object, rating.content_object), str(user_rating))
+
+    @override_settings(STAR_RATINGS_ANONYMOUS=True)
+    def test_anon_is_true___result_contains_ip_and_rating_name(self):
+        user = mommy.make(get_user_model())
+        foo = mommy.make(Foo)
+
+        rating = Rating.objects.rate(foo, 1, user, '127.0.0.1')
+        user_rating = rating.user_ratings.get(ip='127.0.0.1')
+
+        self.assertEqual('{} rating {} for {}'.format('127.0.0.1', user_rating.score, rating.content_object, rating.content_object), str(user_rating))
 
 
 class UserRatingHasRated(TestCase):
