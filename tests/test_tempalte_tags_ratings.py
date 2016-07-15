@@ -7,7 +7,7 @@ from hypothesis.strategies import lists, integers
 from model_mommy import mommy
 from six import assertRaisesRegex
 from tests.strategies import scores
-from star_ratings.app_settings import STAR_RATINGS_RANGE
+from star_ratings import app_settings
 from star_ratings.models import Rating, UserRating
 from star_ratings.templatetags.ratings import ratings
 from tests.models import Foo
@@ -119,7 +119,7 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertEqual(list(range(1, STAR_RATINGS_RANGE + 1)), res['stars'])
+        self.assertEqual(list(range(1, app_settings.STAR_RATINGS_RANGE + 1)), res['stars'])
 
     def test_star_count_is_added_to_the_result(self):
         item = mommy.make(Foo)
@@ -131,7 +131,7 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertEqual(STAR_RATINGS_RANGE, res['star_count'])
+        self.assertEqual(app_settings.STAR_RATINGS_RANGE, res['star_count'])
 
     @given(scores=lists(scores()), settings=Settings(max_examples=5))
     def test_several_ratings_are_made___percentage_is_correct_in_result(self, scores):
@@ -149,7 +149,7 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        expected_avg = 100 * (rating.average / Decimal(STAR_RATINGS_RANGE))
+        expected_avg = 100 * (rating.average / Decimal(app_settings.STAR_RATINGS_RANGE))
         self.assertEqual(expected_avg, res['percentage'])
 
     def test_icon_height_is_not_set___icon_height_is_32(self):

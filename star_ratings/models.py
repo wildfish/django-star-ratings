@@ -10,7 +10,8 @@ from django.db.models import Avg, Count, Sum
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext as _
 from model_utils.models import TimeStampedModel
-from .app_settings import STAR_RATINGS_RANGE, STAR_RATINGS_ANONYMOUS
+
+from . import app_settings
 
 
 class RatingManager(models.Manager):
@@ -29,15 +30,11 @@ class RatingManager(models.Manager):
         if isinstance(instance, Rating):
             raise TypeError("Rating manager 'rate' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
-        
-        if not getattr(settings, 'STAR_RATINGS_ANONYMOUS', False) and not user:
-            raise ValidationError(_('User is mandatory!'))
-        elif not ip:
-            raise ValidationError(_('IP address is mandatory!'))
+
         existing_rating = UserRating.objects.for_instance_by_user(instance, user, ip)
-        
+
         if existing_rating:
-            if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
+            if not app_settings.STAR_RATINGS_RERATE:
                 raise ValidationError(_('Already rated.'))
             existing_rating.score = score
             existing_rating.save()
@@ -67,7 +64,7 @@ class Rating(models.Model):
 
     @property
     def percentage(self):
-        return (self.average / STAR_RATINGS_RANGE) * 100
+        return (self.average / app_settings.STAR_RATINGS_RANGE) * 100
 
     def to_dict(self):
         return {
@@ -92,14 +89,24 @@ class Rating(models.Model):
 
 
 class UserRatingManager(models.Manager):
-    def for_instance_by_user(self, instance, user, ip):
+    def for_instance_by_user(self, instance, user=None, ip=None):
         ct = ContentType.objects.get_for_model(instance)
-        return self.filter(rating__content_type=ct, rating__object_id=instance.pk, user=user, ip=ip).first()
 
-    def has_rated(self, instance, user, ip):
+        if not user:
+            if not getattr(settings, 'STAR_RATINGS_ANONYMOUS', False):
+                raise ValueError(_('User is mandatory. Enable "STAR_RATINGS_ANONYMOUS" for anonymous ratings.'))
+
+            if not ip:
+                raise ValueError(_('IP is mandatory if no user is supplied.'))
+
+            return self.filter(rating__content_type=ct, rating__object_id=instance.pk, ip=ip).first()
+
+        return self.filter(rating__content_type=ct, rating__object_id=instance.pk, user=user).first()
+
+    def has_rated(self, instance, user=None, ip=None):
         if isinstance(instance, Rating):
             raise TypeError("UserRating manager 'has_rated' expects model to be rated, not UserRating model.")
-        rating = self.for_instance_by_user(instance, user, ip)
+        rating = self.for_instance_by_user(instance, user=user, ip=ip)
         return rating is not None
 
 
@@ -119,6 +126,6 @@ class UserRating(TimeStampedModel):
         unique_together = ['user', 'rating', 'ip']
 
     def __str__(self):
-        if getattr(settings, 'STAR_RATINGS_ANONYMOUS', False) is False:
+        if not app_settings.STAR_RATINGS_ANONYMOUS:
             return '{} rating {} for {}'.format(self.user, self.score, self.rating.content_object)
         return '{} rating {} for {}'.format(self.ip, self.score, self.rating.content_object)
