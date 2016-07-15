@@ -83,6 +83,9 @@ To prohibit users from altering their ratings set
 To change the number of rating stars, set ``STAR_RATINGS_RANGE``
 (defaults to 5)
 
+To enable anonymous rating set ``STAR_RATINGS_ANONYMOUS = True``. This will then store the ip address of the
+rater rather than user.
+
 Changing the star graphics
 --------------------------
 
