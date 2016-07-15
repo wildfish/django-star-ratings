@@ -28,7 +28,7 @@ class ForInstanceByUser(TestCase):
     def test_anon_ratings_is_true_user_and_ip_not_set___value_error_is_raised(self):
         foo = mommy.make(Foo)
 
-        with assertRaisesRegex(self, ValueError, 'IP is mandatory if no user is supplied.'):
+        with assertRaisesRegex(self, ValueError, "IP is mandatory. Disable 'STAR_RATINGS_ANONYMOUS' for user ratings."):
             UserRating.objects.for_instance_by_user(foo)
 
     @override_settings(STAR_RATINGS_ANONYMOUS=True)
