@@ -2,7 +2,7 @@ from decimal import Decimal
 import uuid
 from django import template
 from ..models import Rating, UserRating
-from ..app_settings import STAR_RATINGS_RANGE
+from ..app_settings import STAR_RATINGS_RANGE, STAR_RATINGS_ANONYMOUS
 
 register = template.Library()
 
@@ -15,8 +15,11 @@ def ratings(context, item, icon_height=32, icon_width=32):
         raise Exception('Make sure you have "django.core.context_processors.request" in "TEMPLATE_CONTEXT_PROCESSORS"')
 
     rating = Rating.objects.for_instance(item)
-    if request.user.is_authenticated():
-        user_rating = UserRating.objects.for_instance_by_user(item, request.user)
+    user = request.user.is_authenticated() and request.user or None
+    ip = request.META.get('REMOTE_ADDR') or '0.0.0.0'
+    
+    if request.user.is_authenticated() or STAR_RATINGS_ANONYMOUS:
+        user_rating = UserRating.objects.for_instance_by_user(item, user=user, ip=ip)
     else:
         user_rating = None
 
@@ -32,5 +35,6 @@ def ratings(context, item, icon_height=32, icon_width=32):
         'percentage': 100 * (rating.average / Decimal(STAR_RATINGS_RANGE)),
         'icon_height': icon_height,
         'icon_width': icon_width,
-        'id': 'dsr{}'.format(uuid.uuid4().hex)
+        'id': 'dsr{}'.format(uuid.uuid4().hex),
+        'anonymous_ratings': STAR_RATINGS_ANONYMOUS
     }
