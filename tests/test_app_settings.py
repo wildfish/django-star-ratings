@@ -1,4 +1,8 @@
-from django.test import TestCase, override_settings
+from django.test import override_settings
+from hypothesis import given
+from hypothesis.extra.django import TestCase
+from hypothesis.strategies import integers
+
 from star_ratings import app_settings
 
 
@@ -23,3 +27,21 @@ class AppSettingsDefaults(TestCase):
     @override_settings(STAR_RATINGS_ANONYMOUS=True)
     def test_anon_ratings_defined_in_the_settings___value_is_setting_value(self):
         self.assertTrue(app_settings.STAR_RATINGS_ANONYMOUS)
+
+    def test_star_height_not_defined_in_settings___defaults_to_32(self):
+        self.assertEqual(32, app_settings.STAR_RATINGS_STAR_HEIGHT)
+
+    @given(integers(min_value=1))
+    def test_star_height_set_in_the_settings___value_is_setting_value(self, height):
+        with override_settings(STAR_RATINGS_STAR_HEIGHT=height):
+            self.assertEqual(height, app_settings.STAR_RATINGS_STAR_HEIGHT)
+
+    @given(integers(min_value=1))
+    def test_star_width_not_defined_in_settings___defaults_to_star_height(self, height):
+        with override_settings(STAR_RATINGS_STAR_HEIGHT=height):
+            self.assertEqual(height, app_settings.STAR_RATINGS_STAR_WIDTH)
+
+    @given(integers(min_value=1), integers(min_value=1))
+    def test_star_width_defined_in_the_settings___value_is_setting_value(self, height, width):
+        with override_settings(STAR_RATINGS_STAR_HEIGHT=height, STAR_RATINGS_STAR_WIDTH=width):
+            self.assertEqual(width, app_settings.STAR_RATINGS_STAR_WIDTH)
