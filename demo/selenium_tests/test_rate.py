@@ -1,10 +1,13 @@
 from __future__ import division
+
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import override_settings
 from mock import patch
 from django.contrib.auth import get_user_model
 from hypothesis import given, settings
 from hypothesis.extra.django import TestCase
 from hypothesis.strategies import integers, lists
+from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.support.wait import WebDriverWait
 from .testcase import SeleniumTestCase
@@ -40,7 +43,7 @@ class RateTest(TestCase, SeleniumTestCase):
 
     @given(integers(min_value=1, max_value=10))
     def test_star_rating_range_is_set___rating_range_on_page_is_the_star_rating(self, value):
-        with patch('star_ratings.templatetags.ratings.STAR_RATINGS_RANGE', value):
+        with override_settings(STAR_RATINGS_RANGE=value):
             self.driver.get(self.live_server_url)
 
             background = self.driver.find_element_by_class_name('star-ratings-rating-background')

@@ -1,8 +1,6 @@
-import atexit
+import os
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from hypothesis import Settings
-import hypothesis
-import os
 from selenium import webdriver
 
 _sauce_username = os.environ.get('SAUCE_USERNAME', None)
@@ -142,8 +140,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         self.browser_tag = _browser_tag
         super(SeleniumTestCase, self).__init__(*args, **kwargs)
 
-    @property
-    def driver(self):
+    @classmethod
+    def setUpClass(cls):
         if not SeleniumTestCase._driver:
             if _use_remote_driver:
                 sauce_url = 'http://%s:%s@ondemand.saucelabs.com:80/wd/hub' % (_sauce_username, _sauce_access_key)
@@ -160,8 +158,17 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             else:
                 SeleniumTestCase._driver = webdriver.Chrome()
 
-            SeleniumTestCase._driver.implicitly_wait(self.selenium_implicit_wait)
+            SeleniumTestCase._driver.implicitly_wait(cls.selenium_implicit_wait)
 
+        super(SeleniumTestCase, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.cleanup_browser()
+        super(SeleniumTestCase, cls).tearDownClass()
+
+    @property
+    def driver(self):
         return SeleniumTestCase._driver
 
     def ignore_implicit_wait(self):
@@ -174,6 +181,4 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def cleanup_browser(cls):
         if cls._driver:
             cls._driver.quit()
-
-
-atexit.register(SeleniumTestCase.cleanup_browser)
+            cls._driver = None
