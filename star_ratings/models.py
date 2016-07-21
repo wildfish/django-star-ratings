@@ -14,15 +14,12 @@ from model_utils.models import TimeStampedModel
 from . import app_settings
 
 
-def _clean_user_and_ip(user, ip):
+def _clean_user(user):
     if not app_settings.STAR_RATINGS_ANONYMOUS:
         if not user:
             raise ValueError(_("User is mandatory. Enable 'STAR_RATINGS_ANONYMOUS' for anonymous ratings."))
-        return user, None
-    else:
-        if not ip:
-            raise ValueError(_("IP is mandatory. Disable 'STAR_RATINGS_ANONYMOUS' for user ratings."))
-        return None, ip
+        return user
+    return None
 
 
 class RatingManager(models.Manager):
@@ -42,8 +39,8 @@ class RatingManager(models.Manager):
             raise TypeError("Rating manager 'rate' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
 
-        user, ip = _clean_user_and_ip(user, ip)
-        existing_rating = UserRating.objects.for_instance_by_user(instance, user, ip)
+        user = _clean_user(user)
+        existing_rating = UserRating.objects.for_instance_by_user(instance, user)
 
         if existing_rating:
             if not app_settings.STAR_RATINGS_RERATE:
@@ -101,17 +98,19 @@ class Rating(models.Model):
 
 
 class UserRatingManager(models.Manager):
-    def for_instance_by_user(self, instance, user=None, ip=None):
+    def for_instance_by_user(self, instance, user=None):
         ct = ContentType.objects.get_for_model(instance)
-        user, ip = _clean_user_and_ip(user, ip)
-        return self.filter(rating__content_type=ct, rating__object_id=instance.pk, user=user, ip=ip).first()
+        user = _clean_user(user)
+        if user:
+            return self.filter(rating__content_type=ct, rating__object_id=instance.pk, user=user).first()
+        else:
+            return None
 
-    def has_rated(self, instance, user=None, ip=None):
+    def has_rated(self, instance, user=None):
         if isinstance(instance, Rating):
             raise TypeError("UserRating manager 'has_rated' expects model to be rated, not UserRating model.")
 
-        user, ip = _clean_user_and_ip(user, ip)
-        rating = self.for_instance_by_user(instance, user=user, ip=ip)
+        rating = self.for_instance_by_user(instance, user=user)
         return rating is not None
 
 
@@ -128,7 +127,7 @@ class UserRating(TimeStampedModel):
     objects = UserRatingManager()
 
     class Meta:
-        unique_together = ['user', 'rating', 'ip']
+        unique_together = ['user', 'rating']
 
     def __str__(self):
         if not app_settings.STAR_RATINGS_ANONYMOUS:

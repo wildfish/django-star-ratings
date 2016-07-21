@@ -16,10 +16,9 @@ def ratings(context, item, icon_height=32, icon_width=32):
 
     rating = Rating.objects.for_instance(item)
     user = request.user.is_authenticated() and request.user or None
-    ip = request.META.get('REMOTE_ADDR')
 
     if request.user.is_authenticated() or app_settings.STAR_RATINGS_ANONYMOUS:
-        user_rating = UserRating.objects.for_instance_by_user(item, user=user, ip=ip)
+        user_rating = UserRating.objects.for_instance_by_user(item, user=user)
     else:
         user_rating = None
 

@@ -25,22 +25,14 @@ class ForInstanceByUser(TestCase):
             UserRating.objects.for_instance_by_user(foo)
 
     @override_settings(STAR_RATINGS_ANONYMOUS=True)
-    def test_anon_ratings_is_true_user_and_ip_not_set___value_error_is_raised(self):
+    def test_anon_ratings_is_true___none_is_returned(self):
         foo = mommy.make(Foo)
 
-        with assertRaisesRegex(self, ValueError, "IP is mandatory. Disable 'STAR_RATINGS_ANONYMOUS' for user ratings."):
-            UserRating.objects.for_instance_by_user(foo)
+        Rating.objects.rate(foo, 1, ip='127.0.0.1')
+        Rating.objects.rate(foo, 1, ip='127.0.0.1')
 
-    @override_settings(STAR_RATINGS_ANONYMOUS=True)
-    def test_anon_ratings_is_true_user_not_set___rating_object_for_ip_is_returned(self):
-        foo = mommy.make(Foo)
-
-        Rating.objects.rate(foo, 1, user=mommy.make(get_user_model()), ip='127.0.0.1')
-        expected = Rating.objects.rate(foo, 1, ip='127.0.0.1').user_ratings.get(user=None, ip='127.0.0.1')
-
-        self.assertEqual(
-            expected,
-            UserRating.objects.for_instance_by_user(foo, ip='127.0.0.1'),
+        self.assertIsNone(
+            UserRating.objects.for_instance_by_user(foo),
         )
 
     def test_user_is_set___rating_object_for_is_returned(self):
