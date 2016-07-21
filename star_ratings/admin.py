@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-from .app_settings import STAR_RATINGS_RANGE
+
+from . import app_settings
 from .models import Rating, UserRating
 
 
@@ -29,7 +30,7 @@ class RatingAdmin(admin.ModelAdmin):
         html += "<span style='position: absolute; top: 0; left: 0; width: {}px; height: 10px; " + \
                 "background: url(/static/star-ratings/images/admin_stars.png)'>&nbsp;</span>"
         html += "</div>"
-        return html.format(STAR_RATINGS_RANGE * 10, obj.average * 10)
+        return html.format(app_settings.STAR_RATINGS_RANGE * 10, obj.average * 10)
 
     stars.allow_tags = True
     stars.short_description = _('Rating average')

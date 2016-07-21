@@ -4,6 +4,7 @@ from django.test import override_settings
 from hypothesis import given, Settings
 from hypothesis.strategies import lists, tuples
 from hypothesis.extra.django import TestCase
+from mock import patch
 from model_mommy import mommy
 from star_ratings.models import Rating
 from .models import Foo
@@ -117,3 +118,21 @@ class RatingManagerRate(TestCase):
 
         with assertRaisesRegex(self, TypeError, "Rating manager 'rate' expects model to be rated, not Rating model."):
             Rating.objects.rate(ratings, 2, self.user_a, '127.0.0.1')
+
+
+class RatingsForInstanceDeprication(TestCase):
+    def test_ratings_for_instance_is_called___deprication_warning_is_given(self):
+        foo = Foo.objects.create()
+
+        with patch('star_ratings.models.warn') as warn_mock:
+            Rating.objects.ratings_for_instance(foo)
+
+            warn_mock.assert_called_once_with("RatingManager method 'ratings_for_instance' has been renamed to 'for_instance'. Please change uses of 'Rating.objects.ratings_for_instance' to 'Rating.objects.for_instance' in your code.", DeprecationWarning)
+
+    def test_ratings_for_instance_is_called___for_instance_is_called_with_the_correct_instance(self):
+        foo = Foo.objects.create()
+
+        with patch('star_ratings.models.RatingManager.for_instance') as for_instance_mock:
+            Rating.objects.ratings_for_instance(foo)
+
+            for_instance_mock.assert_called_once_with(foo)

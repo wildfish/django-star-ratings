@@ -83,6 +83,16 @@ To prohibit users from altering their ratings set
 To change the number of rating stars, set ``STAR_RATINGS_RANGE``
 (defaults to 5)
 
+To enable anonymous rating set ``STAR_RATINGS_ANONYMOUS = True``.
+
+Anonymous Rating
+----------------
+
+If anonymous rating is enabled only the ip address for the rater will be stored (even if the user is logged in). When
+ a user rates an object a preexisting object will not be searched for, instead a new rating object will be created
+
+**If this value is changed your lookups will return different results!**
+
 Changing the star graphics
 --------------------------
 

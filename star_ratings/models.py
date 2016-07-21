@@ -10,7 +10,16 @@ from django.db.models import Avg, Count, Sum
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext as _
 from model_utils.models import TimeStampedModel
-from .app_settings import STAR_RATINGS_RANGE
+
+from . import app_settings
+
+
+def _clean_user(user):
+    if not app_settings.STAR_RATINGS_ANONYMOUS:
+        if not user:
+            raise ValueError(_("User is mandatory. Enable 'STAR_RATINGS_ANONYMOUS' for anonymous ratings."))
+        return user
+    return None
 
 
 class RatingManager(models.Manager):
@@ -22,16 +31,19 @@ class RatingManager(models.Manager):
         return ratings
 
     def ratings_for_instance(self, instance):
-        warn("RatingManager method 'for_instance' has been renamed to 'ratings_for_instance'. Please change uses of 'Rating.objects.ratings_for_instance' to 'Rating.objects.for_instance' in your code.", DeprecationWarning)
+        warn("RatingManager method 'ratings_for_instance' has been renamed to 'for_instance'. Please change uses of 'Rating.objects.ratings_for_instance' to 'Rating.objects.for_instance' in your code.", DeprecationWarning)
         return self.for_instance(instance)
 
-    def rate(self, instance, score, user, ip=None):
+    def rate(self, instance, score, user=None, ip=None):
         if isinstance(instance, Rating):
             raise TypeError("Rating manager 'rate' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
+
+        user = _clean_user(user)
         existing_rating = UserRating.objects.for_instance_by_user(instance, user)
+
         if existing_rating:
-            if getattr(settings, 'STAR_RATINGS_RERATE', True) is False:
+            if not app_settings.STAR_RATINGS_RERATE:
                 raise ValidationError(_('Already rated.'))
             existing_rating.score = score
             existing_rating.save()
@@ -61,7 +73,7 @@ class Rating(models.Model):
 
     @property
     def percentage(self):
-        return (self.average / STAR_RATINGS_RANGE) * 100
+        return (self.average / app_settings.STAR_RATINGS_RANGE) * 100
 
     def to_dict(self):
         return {
@@ -86,14 +98,19 @@ class Rating(models.Model):
 
 
 class UserRatingManager(models.Manager):
-    def for_instance_by_user(self, instance, user):
+    def for_instance_by_user(self, instance, user=None):
         ct = ContentType.objects.get_for_model(instance)
-        return self.filter(rating__content_type=ct, rating__object_id=instance.pk, user=user).first()
+        user = _clean_user(user)
+        if user:
+            return self.filter(rating__content_type=ct, rating__object_id=instance.pk, user=user).first()
+        else:
+            return None
 
-    def has_rated(self, instance, user):
+    def has_rated(self, instance, user=None):
         if isinstance(instance, Rating):
             raise TypeError("UserRating manager 'has_rated' expects model to be rated, not UserRating model.")
-        rating = self.for_instance_by_user(instance, user)
+
+        rating = self.for_instance_by_user(instance, user=user)
         return rating is not None
 
 
@@ -102,7 +119,7 @@ class UserRating(TimeStampedModel):
     """
     An individual rating of a user against a model.
     """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     ip = models.GenericIPAddressField(blank=True, null=True)
     score = models.PositiveSmallIntegerField()
     rating = models.ForeignKey(Rating, related_name='user_ratings')
@@ -113,4 +130,6 @@ class UserRating(TimeStampedModel):
         unique_together = ['user', 'rating']
 
     def __str__(self):
-        return '{} rating {} for {}'.format(self.user, self.score, self.rating.content_object)
+        if not app_settings.STAR_RATINGS_ANONYMOUS:
+            return '{} rating {} for {}'.format(self.user, self.score, self.rating.content_object)
+        return '{} rating {} for {}'.format(self.ip, self.score, self.rating.content_object)

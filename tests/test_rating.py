@@ -2,14 +2,14 @@ from random import random, randint
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from model_mommy import mommy
-from star_ratings.app_settings import STAR_RATINGS_RANGE
+from star_ratings import app_settings
 from star_ratings.models import Rating
 from .models import Foo
 
 
 class RatingToDict(TestCase):
     def test_fields_are_present_and_correct(self):
-        total = random() * STAR_RATINGS_RANGE
+        total = random() * app_settings.STAR_RATINGS_RANGE
         count = randint(1, 100)
         average = total / count
 
