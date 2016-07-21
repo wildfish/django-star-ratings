@@ -8,7 +8,7 @@ register = template.Library()
 
 
 @register.inclusion_tag('star_ratings/widget.html', takes_context=True)
-def ratings(context, item, icon_height=32, icon_width=32):
+def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, icon_width=app_settings.STAR_RATINGS_STAR_WIDTH):
     request = context.get('request')
 
     if request is None:

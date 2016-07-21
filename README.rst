@@ -71,8 +71,8 @@ Template tags
 
 The template tag takes two arguments:
 
--  ``icon_height``: defaults to 32
--  ``icon_width``: defaults to 32
+-  ``icon_height``: defaults to ``STAR_RATINGS_STAR_HEIGHT``
+-  ``icon_width``: defaults to ``STAR_RATINGS_STAR_WIDTH``
 
 Settings
 --------
@@ -93,6 +93,11 @@ If anonymous rating is enabled only the ip address for the rater will be stored 
 
 **If this value is changed your lookups will return different results!**
 
+To control the default size of stars in pixels set the values of ``STAR_RATINGS_STAR_HEIGHT`` and
+``STAR_RATINGS_STAR_WIDTH``. By default ``STAR_RATINGS_STAR_WIDTH`` is the same as
+``STAR_RATINGS_STAR_HEIGHT`` and ``STAR_RATINGS_STAR_HEIGHT`` defaults to 32.
+
+
 Changing the star graphics
 --------------------------
 
@@ -109,7 +114,7 @@ You can customize ratings widget by creating ``star_ratings/widget.html``. For e
 ::
 
     {% extends "star_ratings/widget_base.html" %}
-    {% block ratings_detail %}
+    {% block rating_detail %}
     Whatever you want
     {% endblock %}
 

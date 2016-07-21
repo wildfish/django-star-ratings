@@ -13,3 +13,11 @@ class Settings:
     @property
     def STAR_RATINGS_RERATE(self):
         return getattr(settings, 'STAR_RATINGS_RERATE', True)
+
+    @property
+    def STAR_RATINGS_STAR_HEIGHT(self):
+        return getattr(settings, 'STAR_RATINGS_STAR_HEIGHT', 32)
+
+    @property
+    def STAR_RATINGS_STAR_WIDTH(self):
+        return getattr(settings, 'STAR_RATINGS_STAR_WIDTH', self.STAR_RATINGS_STAR_HEIGHT)
