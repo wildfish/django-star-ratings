@@ -81,7 +81,7 @@ _remote_browsers = {
         'deviceName': 'Android Emulator',
         'version': '4.2',
     },
-    'android_4.1':{
+    'android_4.1': {
         'platform': 'Linux',
         'browserName': 'android',
         'deviceName': 'Android Emulator',

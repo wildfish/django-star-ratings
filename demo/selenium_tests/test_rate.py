@@ -1,13 +1,10 @@
 from __future__ import division
 
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import override_settings
-from mock import patch
 from django.contrib.auth import get_user_model
 from hypothesis import given, settings
 from hypothesis.extra.django import TestCase
 from hypothesis.strategies import integers, lists
-from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.support.wait import WebDriverWait
 from .testcase import SeleniumTestCase
