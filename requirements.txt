@@ -10,7 +10,7 @@ coverage==4.0.3
 django-braces==1.8.1
 django-model-utils==2.4
 django-webtest==1.7.8
-django==1.9
+django==1.10
 fancycompleter==0.4       # via pdbpp
 first==2.0.1              # via pip-tools
 flake8==2.5.1

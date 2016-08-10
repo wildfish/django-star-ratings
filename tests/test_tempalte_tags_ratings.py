@@ -1,5 +1,6 @@
 from decimal import Decimal
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory
 from hypothesis import given, Settings
 from hypothesis.extra.django import TestCase
@@ -69,8 +70,9 @@ class TemplateTagdRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
-        request.user.is_authenticated = lambda: True
+
+        request.user = get_user_model().objects.create_user(username='user', password='pass')
+        self.client.login(username='user', password='pass')
 
         res = ratings({
             'request': request,
@@ -82,10 +84,7 @@ class TemplateTagdRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
-        request.user.is_authenticated = lambda: False
-
-        Rating.objects.rate(item, 3, request.user)
+        request.user = AnonymousUser()
 
         res = ratings({
             'request': request,
@@ -97,8 +96,8 @@ class TemplateTagdRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
-        request.user.is_authenticated = lambda: True
+        request.user = get_user_model().objects.create_user(username='user', password='pass')
+        self.client.login(username='user', password='pass')
 
         rating = Rating.objects.rate(item, 3, request.user)
         user_rating = UserRating.objects.get(rating=rating, user=request.user)
