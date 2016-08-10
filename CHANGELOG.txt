@@ -1,3 +1,12 @@
+0.5.3 (2016-08-10)
+------------------
+
+* Added support for anonymous rating (thanks @urtzai)
+* Fixed issue with parsing floats (thanks @anex)
+* Added support for setting default star dimensions
+* Django 1.10 support
+
+
 0.5.2 (2016-04-12)
 ------------------
 
