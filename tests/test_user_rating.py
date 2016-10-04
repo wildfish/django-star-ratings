@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+from hypothesis import given
+from hypothesis.strategies import text
 from random import randint
 from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
@@ -28,6 +30,17 @@ class UserRatingStr(TestCase):
         user_rating = rating.user_ratings.get(ip='127.0.0.1')
 
         self.assertEqual('{} rating {} for {}'.format('127.0.0.1', user_rating.score, rating.content_object, rating.content_object), str(user_rating))
+
+    @override_settings(STAR_RATINGS_ANONYMOUS=False)
+    @given(text())
+    def test_object_name_contains_any_unicode___str_does_not_error(self, name):
+        user = mommy.make(get_user_model())
+        foo = mommy.make(Foo, name=name)
+
+        rating = Rating.objects.rate(foo, 1, user, '127.0.0.1')
+        user_rating = rating.user_ratings.get(ip='127.0.0.1')
+
+        self.assertEqual('{} rating {} for {}'.format(user, user_rating.score, rating.content_object, rating.content_object), str(user_rating))
 
 
 class UserRatingHasRated(TestCase):

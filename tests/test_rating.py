@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+from hypothesis import given
+from hypothesis.strategies import text
 from random import random, randint
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -33,6 +35,14 @@ class RatingToDict(TestCase):
 class RatingStr(TestCase):
     def test_result_is_the_same_as_the_context_object(self):
         foo = mommy.make(Foo)
+
+        ratings = Rating.objects.for_instance(foo)
+
+        self.assertEqual(str(foo), str(ratings))
+
+    @given(text())
+    def test_object_name_contains_any_unicode___str_does_not_error(self, name):
+        foo = mommy.make(Foo, name=name)
 
         ratings = Rating.objects.for_instance(foo)
 
