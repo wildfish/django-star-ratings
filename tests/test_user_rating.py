@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from random import randint
 from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings

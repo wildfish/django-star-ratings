@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 # From https://raw.githubusercontent.com/tomchristie/django-rest-framework/master/tests/conftest.py
 def pytest_configure():
     from django.conf import settings

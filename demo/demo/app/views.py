@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.views.generic import DetailView, TemplateView
 from .models import Foo
 

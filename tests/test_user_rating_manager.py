@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 from model_mommy import mommy

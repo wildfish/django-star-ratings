@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import json
 from random import randint
 from django.conf import settings

@@ -1,4 +1,4 @@
-from __future__ import division
+from __future__ import division, unicode_literals
 from decimal import Decimal
 from warnings import warn
 from django.conf import settings
