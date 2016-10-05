@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from hypothesis import example
 from hypothesis import given
 from hypothesis.strategies import text
 from random import randint
@@ -19,7 +20,7 @@ class UserRatingStr(TestCase):
         rating = Rating.objects.rate(foo, 1, user, '0.0.0.0')
         user_rating = rating.user_ratings.get(user=user)
 
-        self.assertEqual('{} rating {} for {}'.format(user, user_rating.score, rating.content_object, rating.content_object), str(user_rating))
+        self.assertEqual('{} rating {} for {}'.format(user, user_rating.score, foo), str(user_rating))
 
     @override_settings(STAR_RATINGS_ANONYMOUS=True)
     def test_anon_is_true___result_contains_ip_and_rating_name(self):
@@ -29,18 +30,21 @@ class UserRatingStr(TestCase):
         rating = Rating.objects.rate(foo, 1, user, '127.0.0.1')
         user_rating = rating.user_ratings.get(ip='127.0.0.1')
 
-        self.assertEqual('{} rating {} for {}'.format('127.0.0.1', user_rating.score, rating.content_object, rating.content_object), str(user_rating))
+        self.assertEqual('{} rating {} for {}'.format('127.0.0.1', user_rating.score, foo), str(user_rating))
 
     @override_settings(STAR_RATINGS_ANONYMOUS=False)
-    @given(text())
+    @given(text(min_size=1))
     def test_object_name_contains_any_unicode___str_does_not_error(self, name):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo, name=name)
 
-        rating = Rating.objects.rate(foo, 1, user, '127.0.0.1')
-        user_rating = rating.user_ratings.get(ip='127.0.0.1')
+        rating = Rating.objects.rate(foo, 1, user, '0.0.0.0')
+        user_rating = rating.user_ratings.get(user=user)
 
-        self.assertEqual('{} rating {} for {}'.format(user, user_rating.score, rating.content_object, rating.content_object), str(user_rating))
+        try:
+            str(user_rating)
+        except:
+            self.fail('"str" raised when it should\'nt')
 
 
 class UserRatingHasRated(TestCase):

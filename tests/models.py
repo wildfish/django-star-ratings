@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
-from requests.packages.urllib3.packages.six import python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible
 
 from star_ratings.models import Rating
 

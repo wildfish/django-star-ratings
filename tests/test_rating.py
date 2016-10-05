@@ -40,7 +40,7 @@ class RatingStr(TestCase):
 
         self.assertEqual(str(foo), str(ratings))
 
-    @given(text())
+    @given(text(min_size=1))
     def test_object_name_contains_any_unicode___str_does_not_error(self, name):
         foo = mommy.make(Foo, name=name)
 
