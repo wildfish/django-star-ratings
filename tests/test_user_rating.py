@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-from hypothesis import example
 from hypothesis import given
 from hypothesis.strategies import text
 from random import randint
