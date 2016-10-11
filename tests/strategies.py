@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from hypothesis.strategies import integers
 from star_ratings import app_settings
 

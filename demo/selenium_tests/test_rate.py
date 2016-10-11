@@ -1,4 +1,4 @@
-from __future__ import division
+from __future__ import division, unicode_literals
 
 from django.test import override_settings
 from django.contrib.auth import get_user_model

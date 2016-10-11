@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from random import randint
 from django.contrib.admin import site
 from django.test import TestCase
