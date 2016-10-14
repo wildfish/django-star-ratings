@@ -62,7 +62,8 @@ setup(
     install_requires=[
         'django',
         'django-model-utils',
-        'django-braces'
+        'django-braces',
+        'swapper',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',

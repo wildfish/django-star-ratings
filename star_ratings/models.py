@@ -1,5 +1,7 @@
 from __future__ import division, unicode_literals
 from decimal import Decimal
+
+import swapper
 from warnings import warn
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -11,7 +13,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext as _
 from model_utils.models import TimeStampedModel
 
-from . import app_settings
+from . import app_settings, get_star_ratings_rating_model_name
 
 
 def _clean_user(user):
@@ -70,6 +72,7 @@ class Rating(models.Model):
 
     class Meta:
         unique_together = ['content_type', 'object_id']
+        swappable = swapper.swappable_setting('star_ratings', 'Rating')
 
     @property
     def percentage(self):
@@ -122,7 +125,7 @@ class UserRating(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     ip = models.GenericIPAddressField(blank=True, null=True)
     score = models.PositiveSmallIntegerField()
-    rating = models.ForeignKey(Rating, related_name='user_ratings')
+    rating = models.ForeignKey(get_star_ratings_rating_model_name(), related_name='user_ratings')
 
     objects = UserRatingManager()
 

@@ -14,3 +14,4 @@ hypothesis
 pip-tools
 selenium
 mock
+swapper
