@@ -4,14 +4,14 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory
-from hypothesis import given, Settings
+from hypothesis import given, settings
 from hypothesis.extra.django import TestCase
 from hypothesis.strategies import lists, integers
 from model_mommy import mommy
 from six import assertRaisesRegex
 from tests.strategies import scores
-from star_ratings import app_settings
-from star_ratings.models import Rating, UserRating
+from star_ratings import app_settings, get_star_ratings_rating_model
+from star_ratings.models import UserRating
 from star_ratings.templatetags.ratings import ratings
 from tests.models import Foo
 
@@ -27,13 +27,13 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertIsInstance(res['rating'], Rating)
+        self.assertIsInstance(res['rating'], get_star_ratings_rating_model())
         self.assertEqual(item, res['rating'].content_object)
 
     def test_item_is_rated___rating_object_for_item_is_returned(self):
         item = mommy.make(Foo)
 
-        rating = Rating.objects.for_instance(item)
+        rating = get_star_ratings_rating_model().objects.for_instance(item)
 
         request = RequestFactory().get('/')
         request.user = mommy.make(get_user_model())
@@ -101,7 +101,7 @@ class TemplateTagdRatings(TestCase):
         request.user = get_user_model().objects.create_user(username='user', password='pass')
         self.client.login(username='user', password='pass')
 
-        rating = Rating.objects.rate(item, 3, request.user)
+        rating = get_star_ratings_rating_model().objects.rate(item, 3, request.user)
         user_rating = UserRating.objects.get(rating=rating, user=request.user)
 
         res = ratings({
@@ -134,7 +134,7 @@ class TemplateTagdRatings(TestCase):
 
         self.assertEqual(app_settings.STAR_RATINGS_RANGE, res['star_count'])
 
-    @given(scores=lists(scores()), settings=Settings(max_examples=5))
+    @given(scores=lists(scores()), settings=settings(max_examples=5))
     def test_several_ratings_are_made___percentage_is_correct_in_result(self, scores):
         item = mommy.make(Foo)
 
@@ -142,9 +142,9 @@ class TemplateTagdRatings(TestCase):
         request.user = mommy.make(get_user_model())
 
         for score in scores:
-            Rating.objects.rate(item, score, mommy.make(get_user_model()))
+            get_star_ratings_rating_model().objects.rate(item, score, mommy.make(get_user_model()))
 
-        rating = Rating.objects.for_instance(item)
+        rating = get_star_ratings_rating_model().objects.for_instance(item)
 
         res = ratings({
             'request': request,

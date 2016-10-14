@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 from decimal import Decimal
 import uuid
 from django import template
-from ..models import Rating, UserRating
-from .. import app_settings
+from ..models import UserRating
+from .. import app_settings, get_star_ratings_rating_model
 
 register = template.Library()
 
@@ -16,7 +16,7 @@ def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, ic
     if request is None:
         raise Exception('Make sure you have "django.core.context_processors.request" in "TEMPLATE_CONTEXT_PROCESSORS"')
 
-    rating = Rating.objects.for_instance(item)
+    rating = get_star_ratings_rating_model().objects.for_instance(item)
     user = request.user.is_authenticated() and request.user or None
 
     if request.user.is_authenticated() or app_settings.STAR_RATINGS_ANONYMOUS:

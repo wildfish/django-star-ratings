@@ -6,8 +6,7 @@ from random import random, randint
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from model_mommy import mommy
-from star_ratings import app_settings
-from star_ratings.models import Rating
+from star_ratings import app_settings, get_star_ratings_rating_model
 from .models import Foo
 
 
@@ -18,7 +17,7 @@ class RatingToDict(TestCase):
         average = total / count
 
         rating = mommy.make(
-            Rating,
+            get_star_ratings_rating_model(),
             count=count,
             total=total,
             average=average,
@@ -36,7 +35,7 @@ class RatingStr(TestCase):
     def test_result_is_the_same_as_the_context_object(self):
         foo = mommy.make(Foo)
 
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
 
         self.assertEqual(str(foo), str(ratings))
 
@@ -44,7 +43,7 @@ class RatingStr(TestCase):
     def test_object_name_contains_any_unicode___str_does_not_error(self, name):
         foo = mommy.make(Foo, name=name)
 
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
 
         self.assertEqual(str(foo), str(ratings))
 
@@ -56,12 +55,12 @@ class RatingOrdering(TestCase):
         foo_b = self.foo = Foo.objects.create(name='foo b')
 
         # Avg. rating: 2.5
-        Rating.objects.rate(foo_a, 4, user_a, '127.0.0.1')
-        Rating.objects.rate(foo_a, 1, user_b, '127.0.0.1')
+        get_star_ratings_rating_model().objects.rate(foo_a, 4, user_a, '127.0.0.1')
+        get_star_ratings_rating_model().objects.rate(foo_a, 1, user_b, '127.0.0.1')
 
         # Avg. rating: 2
-        Rating.objects.rate(foo_b, 1, user_b, '127.0.0.1')
-        Rating.objects.rate(foo_b, 3, user_a, '127.0.0.1')
+        get_star_ratings_rating_model().objects.rate(foo_b, 1, user_b, '127.0.0.1')
+        get_star_ratings_rating_model().objects.rate(foo_b, 3, user_a, '127.0.0.1')
 
         foos = Foo.objects.filter(ratings__isnull=False).order_by('ratings__average')
         self.assertEqual(foos[0].pk, foo_b.pk)
@@ -73,13 +72,13 @@ class RatingOrdering(TestCase):
         foo_b = self.foo = Foo.objects.create(name='foo b')
 
         # 2 ratings
-        Rating.objects.rate(foo_a, 4, user_a, '127.0.0.1')
-        Rating.objects.rate(foo_a, 1, user_a, '127.0.0.1')
+        get_star_ratings_rating_model().objects.rate(foo_a, 4, user_a, '127.0.0.1')
+        get_star_ratings_rating_model().objects.rate(foo_a, 1, user_a, '127.0.0.1')
 
         # 3 ratings
-        Rating.objects.rate(foo_b, 2, user_b, '127.0.0.1')
-        Rating.objects.rate(foo_b, 3, user_b, '127.0.0.1')
-        Rating.objects.rate(foo_b, 2, user_b, '127.0.0.1')
+        get_star_ratings_rating_model().objects.rate(foo_b, 2, user_b, '127.0.0.1')
+        get_star_ratings_rating_model().objects.rate(foo_b, 3, user_b, '127.0.0.1')
+        get_star_ratings_rating_model().objects.rate(foo_b, 2, user_b, '127.0.0.1')
 
         foos = Foo.objects.filter(ratings__isnull=False).order_by('ratings__count')
         self.assertEqual(foos[0].pk, foo_a.pk)
@@ -91,10 +90,10 @@ class RatingOrdering(TestCase):
         foo_b = self.foo = Foo.objects.create(name='foo b')
 
         # total rating: 4
-        Rating.objects.rate(foo_a, 4, user, '127.0.0.1')
+        get_star_ratings_rating_model().objects.rate(foo_a, 4, user, '127.0.0.1')
 
         # total rating: 3
-        Rating.objects.rate(foo_b, 3, user, '127.0.0.1')
+        get_star_ratings_rating_model().objects.rate(foo_b, 3, user, '127.0.0.1')
 
         foos = Foo.objects.filter(ratings__isnull=False).order_by('ratings__total')
         self.assertEqual(foos[1].pk, foo_a.pk)

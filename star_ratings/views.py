@@ -5,13 +5,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import View
 
-from . import app_settings
-from .models import Rating
+from . import app_settings, get_star_ratings_rating_model
 import json
 
 
 class Rate(View):
-    model = Rating
+    model = get_star_ratings_rating_model()
 
     def get_object(self):
         """
