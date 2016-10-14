@@ -1,10 +1,11 @@
 from __future__ import unicode_literals
 
 from hypothesis import given
+from hypothesis.extra.django import TestCase
 from hypothesis.strategies import text
 from random import randint
 from django.contrib.auth import get_user_model
-from django.test import TestCase, override_settings
+from django.test import override_settings
 from model_mommy import mommy
 from star_ratings import get_star_ratings_rating_model
 from star_ratings.models import UserRating

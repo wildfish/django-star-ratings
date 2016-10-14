@@ -134,7 +134,8 @@ class TemplateTagdRatings(TestCase):
 
         self.assertEqual(app_settings.STAR_RATINGS_RANGE, res['star_count'])
 
-    @given(scores=lists(scores()), settings=settings(max_examples=5))
+    @given(scores=lists(scores()))
+    @settings(max_examples=5)
     def test_several_ratings_are_made___percentage_is_correct_in_result(self, scores):
         item = mommy.make(Foo)
 

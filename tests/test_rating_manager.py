@@ -62,7 +62,8 @@ class RatingManagerRate(TestCase):
 
         self.assertEqual(score, rating.score)
 
-    @given(lists(scores(), min_size=2), settings=settings(max_examples=5))
+    @given(lists(scores(), min_size=2))
+    @settings(max_examples=5)
     def test_multiple_users_rating_the_object___aggregates_are_updated(self, scores):
         ratings = None
         for score in scores:
@@ -72,7 +73,8 @@ class RatingManagerRate(TestCase):
         self.assertAlmostEqual(ratings.total, sum(scores))
         self.assertAlmostEqual(ratings.average, mean(scores))
 
-    @given(lists(scores(), min_size=2), settings=settings(max_examples=5))
+    @given(lists(scores(), min_size=2))
+    @settings(max_examples=5)
     def test_deleting_the_rating___aggregates_are_updated(self, scores):
         ratings = None
         for score in scores:

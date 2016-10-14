@@ -76,7 +76,8 @@ class RateTest(TestCase, SeleniumTestCase):
         self.assertEqual(len(scores), int(self.count_elem.text))
 
     @override_settings(STAR_RATINGS_RERATE=True)
-    @given(lists(integers(min_value=1, max_value=5), unique_by=lambda x: x, min_size=2, max_size=2), settings=settings.Settings(max_examples=10))
+    @given(lists(integers(min_value=1, max_value=5), unique_by=lambda x: x, min_size=2, max_size=2))
+    @settings(max_examples=10)
     def test_rerate_is_true___the_user_is_able_to_change_their_rating(self, values):
         first, second = values
 
@@ -93,7 +94,8 @@ class RateTest(TestCase, SeleniumTestCase):
         self.assertEqual(1, int(self.count_elem.text))
 
     @override_settings(STAR_RATINGS_RERATE=False)
-    @given(lists(integers(min_value=1, max_value=5), unique_by=lambda x: x, min_size=2, max_size=2), settings=settings.Settings(max_examples=10))
+    @given(lists(integers(min_value=1, max_value=5), unique_by=lambda x: x, min_size=2, max_size=2))
+    @settings(max_examples=10)
     def test_rerate_is_false___the_user_is_not_able_to_change_their_rating(self, values):
         first, second = values
 
