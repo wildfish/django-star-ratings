@@ -7,7 +7,6 @@ from decimal import Decimal
 import model_utils.fields
 import django.utils.timezone
 from django.conf import settings
-from django.db.migrations.migration import SwappableTuple
 
 dependancies = [
     migrations.swappable_dependency(settings.AUTH_USER_MODEL),
@@ -34,7 +33,7 @@ class Migration(migrations.Migration):
                 ('content_type', models.ForeignKey(blank=True, null=True, to='contenttypes.ContentType')),
             ],
             options={
-                'swappable': swapper.swappable_setting('star_rating', 'Rating')
+                'swappable': swapper.swappable_setting('star_ratings', 'Rating')
             },
             bases=(models.Model,),
         ),
