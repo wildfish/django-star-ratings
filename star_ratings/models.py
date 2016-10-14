@@ -56,7 +56,7 @@ class RatingManager(models.Manager):
 
 
 @python_2_unicode_compatible
-class Rating(models.Model):
+class AbstractBaseRating(models.Model):
     """
     Attaches Rating models and running counts to the model being rated via a generic relation.
     """
@@ -72,7 +72,7 @@ class Rating(models.Model):
 
     class Meta:
         unique_together = ['content_type', 'object_id']
-        swappable = swapper.swappable_setting('star_ratings', 'Rating')
+        abstract = True
 
     @property
     def percentage(self):
@@ -98,6 +98,11 @@ class Rating(models.Model):
         self.total = aggregates.get('total') or 0
         self.average = aggregates.get('average') or 0.0
         self.save()
+
+
+class Rating(AbstractBaseRating):
+    class Meta(AbstractBaseRating.Meta):
+        swappable = swapper.swappable_setting('star_ratings', 'Rating')
 
 
 class UserRatingManager(models.Manager):
