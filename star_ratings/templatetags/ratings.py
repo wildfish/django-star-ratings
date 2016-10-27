@@ -10,7 +10,7 @@ register = template.Library()
 
 
 @register.inclusion_tag('star_ratings/widget.html', takes_context=True)
-def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, icon_width=app_settings.STAR_RATINGS_STAR_WIDTH):
+def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, icon_width=app_settings.STAR_RATINGS_STAR_WIDTH, read_only=False):
     request = context.get('request')
 
     if request is None:
@@ -37,5 +37,7 @@ def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, ic
         'icon_height': icon_height,
         'icon_width': icon_width,
         'id': 'dsr{}'.format(uuid.uuid4().hex),
-        'anonymous_ratings': app_settings.STAR_RATINGS_ANONYMOUS
+        'anonymous_ratings': app_settings.STAR_RATINGS_ANONYMOUS,
+        'read_only': read_only,
+        'editable': not read_only and (request.user.is_authenticated() or app_settings.STAR_RATINGS_ANONYMOUS)
     }
