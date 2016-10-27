@@ -73,6 +73,7 @@ The template tag takes two arguments:
 
 -  ``icon_height``: defaults to ``STAR_RATINGS_STAR_HEIGHT``
 -  ``icon_width``: defaults to ``STAR_RATINGS_STAR_WIDTH``
+-  ``read_only``: overrides the ``editable`` behaviour to make the widget read only
 
 Settings
 --------

@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory
+from django.test import override_settings
 from hypothesis import given, Settings
 from hypothesis.extra.django import TestCase
 from hypothesis.strategies import lists, integers
@@ -224,3 +225,58 @@ class TemplateTagdRatings(TestCase):
 
         with assertRaisesRegex(self, Exception, 'Make sure you have "django.core.context_processors.request" in "TEMPLATE_CONTEXT_PROCESSORS"'):
             ratings({}, item)
+
+    @override_settings(STAR_RATINGS_ANONYMOUS=False)
+    def test_read_only_is_false_user_is_not_authenticated_anon_rating_is_false___editable_is_false(self):
+        item = mommy.make(Foo)
+
+        request = RequestFactory().get('/')
+        request.user = AnonymousUser()
+
+        res = ratings({
+            'request': request,
+        }, item, read_only=False)
+
+        self.assertFalse(res['editable'])
+        self.assertFalse(res['read_only'])
+
+    @override_settings(STAR_RATINGS_ANONYMOUS=False)
+    def test_read_only_is_false_user_is_authenticated_anon_rating_is_false___editable_is_true(self):
+        item = mommy.make(Foo)
+
+        request = RequestFactory().get('/')
+        request.user = mommy.make(get_user_model())
+
+        res = ratings({
+            'request': request,
+        }, item, read_only=False)
+
+        self.assertTrue(res['editable'])
+        self.assertFalse(res['read_only'])
+
+    @override_settings(STAR_RATINGS_ANONYMOUS=True)
+    def test_read_only_is_false_user_is_not_authenticated_anon_rating_is_true___editable_is_true(self):
+        item = mommy.make(Foo)
+
+        request = RequestFactory().get('/')
+        request.user = AnonymousUser()
+
+        res = ratings({
+            'request': request,
+        }, item, read_only=False)
+
+        self.assertTrue(res['editable'])
+        self.assertFalse(res['read_only'])
+
+    def test_read_only_is_set_to_true___editable_is_false(self):
+        item = mommy.make(Foo)
+
+        request = RequestFactory().get('/')
+        request.user = mommy.make(get_user_model())
+
+        res = ratings({
+            'request': request,
+        }, item, read_only=True)
+
+        self.assertFalse(res['editable'])
+        self.assertTrue(res['read_only'])
