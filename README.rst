@@ -1,11 +1,14 @@
 django-star-ratings
 ===================
 
-|Build Status| |codecov.io|
+|Build Status| |codecov.io| |Documentation Status|
 
 Python 3 compatible ratings for Django.
 
 Add ratings to any Django model with a template tag.
+
+See full `documentation
+<http://django-star-ratings.readthedocs.io/en/latest/?badge=latest/>`_.
 
 Installation
 ------------
@@ -151,3 +154,7 @@ To run the test use:
    :target: https://travis-ci.org/wildfish/django-star-ratings
 .. |codecov.io| image:: http://codecov.io/github/wildfish/django-star-ratings/coverage.svg?branch=master
    :target: http://codecov.io/github/wildfish/django-star-ratings?branch=master
+.. |Documentation Status| image:: https://readthedocs.org/projects/django-star-ratings/badge/?version=latest
+   :target: http://django-star-ratings.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+.. |Docs| :target: https://django-configurations.readthedocs.io/en/latest/
