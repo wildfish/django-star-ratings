@@ -10,7 +10,7 @@
         background-position: -{{ icon_width }}px 0;
     }
 
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and editable %}
     #{{ id }} .star-ratings-rating-full:hover, #{{ id }} .star-ratings-rating-empty:hover {
         background-position: -{{ icon_width|add:icon_width }}px 0;
     }
@@ -26,6 +26,8 @@
                         <a href="{% url 'ratings:rate' rating.content_type_id rating.object_id %}?return={{ request.path }}" data-score="{{ star }}" class="star-ratings-rate-action">
                             <span class="star-ratings-rating-empty"></span>
                         </a>
+                        {% elif user.is_authenticated %}
+                            <span class="star-ratings-rating-empty"></span>
                         {% else %}
                             <span class="star-ratings-rating-empty" title="{% trans 'Log in to rate' as title_login %}{{ title_login|escape }}"></span>
                         {% endif %}
