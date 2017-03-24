@@ -55,7 +55,8 @@ class TestViewRate(TestCase):
         self.post_json(url, {'score': score})
 
         ct = ContentType.objects.get_for_model(foo)
-        assert UserRating.objects.filter(rating__object_id=foo.pk, rating__content_type=ct, score=score, ip='127.0.0.1').exists()
+
+        self.assertTrue(UserRating.objects.filter(rating__object_id=foo.pk, rating__content_type=ct, score=score, ip='127.0.0.1').exists())
 
     def test_user_is_logged_in_and_doesnt_already_have_a_rating___rating_is_created(self):
         user = self.get_user()
@@ -68,7 +69,8 @@ class TestViewRate(TestCase):
         self.post_json(url, {'score': score}, user=user)
 
         ct = ContentType.objects.get_for_model(foo)
-        assert UserRating.objects.filter(user=user, rating__object_id=foo.pk, rating__content_type=ct, score=score).exists()
+
+        self.assertTrue(UserRating.objects.filter(user=user, rating__object_id=foo.pk, rating__content_type=ct, score=score).exists())
 
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_no_next_url_is_given___redirected_to_root(self):
         user = self.get_user()
@@ -106,7 +108,8 @@ class TestViewRate(TestCase):
         self.post_json(url, {'score': score}, user=user, xhr=True)
 
         ct = ContentType.objects.get_for_model(foo)
-        assert UserRating.objects.filter(user=user, rating__object_id=foo.pk, rating__content_type=ct, score=score).exists()
+
+        self.assertTrue(UserRating.objects.filter(user=user, rating__object_id=foo.pk, rating__content_type=ct, score=score).exists())
 
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_request_is_ajax___response_is_updated_aggregate_data(self):
         user = self.get_user()
@@ -128,8 +131,9 @@ class TestViewRate(TestCase):
         try:
             json_resp = response.json()
         except AttributeError:
-            json_resp = json.loads(response.content)
-        assert expected == json_resp
+            json_resp = json.loads(response.content.decode())
+
+        self.assertEqual(expected, json_resp)
 
     @override_settings(STAR_RATINGS_RERATE=True)
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true___rating_is_updated(self):
@@ -188,6 +192,7 @@ class TestViewRate(TestCase):
         self.post_json(url, {'score': score}, user=user, xhr=True)
 
         rating = UserRating.objects.get(pk=rating.pk)
+
         self.assertEqual(score, rating.score)
 
     @override_settings(STAR_RATINGS_RERATE=True)
@@ -213,8 +218,9 @@ class TestViewRate(TestCase):
         try:
             json_resp = response.json()
         except AttributeError:
-            json_resp = json.loads(response.content)
-        assert expected == json_resp
+            json_resp = json.loads(response.content.decode())
+
+        self.assertEqual(expected, json_resp)
 
     @override_settings(STAR_RATINGS_RERATE=False)
     def test_user_is_logged_in_already_has_a_rating_rerate_is_false___rating_is_not_changed(self):
@@ -230,6 +236,7 @@ class TestViewRate(TestCase):
         self.post_json(url, {'score': score}, user=user)
 
         rating = UserRating.objects.get(pk=rating.pk)
+
         self.assertEqual(orig_score, rating.score)
 
     @override_settings(STAR_RATINGS_RERATE=False)
