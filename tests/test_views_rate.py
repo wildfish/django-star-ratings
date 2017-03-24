@@ -1,21 +1,20 @@
 from __future__ import unicode_literals
 
 import json
-import unittest
 import pytest
 from random import randint
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-from django.test import override_settings, Client
+from django.test import override_settings, Client, TestCase
 from model_mommy import mommy
 from star_ratings.models import Rating, UserRating
 from .models import Foo
 
 
 @pytest.mark.django_db
-class TestViewRate(unittest.TestCase):
+class TestViewRate(TestCase):
     csrf_checks = False
     client = Client(REMOTE_ADDR='127.0.0.1')
 
@@ -43,8 +42,7 @@ class TestViewRate(unittest.TestCase):
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
         response = self.post_json(url, {'score': 1})
 
-        assert response.status_code == 302
-        assert settings.LOGIN_URL + '?next=' + url in response.url
+        self.assertRedirects(response, settings.LOGIN_URL + '?next=' + url, fetch_redirect_response=False)
 
     @override_settings(STAR_RATINGS_ANONYMOUS=True)
     def test_view_is_called_when_nobody_is_logged_in_and_anon_ratings_is_true___rating_is_created(self):
@@ -82,8 +80,7 @@ class TestViewRate(unittest.TestCase):
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
         response = self.post_json(url, {'score': score}, user=user)
 
-        assert response.status_code == 302
-        assert response.url == '/'
+        self.assertRedirects(response, '/', fetch_redirect_response=False)
 
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_next_url_is_given___redirected_to_next(self):
         user = self.get_user()
@@ -95,8 +92,7 @@ class TestViewRate(unittest.TestCase):
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
         response = self.post_json(url, {'score': score}, user=user)
 
-        assert response.status_code == 302
-        assert '/foo/bar' in response.url
+        self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
 
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_request_is_ajax___rating_is_created(self):
         user = self.get_user()
@@ -148,7 +144,8 @@ class TestViewRate(unittest.TestCase):
         self.post_json(url, {'score': score}, user=user)
 
         rating = UserRating.objects.get(pk=rating.pk)
-        assert score == rating.score
+
+        self.assertEqual(score, rating.score)
 
     @override_settings(STAR_RATINGS_RERATE=True)
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true___redirected_to_root(self):
@@ -162,8 +159,7 @@ class TestViewRate(unittest.TestCase):
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
         response = self.post_json(url, {'score': score}, user=user)
 
-        assert response.status_code == 302
-        assert response.url == '/'
+        self.assertRedirects(response, '/', fetch_redirect_response=False)
 
     @override_settings(STAR_RATINGS_RERATE=True)
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true___redirected_to_next(self):
@@ -177,8 +173,7 @@ class TestViewRate(unittest.TestCase):
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
         response = self.post_json(url, {'score': score}, user=user)
 
-        assert response.status_code == 302
-        assert '/foo/bar' in response.url
+        self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
 
     @override_settings(STAR_RATINGS_RERATE=True)
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true_request_is_ajax___rating_is_updated(self):
@@ -249,8 +244,7 @@ class TestViewRate(unittest.TestCase):
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
         response = self.post_json(url, {'score': score}, user=user)
 
-        assert response.status_code == 302
-        assert '/foo/bar' in response.url
+        self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
 
     @override_settings(STAR_RATINGS_RERATE=False)
     def test_user_is_logged_in_already_has_a_rating_rerate_is_false_request_is_ajax___rating_is_not_changed(self):
