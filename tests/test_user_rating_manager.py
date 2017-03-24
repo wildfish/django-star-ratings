@@ -48,3 +48,18 @@ class ForInstanceByUser(TestCase):
             expected,
             UserRating.objects.for_instance_by_user(foo, user=user),
         )
+
+
+class BulkCreate(TestCase):
+    def test_bulk_create(self):
+        foo = mommy.make(Foo, name='name')
+        rating = Rating.objects.rate(foo)
+        user_a, user_b = mommy.make(get_user_model(), _quantity=2)
+
+        data = [
+            UserRating(user=user_a, ip='127.0.0.1', score=3, rating=rating),
+            UserRating(user=user_b, ip='127.0.0.2', score=3, rating=rating),
+        ]
+
+        created = UserRating.objects.bulk_create(data)
+        self.assertEqual(len(created), 2)

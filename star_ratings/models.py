@@ -52,12 +52,6 @@ class RatingManager(models.Manager):
             rating, created = self.get_or_create(content_type=ct, object_id=instance.pk)
             return UserRating.objects.create(user=user, score=score, rating=rating, ip=ip).rating
 
-    def bulk_create(self, objs, batch_size=None):
-        objs = super(RatingManager, self).bulk_create(objs, batch_size=None)
-        for obj in objs:
-            obj.calculate
-        return objs
-
 
 @python_2_unicode_compatible
 class Rating(models.Model):
@@ -118,6 +112,12 @@ class UserRatingManager(models.Manager):
 
         rating = self.for_instance_by_user(instance, user=user)
         return rating is not None
+
+    def bulk_create(self, objs, batch_size=None):
+        objs = super(UserRatingManager, self).bulk_create(objs, batch_size=None)
+        for obj in objs:
+            obj.rating.calculate()
+        return objs
 
 
 @python_2_unicode_compatible
