@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-from django.test import override_settings
+from django.test import override_settings, Client
 from django_webtest import WebTest
 from model_mommy import mommy
 from star_ratings.models import Rating, UserRating
@@ -15,9 +15,14 @@ from .models import Foo
 
 class ViewRate(WebTest):
     csrf_checks = False
+    client = Client(REMOTE_ADDR='127.0.0.1')
 
     def post_json(self, url, data, **kwargs):
-        return self.app.post(url, json.dumps(data), content_type='application/json', **kwargs)
+        if 'user' in kwargs:
+            self.client.force_login(kwargs['user'])
+        if 'xhr' in kwargs:
+            return self.client.post(url, json.dumps(data), content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        return self.client.post(url, json.dumps(data), content_type='application/json')
 
     @override_settings(STAR_RATINGS_ANONYMOUS=False)
     def test_view_is_called_when_nobody_is_logged_in_and_anon_ratings_is_false___user_is_forwarded_to_login(self):
@@ -26,7 +31,6 @@ class ViewRate(WebTest):
 
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
         response = self.post_json(url, {'score': 1})
-
         self.assertRedirects(response, settings.LOGIN_URL + '?next=' + url, fetch_redirect_response=False)
 
     @override_settings(STAR_RATINGS_ANONYMOUS=True)
@@ -37,11 +41,10 @@ class ViewRate(WebTest):
         score = randint(1, 5)
 
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
-        response = self.post_json(url, {'score': score})
-        ip = response.request.remote_addr
+        self.post_json(url, {'score': score})
 
         ct = ContentType.objects.get_for_model(foo)
-        self.assertTrue(UserRating.objects.filter(rating__object_id=foo.pk, rating__content_type=ct, score=score, ip=ip).exists())
+        self.assertTrue(UserRating.objects.filter(rating__object_id=foo.pk, rating__content_type=ct, score=score, ip='127.0.0.1').exists())
 
     def test_user_is_logged_in_and_doesnt_already_have_a_rating___rating_is_created(self):
         user = mommy.make(get_user_model())
@@ -102,12 +105,16 @@ class ViewRate(WebTest):
         score = randint(1, 5)
 
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
-        response = self.post_json(url, {'score': score}, user=user, xhr=True)
+        self.client.force_login(user)
+        response = self.client.post(
+            url, json.dumps({'score': score}), content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         ratings = Rating.objects.get(pk=ratings.pk)
         expected = ratings.to_dict()
         expected['user_rating'] = score
-        self.assertEqual(expected, response.json)
+        expected['percentage'] = float(expected['percentage'])
+
+        self.assertEqual(expected, response.json())
 
     @override_settings(STAR_RATINGS_RERATE=True)
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true___rating_is_updated(self):
@@ -182,7 +189,7 @@ class ViewRate(WebTest):
         ratings = Rating.objects.get(pk=ratings.pk)
         expected = ratings.to_dict()
         expected['user_rating'] = score
-        self.assertEqual(expected, response.json)
+        self.assertEqual(expected, response.json())
 
     @override_settings(STAR_RATINGS_RERATE=False)
     def test_user_is_logged_in_already_has_a_rating_rerate_is_false___rating_is_not_changed(self):
