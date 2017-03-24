@@ -83,7 +83,7 @@ class TestViewRate(unittest.TestCase):
         response = self.post_json(url, {'score': score}, user=user)
 
         assert response.status_code == 302
-        assert response.url == 'http://testserver/'
+        assert response.url == '/'
 
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_next_url_is_given___redirected_to_next(self):
         user = self.get_user()
@@ -163,7 +163,7 @@ class TestViewRate(unittest.TestCase):
         response = self.post_json(url, {'score': score}, user=user)
 
         assert response.status_code == 302
-        assert response.url == 'http://testserver/'
+        assert response.url == '/'
 
     @override_settings(STAR_RATINGS_RERATE=True)
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true___redirected_to_next(self):
