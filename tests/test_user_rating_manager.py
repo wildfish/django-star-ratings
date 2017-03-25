@@ -53,7 +53,7 @@ class ForInstanceByUser(TestCase):
 class BulkCreate(TestCase):
     def test_bulk_create(self):
         foo = mommy.make(Foo, name='name')
-        rating = Rating.objects.rate(foo)
+        rating = Rating.objects.for_instance(foo)
         user_a, user_b = mommy.make(get_user_model(), _quantity=2)
 
         data = [
