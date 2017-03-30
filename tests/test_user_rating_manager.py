@@ -48,3 +48,46 @@ class ForInstanceByUser(TestCase):
             expected,
             UserRating.objects.for_instance_by_user(foo, user=user),
         )
+
+
+class BulkCreate(TestCase):
+    def test_correct_number_of_(self):
+        foo = mommy.make(Foo, name='name')
+        rating = Rating.objects.for_instance(foo)
+        user_a, user_b = mommy.make(get_user_model(), _quantity=2)
+
+        data = [
+            UserRating(user=user_a, ip='127.0.0.1', score=3, rating=rating),
+            UserRating(user=user_b, ip='127.0.0.2', score=3, rating=rating),
+        ]
+
+        UserRating.objects.bulk_create(data)
+        self.assertEqual(UserRating.objects.count(), 2)
+
+    def test_multiple_user_ratings_are_created_for_multiple_ratings___calculateion_are_updated_correctly(self):
+        foo, bar = mommy.make(Foo, name='name', _quantity=2)
+
+        foo_rating = Rating.objects.for_instance(foo)
+        bar_rating = Rating.objects.for_instance(bar)
+
+        user_a, user_b, user_c = mommy.make(get_user_model(), _quantity=3)
+
+        data = [
+            UserRating(user=user_a, ip='127.0.0.1', score=1, rating=foo_rating),
+            UserRating(user=user_b, ip='127.0.0.2', score=3, rating=foo_rating),
+            UserRating(user=user_a, ip='127.0.0.1', score=1, rating=bar_rating),
+            UserRating(user=user_b, ip='127.0.0.2', score=3, rating=bar_rating),
+            UserRating(user=user_c, ip='127.0.0.2', score=5, rating=bar_rating),
+        ]
+
+        UserRating.objects.bulk_create(data)
+
+        foo_rating = Rating.objects.get(pk=foo_rating.pk)
+        self.assertEqual(2, foo_rating.count)
+        self.assertEqual(4, foo_rating.total)
+        self.assertEqual(2, foo_rating.average)
+
+        bar_rating = Rating.objects.get(pk=bar_rating.pk)
+        self.assertEqual(3, bar_rating.count)
+        self.assertEqual(9, bar_rating.total)
+        self.assertEqual(3, bar_rating.average)

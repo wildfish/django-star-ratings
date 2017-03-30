@@ -113,6 +113,12 @@ class UserRatingManager(models.Manager):
         rating = self.for_instance_by_user(instance, user=user)
         return rating is not None
 
+    def bulk_create(self, objs, batch_size=None):
+        objs = super(UserRatingManager, self).bulk_create(objs, batch_size=batch_size)
+        for rating in set(o.rating for o in objs):
+            rating.calculate()
+        return objs
+
 
 @python_2_unicode_compatible
 class UserRating(TimeStampedModel):
