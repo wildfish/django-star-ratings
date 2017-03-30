@@ -82,12 +82,12 @@ class BulkCreate(TestCase):
 
         UserRating.objects.bulk_create(data)
 
-        foo_rating.refresh_from_db()
+        foo_rating = Rating.objects.get(pk=foo_rating.pk)
         self.assertEqual(2, foo_rating.count)
         self.assertEqual(4, foo_rating.total)
         self.assertEqual(2, foo_rating.average)
 
-        bar_rating.refresh_from_db()
+        bar_rating = Rating.objects.get(pk=bar_rating.pk)
         self.assertEqual(3, bar_rating.count)
         self.assertEqual(9, bar_rating.total)
         self.assertEqual(3, bar_rating.average)
