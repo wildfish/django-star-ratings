@@ -114,9 +114,9 @@ class UserRatingManager(models.Manager):
         return rating is not None
 
     def bulk_create(self, objs, batch_size=None):
-        objs = super(UserRatingManager, self).bulk_create(objs, batch_size=None)
-        for obj in objs:
-            obj.rating.calculate()
+        objs = super(UserRatingManager, self).bulk_create(objs, batch_size=batch_size)
+        for rating in set(o.rating for o in objs):
+            rating.calculate()
         return objs
 
 
