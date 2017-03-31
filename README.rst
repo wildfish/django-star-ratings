@@ -158,3 +158,15 @@ To run the test use:
    :target: http://django-star-ratings.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 .. |Docs| :target: https://django-configurations.readthedocs.io/en/latest/
+
+
+Releasing
+---------
+
+Travis is setup to push releases to pypi automatically on tags, to do a release:
+1. Up version number.
+2. Update release notes.
+3. Push dev.
+4. Merge develop into master.
+5. Tag with new version number.
+6. Push tags.
