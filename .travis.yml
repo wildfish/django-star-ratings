@@ -20,13 +20,13 @@ matrix:
     python: '3.4'
   - env: DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest DEPLOY=true
     python: '3.3'
+  - env: DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest DEPLOY=true
+    python: '2.7'
   - env: DJANGO_VERSION="Django>=1.9,<1.10" RUN_WEB_TESTS=false
     python: '3.3'
   - env: DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=false
     python: '3.3'
-  - env: DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest DEPLOY=true
-    python: '2.7'
-  - env: DJANGO_VERSION="Django>=1.11a1,< 2.0" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest DEPLOY=true
+  - env: DJANGO_VERSION="Django>=1.11a1,< 2.0" RUN_WEB_TESTS=false
     python: '3.3'
 install:
 - pip install pip -U
