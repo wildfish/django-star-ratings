@@ -36,6 +36,7 @@ def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, ic
         'percentage': 100 * (rating.average / Decimal(app_settings.STAR_RATINGS_RANGE)),
         'icon_height': icon_height,
         'icon_width': icon_width,
+        'sprite_width': icon_width * 3,
         'id': 'dsr{}'.format(uuid.uuid4().hex),
         'anonymous_ratings': app_settings.STAR_RATINGS_ANONYMOUS,
         'read_only': read_only,

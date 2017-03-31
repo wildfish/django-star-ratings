@@ -1,60 +1,56 @@
 language: python
 sudo: false
 python:
-  - '3.5'
-  - '3.4'
-  - '3.3'
-  - '2.7'
+- '3.5'
+- '3.4'
+- '3.3'
+- '2.7'
 env:
-  - DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest
-  - DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=false
-  - DJANGO_VERSION="Django>=1.9,<1.10" RUN_WEB_TESTS=false
-  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=false
-  - DJANGO_VERSION="Django>=1.7,<1.8" RUN_WEB_TESTS=false
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ie_10
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=safari_latest
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_4.1
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_4.4
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ie_11
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ipad_8.4
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_5.0
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ie_9
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=firefox_latest
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_4.2
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=ipad_latest
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_4.3
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=iphone_latest
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=opera_latest
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=iphone_8.4
-#  - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=true BROWSER_TAG=android_5.1
+- DJANGO_VERSION="Django>=1.11a1,< 2.0" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest
+- DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest
+- DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=false
+- DJANGO_VERSION="Django>=1.9,<1.10" RUN_WEB_TESTS=false
+- DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=false
+- DJANGO_VERSION="Django>=1.7,<1.8" RUN_WEB_TESTS=false
 matrix:
   exclude:
-    - env: DJANGO_VERSION="Django>=1.7,<1.8" RUN_WEB_TESTS=false
-      python: '3.5'
-    - env: DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest
-      python: '3.4'
-    - env: DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest
-      python: '3.3'
-    - env: DJANGO_VERSION="Django>=1.9,<1.10" RUN_WEB_TESTS=false
-      python: '3.3'
-    - env: DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=false
-      python: '3.3'
-    - env: DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest
-      python: '2.7'
+  - env: DJANGO_VERSION="Django>=1.7,<1.8" RUN_WEB_TESTS=false
+    python: '3.5'
+  - env: DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest
+    python: '3.4'
+  - env: DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest
+    python: '3.3'
+  - env: DJANGO_VERSION="Django>=1.9,<1.10" RUN_WEB_TESTS=false
+    python: '3.3'
+  - env: DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=false
+    python: '3.3'
+  - env: DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest
+    python: '2.7'
+  - env: DJANGO_VERSION="Django>=1.11a1,< 2.0" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest
+    python: '3.3'
 install:
-  - pip install pip -U
-  - pip install codecov
-  - pip install -r requirements.txt
-  - pip install "$DJANGO_VERSION" -U
+- pip install pip -U
+- pip install codecov
+- pip install -r requirements.txt
+- pip install "$DJANGO_VERSION" -U
 script:
-  - ./scripts/ci_runtests.sh
+- "./scripts/ci_runtests.sh"
 after_success:
-  - codecov
+- codecov
 notifications:
   slack:
     secure: MlrEVotOd2wuf+mgur/ISn/bC41Abqk7YXA7887DBqESERjO7yLtvNbOTcaxXzj2tCW7cpUOjo7dcnU8Hvo9sCWYM9IIDdwlAg2REq/SN7j9JGdb0cl5Wzk5rH19muY8b93bCvQIRkoMvrnvqCve58o7LKrUsMhItiAUeFiVrq/u5LqtNjPNzVIEpfkIJzXFXMVMGHX8m8/IJmCA+gMNIC7R9zTEW72FmcAFBp/JfhGhuIW+vn3Vh8/8HHolu5xjtcf0e6WGijBhYyYtM51RT8eZbgoY5VyUD5XgsPX6CIwQy/cXUChsW+LQN9F10v1T2hKnPoLM+ytyI0p6pAGQeEUkFKRnqSXCBJQ1aQaPGVFpBmP45TEJlJmvb7BwLrJFWKb+Lu0eemza0tkXg8ULSiXxpDinJwLql2mQ6JP+4acsW8gXToBATjqXLpiYzuGLpAOCgDHHwirpRJ85m1KlbIQf8kdgyprRNMEdIzRW2chjvWgcpp/23Lqkbro+M/vjp0UtI8fr3aMFiW1JTiwA5MVQN1jqcW/qspK3jSKOg5AnYpKzcM6nMs9h6YgYWWAvaKiOh7puL2tV+5+8OJkoosj4a5lTNR+/M//GSSvPmpb+niu+vbXGq/2A82hK+v1dOLbEUgW2LaQua/Z7XsR0c0PCe7zXVihG50JW47Agywg=
 addons:
   sauce_connect:
-    username: 'django-star-ratings'
+    username: django-star-ratings
     access_key:
       secure: o9illUJKqoFj+wPEYCkliyIq0jSWiEGjKys6FfD8qmSNwy7gQ6z8oxFwq0CGPROn3aeSJ/tkjSEqQ9pI9RevfhaRoShYImPzvLmRboikzFpLpEVDLJW69im1ZNpQ4P2NUZNx+gQRW3d+Ebh9EbXhyhCPR+ug+jXmJZz/fWRAb/AJiiqiuzgdH82ZwkIgNR8Hfck9UXsvD4hHgbQnEtsAhRwqUcizh+47/xHzCqbCcXZdCSUAsdZ3lVimIsIONZEtCctJ2K7F9MkMgAHGHvblEgFD4TH8kgJXEEcztlt3PipmTlB6YXObxApnYURry9Pr2FU8jzgfIbvhnBgjzpGObXV5H2PYoHl8mnJzjs3OQphpYh4PBpP8rdg5NaR/Dx9w4guCMtnqLA/sL0CbUGek4Pl7dwyXGCV7OXPX7FYqQWoIfROZn7bYbqnJlwVb1pEWZhILVIfE1o/8JtlOlzUzqdCgxGelhFzCN/9BVOUqyhcLYC9iKOnHPudryqeJwans1KUrJkJQzWbcqBqV7mKflpKbRmLLoVgu1eIIeUj7j4225yrfRwEP4z58LWWXMZNzuZ+EsVujhZ1II7sT2vUCAMMcPnfluWkwHsr6LWaqggm91G2dsPLA3XXSB1JbiWGYo9uPfzAromUXoxnIzUZx9gpR1+e121pmpNJ+AM+AjLQ=
+deploy:
+  provider: pypi
+  user: wildfish-deployer
+  password:
+    secure: HUz4ZGenh+gtXB5DPTtlDvFg4mJKQ6HDgp27Ciq5AqggcU5RmE2b+CCbJhDur540l4OW+kL5jO+NN9bZEkk8E/T4rBuwnn92mTOqsrvBoXHGhhXMuD8L8MH+MyHSCa56Tqsihar5SWbqUekz4SNF9DVP9sEvuatrcI4xMPPvp5TMWozMKy26fm8IQop25bKBUyLA1oUmkfar5kmsNFp5WrIWjbLppOgSNmVTZDZW8xltVXHwc9itE56gM6PICZSd9sUiS/MngjhUdBLa7eJKNkWM4CK0tWl9ABpIfohAHXPEzMO9zUgtj3zM6fmx0sRoee3YijoDPsvU1kBSWPCmshkwn8s+RCP0Y6fMEZFbVzO3qlkQMdFu5Xv3eiOoWocjZrWZtfQlWU+qlBb1CnJDbjkNnaGx/EVPOP9gvid0/YnUXGx79sjBkxgcTLhF+53krh4tGHDJUB6wsI8qi+32Q+smcOQJBbiyGgEyvAalV2NkLqGdEbRiUNa64ek7yRGNMkw5melWlQNFBfKNe9/kKjK799EHsHau9PyYYdZskdtBu+nhz5FE64l1CvgVY/IdY/1MyM+yAQflsV3rvuYeMls1BfM6F1uC7ubVciRuIzIoKhHcXfktjArLUaVe4DcKvSmAeK6lKAu+YMN946Rb07HchPr5m/QHaklggf9Bb4o=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: wildfish/django-star-ratings
