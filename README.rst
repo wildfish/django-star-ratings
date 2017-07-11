@@ -110,6 +110,8 @@ To change the star graphic, add a sprite sheet to
 horizontally. The stars should be laid out in three states: full, empty
 and active.
 
+You can also set ``STAR_RATINGS_STAR_SPRITE`` to the location of your sprite sheet.
+
 Customize widget template
 -------------------------
 
