@@ -129,6 +129,7 @@ class UserRating(TimeStampedModel):
     ip = models.GenericIPAddressField(blank=True, null=True)
     score = models.PositiveSmallIntegerField()
     rating = models.ForeignKey(Rating, related_name='user_ratings')
+    review = models.TextField(blank=True, null=True)
 
     objects = UserRatingManager()
 
