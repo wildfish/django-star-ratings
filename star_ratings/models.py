@@ -34,7 +34,7 @@ class RatingManager(models.Manager):
         warn("RatingManager method 'ratings_for_instance' has been renamed to 'for_instance'. Please change uses of 'Rating.objects.ratings_for_instance' to 'Rating.objects.for_instance' in your code.", DeprecationWarning)
         return self.for_instance(instance)
 
-    def rate(self, instance, score, user=None, ip=None):
+    def rate(self, instance, score, user=None, ip=None, review=None):
         if isinstance(instance, Rating):
             raise TypeError("Rating manager 'rate' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
@@ -46,11 +46,16 @@ class RatingManager(models.Manager):
             if not app_settings.STAR_RATINGS_RERATE:
                 raise ValidationError(_('Already rated.'))
             existing_rating.score = score
+            existing_rating.review = review
             existing_rating.save()
             return existing_rating.rating
         else:
             rating, created = self.get_or_create(content_type=ct, object_id=instance.pk)
-            return UserRating.objects.create(user=user, score=score, rating=rating, ip=ip).rating
+            return UserRating.objects.create(user=user,
+                                             score=score,
+                                             rating=rating,
+                                             ip=ip,
+                                             review=review).rating
 
 
 @python_2_unicode_compatible
