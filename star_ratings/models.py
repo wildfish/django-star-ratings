@@ -135,6 +135,8 @@ class UserRating(TimeStampedModel):
     score = models.PositiveSmallIntegerField()
     rating = models.ForeignKey(Rating, related_name='user_ratings')
     review = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = UserRatingManager()
 
