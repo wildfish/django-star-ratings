@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 from decimal import Decimal
 import uuid
 from django import template
-from django.template.library import InclusionNode
 from ..models import Rating, UserRating
 from .. import app_settings
 
@@ -49,4 +48,4 @@ def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, ic
     # We get the template to load here rather than using inclusion_tag so that the
     # template name can be passed as a template parameter
     template_name = template_name or context.get('star_ratings_template_name') or 'star_ratings/widget.html'
-    return InclusionNode(_fn, True, [], {}, template_name)
+    return register.inclusion_tag(template_name, takes_context=True)(_fn).render()

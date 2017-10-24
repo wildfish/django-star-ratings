@@ -11,7 +11,6 @@ env:
 - DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=false
 - DJANGO_VERSION="Django>=1.9,<1.10" RUN_WEB_TESTS=false
 - DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=false
-- DJANGO_VERSION="Django>=1.7,<1.8" RUN_WEB_TESTS=false
 matrix:
   exclude:
   - env: DJANGO_VERSION="Django>=1.7,<1.8" RUN_WEB_TESTS=false
