@@ -28,8 +28,9 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertIsInstance(res['rating'], Rating)
-        self.assertEqual(item, res['rating'].content_object)
+        data = res.func()
+        self.assertIsInstance(data['rating'], Rating)
+        self.assertEqual(item, data['rating'].content_object)
 
     def test_item_is_rated___rating_object_for_item_is_returned(self):
         item = mommy.make(Foo)
@@ -43,7 +44,8 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertEqual(rating, res['rating'])
+        data = res.func()
+        self.assertEqual(rating, data['rating'])
 
     def test_request_is_added_to_the_result(self):
         item = mommy.make(Foo)
@@ -55,7 +57,8 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertEqual(request, res['request'])
+        data = res.func()
+        self.assertEqual(request, data['request'])
 
     def test_request_user_is_added_to_the_result(self):
         item = mommy.make(Foo)
@@ -67,7 +70,8 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertEqual(request.user, res['user'])
+        data = res.func()
+        self.assertEqual(request.user, data['user'])
 
     def test_user_is_authenticated_without_rating_for_object___user_rating_is_none(self):
         item = mommy.make(Foo)
@@ -81,7 +85,8 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertIsNone(res['user_rating'])
+        data = res.func()
+        self.assertIsNone(data['user_rating'])
 
     def test_user_is_not_authenticated_with_rating_for_object___user_rating_is_none(self):
         item = mommy.make(Foo)
@@ -93,7 +98,8 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertIsNone(res['user_rating'])
+        data = res.func()
+        self.assertIsNone(data['user_rating'])
 
     def test_user_is_authenticated_with_rating_for_object___user_rating_for_user_is_returned(self):
         item = mommy.make(Foo)
@@ -109,7 +115,8 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertEqual(user_rating, res['user_rating'])
+        data = res.func()
+        self.assertEqual(user_rating, data['user_rating'])
 
     def test_stars_list_is_added_to_the_result(self):
         item = mommy.make(Foo)
@@ -121,7 +128,8 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertEqual(list(range(1, app_settings.STAR_RATINGS_RANGE + 1)), res['stars'])
+        data = res.func()
+        self.assertEqual(list(range(1, app_settings.STAR_RATINGS_RANGE + 1)), data['stars'])
 
     def test_star_count_is_added_to_the_result(self):
         item = mommy.make(Foo)
@@ -133,7 +141,8 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertEqual(app_settings.STAR_RATINGS_RANGE, res['star_count'])
+        data = res.func()
+        self.assertEqual(app_settings.STAR_RATINGS_RANGE, data['star_count'])
 
     @given(scores=lists(scores()), settings=Settings(max_examples=5))
     def test_several_ratings_are_made___percentage_is_correct_in_result(self, scores):
@@ -151,8 +160,9 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
+        data = res.func()
         expected_avg = 100 * (rating.average / Decimal(app_settings.STAR_RATINGS_RANGE))
-        self.assertEqual(expected_avg, res['percentage'])
+        self.assertEqual(expected_avg, data['percentage'])
 
     def test_icon_height_is_not_set___icon_height_is_32(self):
         item = mommy.make(Foo)
@@ -164,7 +174,8 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertEqual(32, res['icon_height'])
+        data = res.func()
+        self.assertEqual(32, data['icon_height'])
 
     @given(integers())
     def test_icon_height_is_set___icon_height_is_correct(self, height):
@@ -177,7 +188,8 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item, icon_height=height)
 
-        self.assertEqual(height, res['icon_height'])
+        data = res.func()
+        self.assertEqual(height, data['icon_height'])
 
     def test_icon_width_is_not_set___icon_height_is_32(self):
         item = mommy.make(Foo)
@@ -189,7 +201,8 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertEqual(32, res['icon_width'])
+        data = res.func()
+        self.assertEqual(32, data['icon_width'])
 
     @given(integers())
     def test_icon_width_is_set___icon_height_is_correct(self, width):
@@ -202,7 +215,8 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item, icon_width=width)
 
-        self.assertEqual(width, res['icon_width'])
+        data = res.func()
+        self.assertEqual(width, data['icon_width'])
 
     def test_id_is_a_uid_with_dsr_prefix(self):
         item = mommy.make(Foo)
@@ -214,8 +228,9 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item)
 
-        self.assertTrue(res['id'].startswith('dsr'))
-        self.assertIsNotNone(int(res['id'][3:], 16))
+        data = res.func()
+        self.assertTrue(data['id'].startswith('dsr'))
+        self.assertIsNotNone(int(data['id'][3:], 16))
 
     def test_request_is_not_set_in_context___exception_is_raised(self):
         item = mommy.make(Foo)
@@ -237,8 +252,9 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item, read_only=False)
 
-        self.assertFalse(res['editable'])
-        self.assertFalse(res['read_only'])
+        data = res.func()
+        self.assertFalse(data['editable'])
+        self.assertFalse(data['read_only'])
 
     @override_settings(STAR_RATINGS_ANONYMOUS=False)
     def test_read_only_is_false_user_is_authenticated_anon_rating_is_false___editable_is_true(self):
@@ -251,8 +267,9 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item, read_only=False)
 
-        self.assertTrue(res['editable'])
-        self.assertFalse(res['read_only'])
+        data = res.func()
+        self.assertTrue(data['editable'])
+        self.assertFalse(data['read_only'])
 
     @override_settings(STAR_RATINGS_ANONYMOUS=True)
     def test_read_only_is_false_user_is_not_authenticated_anon_rating_is_true___editable_is_true(self):
@@ -265,8 +282,9 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item, read_only=False)
 
-        self.assertTrue(res['editable'])
-        self.assertFalse(res['read_only'])
+        data = res.func()
+        self.assertTrue(data['editable'])
+        self.assertFalse(data['read_only'])
 
     def test_read_only_is_set_to_true___editable_is_false(self):
         item = mommy.make(Foo)
@@ -278,5 +296,44 @@ class TemplateTagdRatings(TestCase):
             'request': request,
         }, item, read_only=True)
 
-        self.assertFalse(res['editable'])
-        self.assertTrue(res['read_only'])
+        data = res.func()
+        self.assertFalse(data['editable'])
+        self.assertTrue(data['read_only'])
+
+    def test_template_name_is_set_in_parameter_and_context___parameter_is_used_as_template_name(self):
+        item = mommy.make(Foo)
+
+        request = RequestFactory().get('/')
+        request.user = mommy.make(get_user_model())
+
+        res = ratings({
+            'request': request,
+            'star_ratings_template_name': 'context_template',
+        }, item, read_only=True, template_name='parameter_template')
+
+        self.assertEqual(res.filename, 'parameter_template')
+
+    def test_template_name_is_set_in_context___context_is_used_as_template_name(self):
+        item = mommy.make(Foo)
+
+        request = RequestFactory().get('/')
+        request.user = mommy.make(get_user_model())
+
+        res = ratings({
+            'request': request,
+            'star_ratings_template_name': 'context_template',
+        }, item, read_only=True)
+
+        self.assertEqual(res.filename, 'context_template')
+
+    def test_template_name_is_not_set_in_param_or_context___default_is_used_as_template_name(self):
+        item = mommy.make(Foo)
+
+        request = RequestFactory().get('/')
+        request.user = mommy.make(get_user_model())
+
+        res = ratings({
+            'request': request,
+        }, item, read_only=True)
+
+        self.assertEqual(res.filename, 'star_ratings/widget.html')
