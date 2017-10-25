@@ -72,11 +72,12 @@ To enable ratings for a model add the following tag in your template
 Template tags
 -------------
 
-The template tag takes two arguments:
+The template tag takes four arguments:
 
 -  ``icon_height``: defaults to ``STAR_RATINGS_STAR_HEIGHT``
 -  ``icon_width``: defaults to ``STAR_RATINGS_STAR_WIDTH``
 -  ``read_only``: overrides the ``editable`` behaviour to make the widget read only
+-  ``template_name``: overrides the tempalte to use for the widget
 
 Settings
 --------

@@ -3,14 +3,16 @@ from __future__ import unicode_literals
 from decimal import Decimal
 import uuid
 from django import template
+from django.template import loader
+
 from ..models import Rating, UserRating
 from .. import app_settings
 
 register = template.Library()
 
 
-@register.inclusion_tag('star_ratings/widget.html', takes_context=True)
-def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, icon_width=app_settings.STAR_RATINGS_STAR_WIDTH, read_only=False):
+@register.simple_tag(takes_context=True)
+def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, icon_width=app_settings.STAR_RATINGS_STAR_WIDTH, read_only=False, template_name=None):
     request = context.get('request')
 
     if request is None:
@@ -26,7 +28,10 @@ def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, ic
 
     stars = [i for i in range(1, app_settings.STAR_RATINGS_RANGE + 1)]
 
-    return {
+    # We get the template to load here rather than using inclusion_tag so that the
+    # template name can be passed as a template parameter
+    template_name = template_name or context.get('star_ratings_template_name') or 'star_ratings/widget.html'
+    return loader.get_template(template_name).render({
         'rating': rating,
         'request': request,
         'user': request.user,
@@ -42,4 +47,4 @@ def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, ic
         'anonymous_ratings': app_settings.STAR_RATINGS_ANONYMOUS,
         'read_only': read_only,
         'editable': not read_only and (request.user.is_authenticated() or app_settings.STAR_RATINGS_ANONYMOUS)
-    }
+    })
