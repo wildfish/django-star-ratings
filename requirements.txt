@@ -34,7 +34,7 @@ selenium==3.0.0
 six==1.10.0               # via mock, model-mommy, pip-tools, uncompyle6, webtest
 spark-parser==1.7.2       # via uncompyle6
 swapper==1.0.0
-uncompyle6==2.13.3        # via hypothesis
+uncompyle6==2.11.0        # via hypothesis
 waitress==1.0.0           # via webtest
 webob==1.6.1              # via webtest
 webtest==2.0.23           # via django-webtest

@@ -15,3 +15,4 @@ pip-tools
 selenium
 mock
 swapper
+uncompyle6==2.11.0
