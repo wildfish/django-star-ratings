@@ -5,16 +5,19 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 beautifulsoup4==4.5.1     # via webtest
-click==6.6                # via pip-tools, spark-parser
+click==6.6                # via pip-tools
+configparser==3.5.0       # via flake8
 coverage==4.2
 django-braces==1.9.0
 django-model-utils==2.6
 django-webtest==1.8.0
 django==1.10.2
+enum34==1.1.6             # via flake8
 fancycompleter==0.5       # via pdbpp
 first==2.0.1              # via pip-tools
 flake8==3.0.4
-hypothesis==3.5.3
+funcsigs==1.0.2           # via mock
+hypothesis==1.16.0
 mccabe==0.5.2             # via flake8
 mock==2.0.0
 model-mommy==1.3.0
@@ -27,16 +30,14 @@ py==1.4.31                # via pytest
 pycodestyle==2.0.0        # via flake8
 pyflakes==1.2.3           # via flake8
 pygments==2.1.3           # via pdbpp
+pyrepl==0.8.4             # via fancycompleter
 pytest-cov==2.4.0
 pytest-django==3.0.0
 pytest==3.0.3
 selenium==3.0.0
-six==1.10.0               # via mock, model-mommy, pip-tools, uncompyle6, webtest
-spark-parser==1.7.2       # via uncompyle6
+six==1.10.0               # via mock, model-mommy, pip-tools, webtest
 swapper==1.0.0
-uncompyle6==2.11.0        # via hypothesis
 waitress==1.0.0           # via webtest
 webob==1.6.1              # via webtest
 webtest==2.0.23           # via django-webtest
 wmctrl==0.3               # via pdbpp
-xdis==3.6.1               # via uncompyle6

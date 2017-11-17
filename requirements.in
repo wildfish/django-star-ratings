@@ -10,9 +10,8 @@ path.py
 model-mommy
 django-webtest
 django-braces
-hypothesis
+hypothesis==1.16.0
 pip-tools
 selenium
 mock
 swapper
-uncompyle6==2.11.0
