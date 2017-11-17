@@ -1,6 +1,6 @@
 {
     "name": "star-ratings",
-    "version": "0.0.1",
+    "version": "0.5.6",
     "description": "Wildfish ratings",
     "main": "./star_ratings/static/star-ratings/js/index.js",
     "scripts": {

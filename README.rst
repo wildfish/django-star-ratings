@@ -1,11 +1,14 @@
 django-star-ratings
 ===================
 
-|Build Status| |codecov.io|
+|Build Status| |codecov.io| |Documentation Status|
 
 Python 3 compatible ratings for Django.
 
 Add ratings to any Django model with a template tag.
+
+See full `documentation
+<http://django-star-ratings.readthedocs.io/en/latest/?badge=latest/>`_.
 
 Installation
 ------------
@@ -69,10 +72,12 @@ To enable ratings for a model add the following tag in your template
 Template tags
 -------------
 
-The template tag takes two arguments:
+The template tag takes four arguments:
 
 -  ``icon_height``: defaults to ``STAR_RATINGS_STAR_HEIGHT``
 -  ``icon_width``: defaults to ``STAR_RATINGS_STAR_WIDTH``
+-  ``read_only``: overrides the ``editable`` behaviour to make the widget read only
+-  ``template_name``: overrides the tempalte to use for the widget
 
 Settings
 --------
@@ -88,8 +93,8 @@ To enable anonymous rating set ``STAR_RATINGS_ANONYMOUS = True``.
 Anonymous Rating
 ----------------
 
-If anonymous rating is enabled only the ip address for the rater will be stored (even if the user is logged in). When
- a user rates an object a preexisting object will not be searched for, instead a new rating object will be created
+If anonymous rating is enabled only the ip address for the rater will be stored (even if the user is logged in).
+When a user rates an object a preexisting object will not be searched for, instead a new rating object will be created
 
 **If this value is changed your lookups will return different results!**
 
@@ -105,6 +110,8 @@ To change the star graphic, add a sprite sheet to
 ``/static/star-ratings/images/stars.png`` with the states aligned
 horizontally. The stars should be laid out in three states: full, empty
 and active.
+
+You can also set ``STAR_RATINGS_STAR_SPRITE`` to the location of your sprite sheet.
 
 Customize widget template
 -------------------------
@@ -140,7 +147,7 @@ the ``Rating`` model from your model:
 Custom Rating Model
 -------------------
 
-In very some cases you may need to create your own rating model. This is possible
+In some cases you may need to create your own rating model. This is possible
 by setting ``STAR_RATING_RATING_MODEL`` in your settings file. This can be useful
 to add additional fields or methods to the model. This is very similar to the how
 django handles swapping the user model
@@ -196,3 +203,19 @@ To run the test use:
    :target: https://travis-ci.org/wildfish/django-star-ratings
 .. |codecov.io| image:: http://codecov.io/github/wildfish/django-star-ratings/coverage.svg?branch=master
    :target: http://codecov.io/github/wildfish/django-star-ratings?branch=master
+.. |Documentation Status| image:: https://readthedocs.org/projects/django-star-ratings/badge/?version=latest
+   :target: http://django-star-ratings.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+.. |Docs| :target: https://django-configurations.readthedocs.io/en/latest/
+
+
+Releasing
+---------
+
+Travis is setup to push releases to pypi automatically on tags, to do a release:
+1. Up version number.
+2. Update release notes.
+3. Push dev.
+4. Merge develop into master.
+5. Tag with new version number.
+6. Push tags.

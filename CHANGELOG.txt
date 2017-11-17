@@ -1,3 +1,23 @@
+0.5.6 (2017-07-12)
+* Star sprite sheet can be specified in settings using `STAR_RATINGS_STAR_SPRITE`
+
+
+0.5.5 (2017-03-31)
+------------------
+
+* Support for Django 1.11
+* Added support for calculating aggregates on bulk create.
+* Fixed issue with hover state when widget is read only
+* Removed 'Login to rate' if user is logged in
+* Fixed issue with `icon_width` not resizing correctly
+
+
+0.5.4 (2017-01-26)
+------------------
+
+* Added docs.
+
+
 0.5.3 (2016-08-10)
 ------------------
 

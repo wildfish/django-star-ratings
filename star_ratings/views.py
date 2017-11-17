@@ -22,7 +22,10 @@ class Rate(View):
     def post(self, request, *args, **kwargs):
         def _post(request, *args, **kwargs):
             return_url = request.GET.get('next', '/')
-            ip = self.request.META.get('REMOTE_ADDR')
+            if 'HTTP_X_REAL_IP' in self.request.META:
+                ip = self.request.META['HTTP_X_REAL_IP']
+            else:
+                ip = self.request.META['REMOTE_ADDR']
             data = json.loads(request.body.decode())
             score = data.get('score')
             user = request.user.is_authenticated() and request.user or None
