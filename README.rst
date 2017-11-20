@@ -171,7 +171,7 @@ And add the setting to the setting file:
    ./settings.py
 
    ...
-   STAR_RATIGNGS_RATING_MODEL = 'myapp.MyRating'
+   STAR_RATINGS_RATING_MODEL = 'myapp.MyRating'
    ...
 
 Changing the ``pk`` type (Requires django >= 1.10)
