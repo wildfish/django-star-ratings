@@ -1,5 +1,7 @@
 from __future__ import division, unicode_literals
 from decimal import Decimal
+
+import swapper
 from warnings import warn
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -11,7 +13,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext as _
 from model_utils.models import TimeStampedModel
 
-from . import app_settings
+from . import app_settings, get_star_ratings_rating_model_name, get_star_ratings_rating_model
 
 
 def _clean_user(user):
@@ -24,7 +26,7 @@ def _clean_user(user):
 
 class RatingManager(models.Manager):
     def for_instance(self, instance):
-        if isinstance(instance, Rating):
+        if isinstance(instance, self.model):
             raise TypeError("Rating manager 'for_instance' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
         ratings, created = self.get_or_create(content_type=ct, object_id=instance.pk)
@@ -35,7 +37,7 @@ class RatingManager(models.Manager):
         return self.for_instance(instance)
 
     def rate(self, instance, score, user=None, ip=None):
-        if isinstance(instance, Rating):
+        if isinstance(instance, self.model):
             raise TypeError("Rating manager 'rate' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
 
@@ -54,7 +56,7 @@ class RatingManager(models.Manager):
 
 
 @python_2_unicode_compatible
-class Rating(models.Model):
+class AbstractBaseRating(models.Model):
     """
     Attaches Rating models and running counts to the model being rated via a generic relation.
     """
@@ -70,6 +72,7 @@ class Rating(models.Model):
 
     class Meta:
         unique_together = ['content_type', 'object_id']
+        abstract = True
 
     @property
     def percentage(self):
@@ -97,6 +100,11 @@ class Rating(models.Model):
         self.save()
 
 
+class Rating(AbstractBaseRating):
+    class Meta(AbstractBaseRating.Meta):
+        swappable = swapper.swappable_setting('star_ratings', 'Rating')
+
+
 class UserRatingManager(models.Manager):
     def for_instance_by_user(self, instance, user=None):
         ct = ContentType.objects.get_for_model(instance)
@@ -107,7 +115,7 @@ class UserRatingManager(models.Manager):
             return None
 
     def has_rated(self, instance, user=None):
-        if isinstance(instance, Rating):
+        if isinstance(instance, get_star_ratings_rating_model()):
             raise TypeError("UserRating manager 'has_rated' expects model to be rated, not UserRating model.")
 
         rating = self.for_instance_by_user(instance, user=user)
@@ -128,7 +136,7 @@ class UserRating(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     ip = models.GenericIPAddressField(blank=True, null=True)
     score = models.PositiveSmallIntegerField()
-    rating = models.ForeignKey(Rating, related_name='user_ratings')
+    rating = models.ForeignKey(get_star_ratings_rating_model_name(), related_name='user_ratings')
 
     objects = UserRatingManager()
 

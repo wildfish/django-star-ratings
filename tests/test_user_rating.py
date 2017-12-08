@@ -1,12 +1,14 @@
 from __future__ import unicode_literals
 
 from hypothesis import given
+from hypothesis.extra.django import TestCase
 from hypothesis.strategies import text
 from random import randint
 from django.contrib.auth import get_user_model
-from django.test import TestCase, override_settings
+from django.test import override_settings
 from model_mommy import mommy
-from star_ratings.models import Rating, UserRating
+from star_ratings import get_star_ratings_rating_model
+from star_ratings.models import UserRating
 from .models import Foo, Bar
 
 
@@ -16,7 +18,7 @@ class UserRatingStr(TestCase):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
 
-        rating = Rating.objects.rate(foo, 1, user, '0.0.0.0')
+        rating = get_star_ratings_rating_model().objects.rate(foo, 1, user, '0.0.0.0')
         user_rating = rating.user_ratings.get(user=user)
 
         self.assertEqual('{} rating {} for {}'.format(user, user_rating.score, foo), str(user_rating))
@@ -26,7 +28,7 @@ class UserRatingStr(TestCase):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
 
-        rating = Rating.objects.rate(foo, 1, user, '127.0.0.1')
+        rating = get_star_ratings_rating_model().objects.rate(foo, 1, user, '127.0.0.1')
         user_rating = rating.user_ratings.get(ip='127.0.0.1')
 
         self.assertEqual('{} rating {} for {}'.format('127.0.0.1', user_rating.score, foo), str(user_rating))
@@ -37,7 +39,7 @@ class UserRatingStr(TestCase):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo, name=name)
 
-        rating = Rating.objects.rate(foo, 1, user, '0.0.0.0')
+        rating = get_star_ratings_rating_model().objects.rate(foo, 1, user, '0.0.0.0')
         user_rating = rating.user_ratings.get(user=user)
 
         try:
@@ -54,23 +56,23 @@ class UserRatingHasRated(TestCase):
         self.user_b = mommy.make(get_user_model())
 
     def test_user_has_rated_the_model___results_is_true(self):
-        Rating.objects.rate(self.foo, randint(1, 5), self.user_a, '0.0.0.0')
+        get_star_ratings_rating_model().objects.rate(self.foo, randint(1, 5), self.user_a, '0.0.0.0')
 
         self.assertTrue(UserRating.objects.has_rated(self.foo, self.user_a))
 
     def test_different_user_has_rated_the_model___results_is_false(self):
-        Rating.objects.rate(self.foo, randint(1, 5), self.user_a, '0.0.0.0')
+        get_star_ratings_rating_model().objects.rate(self.foo, randint(1, 5), self.user_a, '0.0.0.0')
 
         self.assertFalse(UserRating.objects.has_rated(self.foo, self.user_b))
 
     def test_user_has_rated_a_different_model___results_is_false(self):
-        Rating.objects.rate(self.foo, randint(1, 5), self.user_a, '0.0.0.0')
+        get_star_ratings_rating_model().objects.rate(self.foo, randint(1, 5), self.user_a, '0.0.0.0')
 
         self.assertFalse(UserRating.objects.has_rated(self.bar, self.user_a))
 
     def test_user_has_rated_a_different_model_instance___results_is_false(self):
         foo2 = mommy.make(Foo)
 
-        Rating.objects.rate(self.foo, randint(1, 5), self.user_a, '0.0.0.0')
+        get_star_ratings_rating_model().objects.rate(self.foo, randint(1, 5), self.user_a, '0.0.0.0')
 
         self.assertFalse(UserRating.objects.has_rated(foo2, self.user_a))

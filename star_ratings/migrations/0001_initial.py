@@ -1,19 +1,25 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import swapper
 from django.db import models, migrations
 from decimal import Decimal
 import model_utils.fields
 import django.utils.timezone
 from django.conf import settings
 
+dependancies = [
+    migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ('contenttypes', '0001_initial'),
+]
+
+swappable_dep = swapper.dependency('star_ratings', 'Rating')
+if swappable_dep == migrations.swappable_dependency('star_ratings.Rating'):
+    dependancies.append(swappable_dep)
+
 
 class Migration(migrations.Migration):
-
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('contenttypes', '0001_initial'),
-    ]
+    dependencies = dependancies
 
     operations = [
         migrations.CreateModel(
@@ -27,6 +33,7 @@ class Migration(migrations.Migration):
                 ('content_type', models.ForeignKey(blank=True, null=True, to='contenttypes.ContentType')),
             ],
             options={
+                'swappable': swapper.swappable_setting('star_ratings', 'Rating')
             },
             bases=(models.Model,),
         ),
@@ -38,7 +45,7 @@ class Migration(migrations.Migration):
                 ('modified', model_utils.fields.AutoLastModifiedField(verbose_name='modified', editable=False, default=django.utils.timezone.now)),
                 ('ip', models.GenericIPAddressField(blank=True, null=True)),
                 ('score', models.PositiveSmallIntegerField()),
-                ('rating', models.ForeignKey(related_name='user_ratings', to='star_ratings.Rating')),
+                ('rating', models.ForeignKey(related_name='user_ratings', to=swapper.get_model_name('star_ratings', 'Rating'))),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={

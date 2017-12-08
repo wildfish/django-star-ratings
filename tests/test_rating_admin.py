@@ -5,16 +5,16 @@ from django.contrib.admin import site
 from django.test import TestCase
 from model_mommy import mommy
 from star_ratings.admin import RatingAdmin
-from star_ratings.models import Rating
+from star_ratings import get_star_ratings_rating_model
 
 
 class AdminRatingAdmin(TestCase):
     def test_stars_return_the_correct_html(self):
         average = 5 * random()
         max_val = 5
-        rating = mommy.make(Rating, average=average)
+        rating = mommy.make(get_star_ratings_rating_model(), average=average)
 
-        res = RatingAdmin(Rating, site).stars(rating)
+        res = RatingAdmin(get_star_ratings_rating_model(), site).stars(rating)
 
         self.assertHTMLEqual(
             """<div style='position: relative;'>
@@ -34,4 +34,4 @@ class AdminRatingAdmin(TestCase):
         self.assertEqual(('__str__', 'stars'), RatingAdmin.list_display)
 
     def test_rating_is_registered(self):
-        self.assertIsInstance(site._registry[Rating], RatingAdmin)
+        self.assertIsInstance(site._registry[get_star_ratings_rating_model()], RatingAdmin)

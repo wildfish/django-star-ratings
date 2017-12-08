@@ -12,8 +12,8 @@ from hypothesis.strategies import lists, integers
 from model_mommy import mommy
 from six import assertRaisesRegex
 from tests.strategies import scores
-from star_ratings import app_settings
-from star_ratings.models import Rating, UserRating
+from star_ratings import app_settings, get_star_ratings_rating_model
+from star_ratings.models import UserRating
 from star_ratings.templatetags.ratings import ratings
 from tests.models import Foo
 
@@ -32,14 +32,14 @@ class TemplateTagsRatings(TestCase):
 
         context = render_mock.call_args_list[0][0][0]
         print(context)
-        self.assertIsInstance(context['rating'], Rating)
+        self.assertIsInstance(context['rating'], get_star_ratings_rating_model())
         self.assertEqual(item, context['rating'].content_object)
 
     @patch('django.template.Template.render')
     def test_item_is_rated___rating_object_for_item_is_returned(self, render_mock):
         item = mommy.make(Foo)
 
-        rating = Rating.objects.for_instance(item)
+        rating = get_star_ratings_rating_model().objects.for_instance(item)
 
         request = RequestFactory().get('/')
         request.user = mommy.make(get_user_model())
@@ -117,7 +117,7 @@ class TemplateTagsRatings(TestCase):
         request.user = get_user_model().objects.create_user(username='user', password='pass')
         self.client.login(username='user', password='pass')
 
-        rating = Rating.objects.rate(item, 3, request.user)
+        rating = get_star_ratings_rating_model().objects.rate(item, 3, request.user)
         user_rating = UserRating.objects.get(rating=rating, user=request.user)
 
         ratings({
@@ -164,9 +164,9 @@ class TemplateTagsRatings(TestCase):
             request.user = mommy.make(get_user_model())
 
             for score in scores:
-                Rating.objects.rate(item, score, mommy.make(get_user_model()))
+                get_star_ratings_rating_model().objects.rate(item, score, mommy.make(get_user_model()))
 
-            rating = Rating.objects.for_instance(item)
+            rating = get_star_ratings_rating_model().objects.for_instance(item)
 
             ratings({
                 'request': request,
