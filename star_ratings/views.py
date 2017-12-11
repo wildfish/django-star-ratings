@@ -7,14 +7,8 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import View
 
 from . import app_settings, get_star_ratings_rating_model
+from .compat import is_authenticated
 import json
-
-
-def is_authenticated(user):  # pragma: no cover
-    if callable(user.is_authenticated):
-        return user.is_authenticated()
-    else:
-        return user.is_authenticated
 
 
 class Rate(View):

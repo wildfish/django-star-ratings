@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 from random import randint
 from django.contrib.admin import site
 from django.test import TestCase
-from model_mommy import mommy
 from star_ratings.admin import UserRatingAdmin
 from star_ratings.models import UserRating
 from .fakes import fake_user_rating
