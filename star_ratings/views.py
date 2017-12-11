@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
@@ -7,6 +8,13 @@ from django.views.generic import View
 
 from . import app_settings, get_star_ratings_rating_model
 import json
+
+
+def is_authenticated(user):  # pragma: no cover
+    if callable(user.is_authenticated):
+        return user.is_authenticated()
+    else:
+        return user.is_authenticated
 
 
 class Rate(View):
@@ -28,7 +36,7 @@ class Rate(View):
                 ip = self.request.META['REMOTE_ADDR']
             data = json.loads(request.body.decode())
             score = data.get('score')
-            user = request.user.is_authenticated() and request.user or None
+            user = is_authenticated(request.user) and request.user or None
             try:
                 rating = self.model.objects.rate(self.get_object(), score, user=user, ip=ip)
                 if request.is_ajax():
