@@ -3,16 +3,16 @@ from __future__ import unicode_literals
 from random import random
 from django.contrib.admin import site
 from django.test import TestCase
-from model_mommy import mommy
 from star_ratings.admin import RatingAdmin
 from star_ratings import get_star_ratings_rating_model
+from .fakes import fake_rating
 
 
 class AdminRatingAdmin(TestCase):
     def test_stars_return_the_correct_html(self):
         average = 5 * random()
         max_val = 5
-        rating = mommy.make(get_star_ratings_rating_model(), average=average)
+        rating = fake_rating(average=average)
 
         res = RatingAdmin(get_star_ratings_rating_model(), site).stars(rating)
 

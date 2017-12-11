@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 import os
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from hypothesis import Settings
 from selenium import webdriver
 
 _sauce_username = os.environ.get('SAUCE_USERNAME', None)
@@ -128,10 +127,6 @@ class IgnoreImplicitWait:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._driver.implicitly_wait(self._default_wait)
-
-
-Settings.register_profile('selenium', Settings(max_examples=1, timeout=0))
-Settings.load_profile('selenium')
 
 
 class SeleniumTestCase(StaticLiveServerTestCase):

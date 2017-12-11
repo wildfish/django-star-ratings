@@ -11,11 +11,13 @@ from hypothesis.extra.django import TestCase
 from hypothesis.strategies import lists, integers
 from model_mommy import mommy
 from six import assertRaisesRegex
-from tests.strategies import scores
+
+from .fakes import fake_user
+from .strategies import scores
 from star_ratings import app_settings, get_star_ratings_rating_model
 from star_ratings.models import UserRating
 from star_ratings.templatetags.ratings import ratings
-from tests.models import Foo
+from .models import Foo
 
 
 class TemplateTagsRatings(TestCase):
@@ -24,7 +26,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,
@@ -42,7 +44,7 @@ class TemplateTagsRatings(TestCase):
         rating = get_star_ratings_rating_model().objects.for_instance(item)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,
@@ -56,7 +58,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,
@@ -70,7 +72,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,
@@ -132,7 +134,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,
@@ -146,7 +148,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,
@@ -161,7 +163,7 @@ class TemplateTagsRatings(TestCase):
             item = mommy.make(Foo)
 
             request = RequestFactory().get('/')
-            request.user = mommy.make(get_user_model())
+            request.user = fake_user()
 
             for score in scores:
                 get_star_ratings_rating_model().objects.rate(item, score, mommy.make(get_user_model()))
@@ -181,7 +183,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,
@@ -196,7 +198,7 @@ class TemplateTagsRatings(TestCase):
             item = mommy.make(Foo)
 
             request = RequestFactory().get('/')
-            request.user = mommy.make(get_user_model())
+            request.user = fake_user()
 
             ratings({
                 'request': request,
@@ -210,7 +212,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,
@@ -225,7 +227,7 @@ class TemplateTagsRatings(TestCase):
             item = mommy.make(Foo)
 
             request = RequestFactory().get('/')
-            request.user = mommy.make(get_user_model())
+            request.user = fake_user()
 
             ratings({
                 'request': request,
@@ -239,7 +241,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,
@@ -253,7 +255,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         with assertRaisesRegex(self, Exception, 'Make sure you have "django.core.context_processors.request" in "TEMPLATE_CONTEXT_PROCESSORS"'):
             ratings({}, item)
@@ -280,7 +282,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,
@@ -311,7 +313,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,
@@ -326,7 +328,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,
@@ -340,7 +342,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,
@@ -354,7 +356,7 @@ class TemplateTagsRatings(TestCase):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
-        request.user = mommy.make(get_user_model())
+        request.user = fake_user()
 
         ratings({
             'request': request,

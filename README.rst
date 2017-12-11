@@ -213,6 +213,7 @@ Releasing
 ---------
 
 Travis is setup to push releases to pypi automatically on tags, to do a release:
+
 1. Up version number.
 2. Update release notes.
 3. Push dev.

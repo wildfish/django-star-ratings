@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 ('total', models.PositiveIntegerField(default=0)),
                 ('average', models.DecimalField(decimal_places=3, max_digits=6, default=Decimal('0'))),
                 ('object_id', models.PositiveIntegerField(blank=True, null=True)),
-                ('content_type', models.ForeignKey(blank=True, null=True, to='contenttypes.ContentType')),
+                ('content_type', models.ForeignKey(blank=True, null=True, to='contenttypes.ContentType', on_delete=models.CASCADE)),
             ],
             options={
                 'swappable': swapper.swappable_setting('star_ratings', 'Rating')
@@ -45,8 +45,8 @@ class Migration(migrations.Migration):
                 ('modified', model_utils.fields.AutoLastModifiedField(verbose_name='modified', editable=False, default=django.utils.timezone.now)),
                 ('ip', models.GenericIPAddressField(blank=True, null=True)),
                 ('score', models.PositiveSmallIntegerField()),
-                ('rating', models.ForeignKey(related_name='user_ratings', to=swapper.get_model_name('star_ratings', 'Rating'))),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('rating', models.ForeignKey(related_name='user_ratings', to=swapper.get_model_name('star_ratings', 'Rating'), on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },

@@ -7,6 +7,7 @@ from django.template import loader
 
 from ..models import UserRating
 from .. import app_settings, get_star_ratings_rating_model
+from ..compat import is_authenticated
 
 register = template.Library()
 
@@ -19,9 +20,9 @@ def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, ic
         raise Exception('Make sure you have "django.core.context_processors.request" in "TEMPLATE_CONTEXT_PROCESSORS"')
 
     rating = get_star_ratings_rating_model().objects.for_instance(item)
-    user = request.user.is_authenticated() and request.user or None
+    user = is_authenticated(request.user) and request.user or None
 
-    if request.user.is_authenticated() or app_settings.STAR_RATINGS_ANONYMOUS:
+    if is_authenticated(request.user) or app_settings.STAR_RATINGS_ANONYMOUS:
         user_rating = UserRating.objects.for_instance_by_user(item, user=user)
     else:
         user_rating = None
@@ -46,5 +47,5 @@ def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, ic
         'id': 'dsr{}'.format(uuid.uuid4().hex),
         'anonymous_ratings': app_settings.STAR_RATINGS_ANONYMOUS,
         'read_only': read_only,
-        'editable': not read_only and (request.user.is_authenticated() or app_settings.STAR_RATINGS_ANONYMOUS)
+        'editable': not read_only and (is_authenticated(request.user) or app_settings.STAR_RATINGS_ANONYMOUS)
     })

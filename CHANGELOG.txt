@@ -1,4 +1,13 @@
+0.6.0 (2017-12-11)
+------------------
+
+* Added support for django 2.0
+* Added swappable rating model
+
+
 0.5.6 (2017-07-12)
+------------------
+
 * Star sprite sheet can be specified in settings using `STAR_RATINGS_STAR_SPRITE`
 
 

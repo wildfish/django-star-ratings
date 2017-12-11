@@ -6,7 +6,12 @@ from random import randint
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
+
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:
+    from django.urls import reverse
+
 from django.test import override_settings, Client, TestCase
 from model_mommy import mommy
 from star_ratings import get_star_ratings_rating_model
