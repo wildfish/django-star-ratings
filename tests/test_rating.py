@@ -3,10 +3,10 @@ from __future__ import unicode_literals
 from hypothesis import given
 from hypothesis.strategies import text
 from random import random, randint
-from django.contrib.auth import get_user_model
 from django.test import TestCase
 from model_mommy import mommy
 from star_ratings import app_settings, get_star_ratings_rating_model
+from .fakes import fake_user, fake_rating
 from .models import Foo
 
 
@@ -16,8 +16,7 @@ class RatingToDict(TestCase):
         count = randint(1, 100)
         average = total / count
 
-        rating = mommy.make(
-            get_star_ratings_rating_model(),
+        rating = fake_rating(
             count=count,
             total=total,
             average=average,
@@ -50,7 +49,7 @@ class RatingStr(TestCase):
 
 class RatingOrdering(TestCase):
     def test_order_item_by_average_rating_is_possible(self):
-        user_a, user_b = mommy.make(get_user_model(), _quantity=2)
+        user_a, user_b = fake_user(_quantity=2)
         foo_a = self.foo = Foo.objects.create(name='foo a')
         foo_b = self.foo = Foo.objects.create(name='foo b')
 
@@ -67,7 +66,7 @@ class RatingOrdering(TestCase):
         self.assertEqual(foos[1].pk, foo_a.pk)
 
     def test_order_item_by_count_rating_is_possible(self):
-        user_a, user_b = mommy.make(get_user_model(), _quantity=2)
+        user_a, user_b = fake_user(_quantity=2)
         foo_a = self.foo = Foo.objects.create(name='foo a')
         foo_b = self.foo = Foo.objects.create(name='foo b')
 
@@ -85,7 +84,7 @@ class RatingOrdering(TestCase):
         self.assertEqual(foos[1].pk, foo_b.pk)
 
     def test_order_item_by_total_rating_is_possible(self):
-        user = mommy.make(get_user_model())
+        user = fake_user()
         foo_a = self.foo = Foo.objects.create(name='foo a')
         foo_b = self.foo = Foo.objects.create(name='foo b')
 

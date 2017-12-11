@@ -6,12 +6,13 @@ from django.test import TestCase
 from model_mommy import mommy
 from star_ratings.admin import UserRatingAdmin
 from star_ratings.models import UserRating
+from .fakes import fake_user_rating
 
 
 class AdminRatingAdmin(TestCase):
     def test_stars_return_the_correct_html(self):
         score = randint(1, 5)
-        rating = mommy.make(UserRating, score=score)
+        rating = fake_user_rating(score=score)
 
         res = UserRatingAdmin(UserRating, site).stars(rating)
 

@@ -9,8 +9,9 @@ from hypothesis.extra.django import TestCase
 from mock import patch
 from model_mommy import mommy
 from star_ratings import get_star_ratings_rating_model
+from .fakes import fake_rating, fake_user
 from .models import Foo
-from tests.strategies import scores
+from .strategies import scores
 from six import assertRaisesRegex
 
 
@@ -24,7 +25,7 @@ def mean(nums):
 class RatingManagerForInstance(TestCase):
     def test_rating_object_exists_for_model___that_object_is_returned(self):
         item = mommy.make(Foo)
-        rating = mommy.make(get_star_ratings_rating_model(), content_object=item)
+        rating = fake_rating(content_object=item)
 
         res = get_star_ratings_rating_model().objects.for_instance(item)
 
@@ -66,7 +67,7 @@ class RatingManagerRate(TestCase):
     def test_multiple_users_rating_the_object___aggregates_are_updated(self, scores):
         ratings = None
         for score in scores:
-            ratings = get_star_ratings_rating_model().objects.rate(self.foo, score, mommy.make(get_user_model()), '127.0.0.1')
+            ratings = get_star_ratings_rating_model().objects.rate(self.foo, score, fake_user(), '127.0.0.1')
 
         self.assertEqual(ratings.count, len(scores))
         self.assertAlmostEqual(ratings.total, sum(scores))
@@ -76,7 +77,7 @@ class RatingManagerRate(TestCase):
     def test_deleting_the_rating___aggregates_are_updated(self, scores):
         ratings = None
         for score in scores:
-            ratings = get_star_ratings_rating_model().objects.rate(self.foo, score, mommy.make(get_user_model()), '127.0.0.1')
+            ratings = get_star_ratings_rating_model().objects.rate(self.foo, score, fake_user(), '127.0.0.1')
 
         removed_score = scores.pop()
         ratings.user_ratings.filter(score=removed_score).first().delete()
