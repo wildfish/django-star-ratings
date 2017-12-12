@@ -3,7 +3,9 @@ from __future__ import unicode_literals
 from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 from model_mommy import mommy
-from star_ratings.models import Rating, UserRating
+
+from star_ratings import get_star_ratings_rating_model
+from star_ratings.models import UserRating
 from .models import Foo
 from six import assertRaisesRegex
 
@@ -12,7 +14,7 @@ class RatingManagerHasRated(TestCase):
     def test_has_rate_is_passed_a_rating_instance___type_error_is_raised(self):
         user = mommy.make(get_user_model())
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
 
         with assertRaisesRegex(self, TypeError, "UserRating manager 'has_rated' expects model to be rated, not UserRating model."):
             UserRating.objects.has_rated(ratings, user)
@@ -30,8 +32,8 @@ class ForInstanceByUser(TestCase):
     def test_anon_ratings_is_true___none_is_returned(self):
         foo = mommy.make(Foo)
 
-        Rating.objects.rate(foo, 1, ip='127.0.0.1')
-        Rating.objects.rate(foo, 1, ip='127.0.0.1')
+        get_star_ratings_rating_model().objects.rate(foo, 1, ip='127.0.0.1')
+        get_star_ratings_rating_model().objects.rate(foo, 1, ip='127.0.0.1')
 
         self.assertIsNone(
             UserRating.objects.for_instance_by_user(foo),
@@ -41,8 +43,8 @@ class ForInstanceByUser(TestCase):
         foo = mommy.make(Foo)
         user = mommy.make(get_user_model())
 
-        Rating.objects.rate(foo, 1, user=mommy.make(get_user_model()))
-        expected = Rating.objects.rate(foo, 1, user=user).user_ratings.get(user=user)
+        get_star_ratings_rating_model().objects.rate(foo, 1, user=mommy.make(get_user_model()))
+        expected = get_star_ratings_rating_model().objects.rate(foo, 1, user=user).user_ratings.get(user=user)
 
         self.assertEqual(
             expected,
@@ -53,7 +55,7 @@ class ForInstanceByUser(TestCase):
 class BulkCreate(TestCase):
     def test_correct_number_of_(self):
         foo = mommy.make(Foo, name='name')
-        rating = Rating.objects.for_instance(foo)
+        rating = get_star_ratings_rating_model().objects.for_instance(foo)
         user_a, user_b = mommy.make(get_user_model(), _quantity=2)
 
         data = [
@@ -67,8 +69,8 @@ class BulkCreate(TestCase):
     def test_multiple_user_ratings_are_created_for_multiple_ratings___calculateion_are_updated_correctly(self):
         foo, bar = mommy.make(Foo, name='name', _quantity=2)
 
-        foo_rating = Rating.objects.for_instance(foo)
-        bar_rating = Rating.objects.for_instance(bar)
+        foo_rating = get_star_ratings_rating_model().objects.for_instance(foo)
+        bar_rating = get_star_ratings_rating_model().objects.for_instance(bar)
 
         user_a, user_b, user_c = mommy.make(get_user_model(), _quantity=3)
 
@@ -82,12 +84,12 @@ class BulkCreate(TestCase):
 
         UserRating.objects.bulk_create(data)
 
-        foo_rating = Rating.objects.get(pk=foo_rating.pk)
+        foo_rating = get_star_ratings_rating_model().objects.get(pk=foo_rating.pk)
         self.assertEqual(2, foo_rating.count)
         self.assertEqual(4, foo_rating.total)
         self.assertEqual(2, foo_rating.average)
 
-        bar_rating = Rating.objects.get(pk=bar_rating.pk)
+        bar_rating = get_star_ratings_rating_model().objects.get(pk=bar_rating.pk)
         self.assertEqual(3, bar_rating.count)
         self.assertEqual(9, bar_rating.total)
         self.assertEqual(3, bar_rating.average)

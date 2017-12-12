@@ -2,15 +2,12 @@ from __future__ import division, unicode_literals
 
 from django.test import override_settings
 from django.contrib.auth import get_user_model
-from hypothesis import given, settings
-from hypothesis.extra.django import TestCase
-from hypothesis.strategies import integers, lists
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.support.wait import WebDriverWait
 from .testcase import SeleniumTestCase
 
 
-class RateTest(TestCase, SeleniumTestCase):
+class RateTest(SeleniumTestCase):
     def tearDown(self):
         self.logout()
 
@@ -20,8 +17,9 @@ class RateTest(TestCase, SeleniumTestCase):
         with self.assertRaises(NoSuchElementException):
             self.driver.find_element_by_xpath('//*[@data-score]').click()
 
-    @given(integers(min_value=1, max_value=5))
-    def test_click_star___rating_is_set_to_the_star_value(self, value):
+    def test_click_star___rating_is_set_to_the_star_value(self):
+        value = 3
+
         expected_percentage = 20 * value
         expected_style = 'width: {}%;'.format(expected_percentage)
 
@@ -38,8 +36,8 @@ class RateTest(TestCase, SeleniumTestCase):
         self.assertEqual(value, float(self.avg_rating_elem.text))
         self.assertEqual(1, int(self.count_elem.text))
 
-    @given(integers(min_value=1, max_value=10))
-    def test_star_rating_range_is_set___rating_range_on_page_is_the_star_rating(self, value):
+    def test_star_rating_range_is_set___rating_range_on_page_is_the_star_rating(self):
+        value = 3
         with override_settings(STAR_RATINGS_RANGE=value):
             self.driver.get(self.live_server_url)
 
@@ -50,8 +48,8 @@ class RateTest(TestCase, SeleniumTestCase):
 
     # remove the timeout on this test as it can take a while to run on remote browsers and there are no assumptions to
     # stop it finding examples
-    @given(lists(integers(min_value=1, max_value=5), min_size=2, max_size=10))
-    def test_multiple_users_rate___average_count_and_user_are_correct(self, scores):
+    def test_multiple_users_rate___average_count_and_user_are_correct(self):
+        scores = [1, 2, 3]
         for i, score in enumerate(scores):
             self.driver.get(self.live_server_url)
 
@@ -76,8 +74,8 @@ class RateTest(TestCase, SeleniumTestCase):
         self.assertEqual(len(scores), int(self.count_elem.text))
 
     @override_settings(STAR_RATINGS_RERATE=True)
-    @given(lists(integers(min_value=1, max_value=5), unique_by=lambda x: x, min_size=2, max_size=2), settings=settings.Settings(max_examples=10))
-    def test_rerate_is_true___the_user_is_able_to_change_their_rating(self, values):
+    def test_rerate_is_true___the_user_is_able_to_change_their_rating(self):
+        values = [1, 2]
         first, second = values
 
         get_user_model().objects.create_user('user', password='pass')
@@ -93,8 +91,9 @@ class RateTest(TestCase, SeleniumTestCase):
         self.assertEqual(1, int(self.count_elem.text))
 
     @override_settings(STAR_RATINGS_RERATE=False)
-    @given(lists(integers(min_value=1, max_value=5), unique_by=lambda x: x, min_size=2, max_size=2), settings=settings.Settings(max_examples=10))
-    def test_rerate_is_false___the_user_is_not_able_to_change_their_rating(self, values):
+    def test_rerate_is_false___the_user_is_not_able_to_change_their_rating(self):
+        values = [1, 2]
+
         first, second = values
 
         get_user_model().objects.create_user('user', password='pass')

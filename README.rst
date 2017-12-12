@@ -72,11 +72,12 @@ To enable ratings for a model add the following tag in your template
 Template tags
 -------------
 
-The template tag takes two arguments:
+The template tag takes four arguments:
 
 -  ``icon_height``: defaults to ``STAR_RATINGS_STAR_HEIGHT``
 -  ``icon_width``: defaults to ``STAR_RATINGS_STAR_WIDTH``
 -  ``read_only``: overrides the ``editable`` behaviour to make the widget read only
+-  ``template_name``: overrides the tempalte to use for the widget
 
 Settings
 --------
@@ -143,6 +144,52 @@ the ``Rating`` model from your model:
 
     Foo.objects.filter(ratings__isnull=False).order_by('ratings__average')
 
+Custom Rating Model
+-------------------
+
+In some cases you may need to create your own rating model. This is possible
+by setting ``STAR_RATING_RATING_MODEL`` in your settings file. This can be useful
+to add additional fields or methods to the model. This is very similar to the how
+django handles swapping the user model
+(see [https://docs.djangoproject.com/en/1.10/topics/auth/customizing/#substituting-a-custom-user-model]).
+
+For ease ``AbstractBaseRating`` is supplied. For example if you wanted to add the
+field ``foo`` to the rating model you would need to crate your rating model
+extending ``AbstractBaseRating``:
+
+::
+
+   ./myapp/models.py
+
+   class MyRating(AbstractBaseRating):
+      foo = models.TextField()
+
+And add the setting to the setting file:
+
+::
+
+   ./settings.py
+
+   ...
+   STAR_RATINGS_RATING_MODEL = 'myapp.MyRating'
+   ...
+
+Changing the ``pk`` type (Requires django >= 1.10)
+==================================================
+
+One use case for changing the rating model would be to change the pk type of the
+related object. By default we assume the pk of the rated object will be a
+positive integer field which is fine for most uses, if this isn't though you will
+need to override the ``object_id`` field on the rating model. As of django 1.10
+you can now hide fields form parent abstract models, so to change the ``object_id``
+to a ``CharField`` you can do something like:
+
+::
+
+   class MyRating(AbstractBaseRating):
+      object_id = models.CharField(max_length=10)
+
+
 Running tests
 -------------
 
@@ -166,6 +213,7 @@ Releasing
 ---------
 
 Travis is setup to push releases to pypi automatically on tags, to do a release:
+
 1. Up version number.
 2. Update release notes.
 3. Push dev.

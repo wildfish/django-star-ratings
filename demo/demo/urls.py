@@ -9,6 +9,6 @@ urlpatterns = [
     url(r'^$', FooView.as_view(template_name='home.html'), name='home'),
     url(r'^sizes$', SizesView.as_view(), name='sizes'),
     url(r'^', include(auth_urls)),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^ratings/', include('star_ratings.urls', namespace='ratings', app_name='ratings')),
+    url(r'^admin/', admin.site.urls),
+    url(r'^ratings/', include('star_ratings.urls', namespace='ratings')),
 ]

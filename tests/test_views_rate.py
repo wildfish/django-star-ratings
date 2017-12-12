@@ -6,10 +6,16 @@ from random import randint
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
+
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:
+    from django.urls import reverse
+
 from django.test import override_settings, Client, TestCase
 from model_mommy import mommy
-from star_ratings.models import Rating, UserRating
+from star_ratings import get_star_ratings_rating_model
+from star_ratings.models import UserRating
 from .models import Foo
 
 
@@ -37,7 +43,7 @@ class TestViewRate(TestCase):
     @override_settings(STAR_RATINGS_ANONYMOUS=False)
     def test_view_is_called_when_nobody_is_logged_in_and_anon_ratings_is_false___user_is_forwarded_to_login(self):
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
 
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
         response = self.post_json(url, {'score': 1})
@@ -47,7 +53,7 @@ class TestViewRate(TestCase):
     @override_settings(STAR_RATINGS_ANONYMOUS=True)
     def test_view_is_called_when_nobody_is_logged_in_and_anon_ratings_is_true___rating_is_created(self):
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
 
         score = randint(1, 5)
 
@@ -61,7 +67,7 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_and_doesnt_already_have_a_rating___rating_is_created(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
 
         score = randint(1, 5)
 
@@ -75,7 +81,7 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_no_next_url_is_given___redirected_to_root(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
 
         score = randint(1, 5)
 
@@ -87,7 +93,7 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_next_url_is_given___redirected_to_next(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
 
         score = randint(1, 5)
 
@@ -99,7 +105,7 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_request_is_ajax___rating_is_created(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
 
         score = randint(1, 5)
 
@@ -114,7 +120,7 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_and_doesnt_already_have_a_rating_request_is_ajax___response_is_updated_aggregate_data(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
 
         score = randint(1, 5)
 
@@ -123,7 +129,7 @@ class TestViewRate(TestCase):
         response = self.post_json(
             url, {'score': score}, user=user, xhr=True)
 
-        ratings = Rating.objects.get(pk=ratings.pk)
+        ratings = get_star_ratings_rating_model().objects.get(pk=ratings.pk)
         expected = ratings.to_dict()
         expected['user_rating'] = score
         expected['percentage'] = float(expected['percentage'])
@@ -139,7 +145,7 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true___rating_is_updated(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
         rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
@@ -155,7 +161,7 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true___redirected_to_root(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
         mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
@@ -169,7 +175,7 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true___redirected_to_next(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
         mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
@@ -183,7 +189,7 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true_request_is_ajax___rating_is_updated(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
         rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
@@ -199,18 +205,15 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_true_request_is_ajax___response_is_updated_aggregate_data(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
         mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
 
         url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
 
-        self.client.login(username=user.username, password='password')
-        response = self.client.post(url, json.dumps({'score': score}), content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-
         response = self.post_json(url, {'score': score}, user=user, xhr=True)
-        ratings = Rating.objects.get(pk=ratings.pk)
+        ratings = get_star_ratings_rating_model().objects.get(pk=ratings.pk)
         expected = ratings.to_dict()
         expected['percentage'] = float(expected['percentage'])
         expected['user_rating'] = score
@@ -226,7 +229,7 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_false___rating_is_not_changed(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
         rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
         orig_score = rating.score
 
@@ -243,7 +246,7 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_false___redirected_to_next(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
         mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
@@ -257,7 +260,7 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_false_request_is_ajax___rating_is_not_changed(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
         rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
         orig_score = rating.score
 
@@ -273,7 +276,7 @@ class TestViewRate(TestCase):
     def test_user_is_logged_in_already_has_a_rating_rerate_is_false_reuest_is_ajax___response_is_400(self):
         user = self.get_user()
         foo = mommy.make(Foo)
-        ratings = Rating.objects.for_instance(foo)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
         mommy.make(UserRating, rating=ratings, score=1, user=user)
 
         score = randint(2, 5)
