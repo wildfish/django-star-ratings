@@ -137,7 +137,7 @@ the ``Rating`` model from your model:
 
     from django.contrib.contenttypes.fields import GenericRelation
     from star_ratings.models import Rating
-    
+
     class Foo(models.Model):
         bar = models.CharField(max_length=100)
         ratings = GenericRelation(Rating, related_query_name='foos')
@@ -180,14 +180,25 @@ Changing the ``pk`` type (Requires django >= 1.10)
 One use case for changing the rating model would be to change the pk type of the
 related object. By default we assume the pk of the rated object will be a
 positive integer field which is fine for most uses, if this isn't though you will
-need to override the ``object_id`` field on the rating model. As of django 1.10
-you can now hide fields form parent abstract models, so to change the ``object_id``
-to a ``CharField`` you can do something like:
+need to override the ``object_id`` field on the rating model as well as set
+STAR_RATINGS_OBJECT_ID_PATTERN to a reasonable value for your new pk field. As
+of django 1.10 you can now hide fields form parent abstract models, so to change
+the ``object_id``to a ``CharField`` you can do something like:
 
 ::
 
    class MyRating(AbstractBaseRating):
       object_id = models.CharField(max_length=10)
+
+And add the setting to the setting file:
+
+::
+
+   ./settings.py
+
+   ...
+   STAR_RATINGS_OBJECT_ID_PATTERN = '[a-z0-9]{32}'
+   ...
 
 
 Running tests
