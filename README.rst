@@ -1,3 +1,4 @@
+===================
 django-star-ratings
 ===================
 
@@ -11,7 +12,7 @@ See full `documentation
 <http://django-star-ratings.readthedocs.io/en/latest/?badge=latest/>`_.
 
 Installation
-------------
+============
 
 Install from PyPI:
 
@@ -44,7 +45,7 @@ Make sure ``'django.core.context_processors.request',`` is in
 ``TEMPLATE_CONTEXT_PROCESSORS``.
 
 Usage
------
+=====
 
 Add the following javascript and stylesheet to your template
 
@@ -70,7 +71,7 @@ To enable ratings for a model add the following tag in your template
     </html>
 
 Template tags
--------------
+=============
 
 The template tag takes four arguments:
 
@@ -80,7 +81,7 @@ The template tag takes four arguments:
 -  ``template_name``: overrides the tempalte to use for the widget
 
 Settings
---------
+========
 
 To prohibit users from altering their ratings set
 ``STAR_RATINGS_RERATE = False`` in settings.py
@@ -91,7 +92,7 @@ To change the number of rating stars, set ``STAR_RATINGS_RANGE``
 To enable anonymous rating set ``STAR_RATINGS_ANONYMOUS = True``.
 
 Anonymous Rating
-----------------
+================
 
 If anonymous rating is enabled only the ip address for the rater will be stored (even if the user is logged in).
 When a user rates an object a preexisting object will not be searched for, instead a new rating object will be created
@@ -104,7 +105,7 @@ To control the default size of stars in pixels set the values of ``STAR_RATINGS_
 
 
 Changing the star graphics
---------------------------
+==========================
 
 To change the star graphic, add a sprite sheet to
 ``/static/star-ratings/images/stars.png`` with the states aligned
@@ -114,7 +115,7 @@ and active.
 You can also set ``STAR_RATINGS_STAR_SPRITE`` to the location of your sprite sheet.
 
 Customize widget template
--------------------------
+=========================
 
 You can customize ratings widget by creating ``star_ratings/widget.html``. For example :
 
@@ -128,7 +129,7 @@ You can customize ratings widget by creating ``star_ratings/widget.html``. For e
 See ``star_ratings/widget_base.html`` for other blocks to be extended.
 
 Ordering by ratings
--------------------
+===================
 
 The easiest way to order by ratings is to add a ``GenericRelation`` to
 the ``Rating`` model from your model:
@@ -145,7 +146,7 @@ the ``Rating`` model from your model:
     Foo.objects.filter(ratings__isnull=False).order_by('ratings__average')
 
 Custom Rating Model
--------------------
+===================
 
 In some cases you may need to create your own rating model. This is possible
 by setting ``STAR_RATING_RATING_MODEL`` in your settings file. This can be useful
@@ -207,6 +208,47 @@ And add the setting to the setting file:
    ...
 
 
+Events
+======
+
+Some events are dispatched from the javascript when an object is raised. Each
+event that ias dispatched has a ``details`` property that contains information
+about the object and the rating.
+
+``rate-success``
+----------------
+
+Dispatched after the user has rated an object and the display has been updated.
+
+The event details contains
+
+::
+
+    {
+        sender: ... // The star DOM object that was clicked
+        rating: {
+            average: ... // Float giving the updated average of the rating
+            count: ... // Integer giving the total number of ratings
+            percentage: ... // Float giving the percentage rating
+            total: ... // Integer giving the sum of all ratings
+            user_rating: ... // Integer giving the rating by the user
+    }
+
+``rate-failed``
+---------------
+
+Dispatched after the user has rated an object but the server responds with an error.
+
+The event details contains
+
+::
+
+    {
+        sender: ... // The star DOM object that was clicked
+        error: ... // String giving the error message from the server
+    }
+
+
 Running tests
 -------------
 
@@ -223,7 +265,6 @@ To run the test use:
 .. |Documentation Status| image:: https://readthedocs.org/projects/django-star-ratings/badge/?version=latest
    :target: http://django-star-ratings.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-.. |Docs| :target: https://django-configurations.readthedocs.io/en/latest/
 
 
 Releasing
