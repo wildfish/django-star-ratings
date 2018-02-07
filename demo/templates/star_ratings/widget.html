@@ -1,0 +1,12 @@
+{% extends 'star_ratings/widget_base.html' %}
+
+{% block rating_container %}
+    {{ block.super }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elem = document.getElementById('{{ id }}');
+            elem.addEventListener('rate-success', function(e) { console.log(e.detail); });
+            elem.addEventListener('rate-failed', function(e) { console.log(e.detail); });
+        })
+    </script>
+{% endblock %}

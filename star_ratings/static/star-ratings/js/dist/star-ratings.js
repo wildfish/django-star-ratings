@@ -5,7 +5,6 @@ module.exports = require('./src/ratings');
 var rest = require('./rest.js');
 var utils = require('./utils');
 
-
 /*********************
  * Initialise ratings
  *********************/
@@ -62,9 +61,49 @@ function ratingClick(ev) {
 function rate(url, score, sender) {
     rest.post(url, {'score': score}, function (rating) {
         updateRating(rating, sender);
+        dispatchRateSuccessEvent(rating, sender);
     }, function (errors) {
         showError(errors, sender);
+        dispatchRateFailEvent(error, sender);
     });
+}
+
+
+function _getEvent(name, detail) {
+    if (typeof CustomEvent === 'undefined') {
+        var evt = document.createEvent('CustomEvent');
+        evt.initCustomEvent(name, true, true, detail);
+        return evt;
+    }
+    else {
+        return new CustomEvent(name, {
+            detail: detail,
+            bubbles: true,
+            cancelable: true
+        });
+    }
+}
+
+
+function dispatchRateSuccessEvent(rating, sender) {
+    sender.dispatchEvent(_getEvent(
+        'rate-success',
+        {
+            sender: sender,
+            rating: rating
+        }
+    ))
+}
+
+
+function dispatchRateFailEvent(error, sender) {
+    sender.dispatchEvent(_getEvent(
+        'rate-failed',
+        {
+            sender: sender,
+            error: error
+        }
+    ))
 }
 
 
