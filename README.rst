@@ -174,6 +174,12 @@ And add the setting to the setting file:
    STAR_RATINGS_RATING_MODEL = 'myapp.MyRating'
    ...
 
+**NOTE:** If you are using a custom rating model there is an issue with how django
+migration handles dependency orders. In order to create your initial migration you
+will need to comment out the ``STAR_RATINGS_RATING_MODEL`` setting and run
+``makemigrations``. After this initial migration you will be able to add the setting
+back in and run ``migrate`` and ``makemigrations`` without issue.
+
 Changing the ``pk`` type (Requires django >= 1.10)
 ==================================================
 

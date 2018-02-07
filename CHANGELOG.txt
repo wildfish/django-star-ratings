@@ -2,6 +2,7 @@ __next__
 --------
 
 * Added `STAR_RATINGS_OBJECT_ID_PATTERN` for custom rating model handling in urls (thanks @RabidCicada)
+* Added documentation about initial migration when using custom ratings model (thanks @RabidCicada)
 
 
 0.6.0 (2017-12-11)
