@@ -146,7 +146,7 @@ class TemplateTagsRatings(TestCase):
         self.assertIsNone(context['user_rating_percentage'])
 
     @patch('django.template.Template.render')
-    def test_user_is_not_authenticated_with_rating_for_object___user_rating_is_none(self, render_mock):
+    def test_user_is_not_authenticated_with_rating_for_object___user_rating_percentage_is_none(self, render_mock):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
@@ -160,7 +160,7 @@ class TemplateTagsRatings(TestCase):
         self.assertIsNone(context['user_rating_percentage'])
 
     @patch('django.template.Template.render')
-    def test_user_is_authenticated_with_rating_for_object___user_rating_for_user_is_returned(self, render_mock):
+    def test_user_is_authenticated_with_rating_for_object___user_rating_percentage_for_user_is_returned(self, render_mock):
         item = mommy.make(Foo)
 
         request = RequestFactory().get('/')
