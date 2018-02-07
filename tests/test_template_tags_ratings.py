@@ -130,6 +130,55 @@ class TemplateTagsRatings(TestCase):
         self.assertEqual(user_rating, context['user_rating'])
 
     @patch('django.template.Template.render')
+    def test_user_is_authenticated_without_rating_for_object___user_rating_percentage_is_none(self, render_mock):
+        item = mommy.make(Foo)
+
+        request = RequestFactory().get('/')
+
+        request.user = get_user_model().objects.create_user(username='user', password='pass')
+        self.client.login(username='user', password='pass')
+
+        ratings({
+            'request': request,
+        }, item)
+
+        context = render_mock.call_args_list[0][0][0]
+        self.assertIsNone(context['user_rating_percentage'])
+
+    @patch('django.template.Template.render')
+    def test_user_is_not_authenticated_with_rating_for_object___user_rating_is_none(self, render_mock):
+        item = mommy.make(Foo)
+
+        request = RequestFactory().get('/')
+        request.user = AnonymousUser()
+
+        ratings({
+            'request': request,
+        }, item)
+
+        context = render_mock.call_args_list[0][0][0]
+        self.assertIsNone(context['user_rating_percentage'])
+
+    @patch('django.template.Template.render')
+    def test_user_is_authenticated_with_rating_for_object___user_rating_for_user_is_returned(self, render_mock):
+        item = mommy.make(Foo)
+
+        request = RequestFactory().get('/')
+        request.user = get_user_model().objects.create_user(username='user', password='pass')
+        self.client.login(username='user', password='pass')
+
+        rating = get_star_ratings_rating_model().objects.rate(item, 3, request.user)
+        user_rating = UserRating.objects.get(rating=rating, user=request.user)
+
+        ratings({
+            'request': request,
+        }, item)
+
+        context = render_mock.call_args_list[0][0][0]
+        expected_avg = 100 * (user_rating.score / Decimal(app_settings.STAR_RATINGS_RANGE))
+        self.assertEqual(expected_avg, context['user_rating_percentage'])
+
+    @patch('django.template.Template.render')
     def test_stars_list_is_added_to_the_result(self, render_mock):
         item = mommy.make(Foo)
 
