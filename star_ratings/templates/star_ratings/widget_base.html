@@ -1,4 +1,5 @@
 {% load i18n %}
+{% block rating_style %}
 <style>
     #{{ id }} .star-ratings-rating-full, #{{ id }} .star-ratings-rating-empty {
         width: {{ icon_width }}px;
@@ -17,6 +18,9 @@
     }
     {% endif %}
 </style>
+{% endblock rating_style %}
+
+{% block rating_container %}
 <div id="{{ id }}" class="star-ratings" data-max-rating="{{ star_count }}" data-avg-rating="{{ rating.average }}">
     {% block rating_stars %}
         <div class="star-ratings-rating-stars-container">
@@ -67,3 +71,4 @@
     <div class="star-ratings-errors"></div>
     {% endblock rating_detail %}
 </div>
+{% endblock rating_container %}

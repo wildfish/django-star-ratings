@@ -1,6 +1,7 @@
 __next__
 --------
 
+* Added js events for after a user rates an object
 * Added `user_rating_percentage` to rating template tag context.
 * Added `STAR_RATINGS_OBJECT_ID_PATTERN` for custom rating model handling in urls (thanks @RabidCicada)
 * Added documentation about initial migration when using custom ratings model (thanks @RabidCicada)
