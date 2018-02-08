@@ -1,5 +1,5 @@
-__next__
---------
+0.6.1 (2018-02-08)
+------------------
 
 * Added js events for after a user rates an object
 * Added `user_rating_percentage` to rating template tag context.

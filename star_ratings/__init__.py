@@ -4,7 +4,7 @@ import swapper
 
 from .app_settings import Settings
 
-__version__ = '0.6.0'
+__version__ = '0.6.1'
 
 default_app_config = 'star_ratings.apps.StarRatingsAppConfig'
 app_settings = Settings()
