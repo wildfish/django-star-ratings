@@ -19,11 +19,11 @@ function init () {
  * Bind ratings
  *********************/
 function bindRatings(el) {
-    el.addEventListener("click", ratingClick);
+    el.addEventListener("submit", ratingSubmit);
 
     el.onmouseenter = function () {
         var maxRating = getMaxRating(this);
-        var score = this.getAttribute('data-score');
+        var score = this.querySelector('[name=score]').value;
         var parent = utils.findParent(this, "star-ratings");
         parent.querySelector(".star-ratings-rating-foreground").style.width = 100 / maxRating * score + "%";
     };
@@ -31,7 +31,7 @@ function bindRatings(el) {
     el.onmouseleave = function () {
         var avgRating = getAvgRating(this);
         var maxRating = getMaxRating(this);
-        var score = this.getAttribute('data-score');
+        var score = this.querySelector('[name=score]').value;
         var parent = utils.findParent(this, "star-ratings");
         var percentage = 100 / maxRating * avgRating + "%";
         parent.querySelector(".star-ratings-rating-foreground").style.width = percentage;
@@ -42,25 +42,31 @@ function bindRatings(el) {
 /*********************
  * Rating click event
  *********************/
-function ratingClick(ev) {
+function ratingSubmit(ev) {
     ev.stopPropagation();
     ev.preventDefault();
-    var url = this.getAttribute('href');
-    var score = this.getAttribute('data-score');
-    rate(url, score, this);
+
+    var form = ev.target;
+
+    var data = [].reduce.call(form.elements, function(data, element) {
+        data[element.name] = element.value;
+        return data;
+    }, {});
+
+    rate(form.action, data, this);
 }
 
 
 /*********************
  * Rate instance
  *********************/
-function rate(url, score, sender) {
-    rest.post(url, {'score': score}, function (rating) {
+function rate(url, data, sender) {
+    rest.post(url, data, function (rating) {
         updateRating(rating, sender);
         dispatchRateSuccessEvent(rating, sender);
     }, function (errors) {
         showError(errors, sender);
-        dispatchRateFailEvent(error, sender);
+        dispatchRateFailEvent(errors, sender);
     });
 }
 

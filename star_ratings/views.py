@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import View
 
 from . import app_settings, get_star_ratings_rating_model
+from .forms import CreateUserRatingForm
 from .compat import is_authenticated
 import json
 
@@ -23,27 +24,35 @@ class Rate(View):
 
     def post(self, request, *args, **kwargs):
         def _post(request, *args, **kwargs):
-            return_url = request.GET.get('next', '/')
+            data = request.POST or json.loads(request.body.decode())
+
+            return_url = data.pop('next', '/')
             if 'HTTP_X_REAL_IP' in self.request.META:
-                ip = self.request.META['HTTP_X_REAL_IP']
+                data['ip'] = self.request.META['HTTP_X_REAL_IP']
             else:
-                ip = self.request.META['REMOTE_ADDR']
-            data = json.loads(request.body.decode())
-            score = data.get('score')
-            user = is_authenticated(request.user) and request.user or None
+                data['ip'] = self.request.META['REMOTE_ADDR']
+
+            data['user'] = is_authenticated(request.user) and request.user.pk or None
+
+            res_status = 200
+
             try:
-                rating = self.model.objects.rate(self.get_object(), score, user=user, ip=ip)
-                if request.is_ajax():
+                form = CreateUserRatingForm(data=data, obj=self.get_object())
+                if form.is_valid():
+                    rating = form.save()
                     result = rating.to_dict()
-                    result['user_rating'] = int(score)
-                    return JsonResponse(data=result, status=200)
+                    result['user_rating'] = int(form.cleaned_data['score'])
                 else:
-                    return HttpResponseRedirect(return_url)
+                    result = {'errors': form.errors}
+                    res_status = 400
             except ValidationError as err:
-                if request.is_ajax():
-                    return JsonResponse(data={'error': err.message}, status=400)
-                else:
-                    return HttpResponseRedirect(return_url)
+                result = {'errors': err.message}
+                res_status = 400
+
+            if request.is_ajax():
+                return JsonResponse(data=result, status=res_status)
+            else:
+                return HttpResponseRedirect(return_url)
 
         if not app_settings.STAR_RATINGS_ANONYMOUS:
             return login_required(_post)(request, *args, **kwargs)
