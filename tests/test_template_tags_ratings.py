@@ -306,7 +306,7 @@ class TemplateTagsRatings(TestCase):
         request = RequestFactory().get('/')
         request.user = fake_user()
 
-        with assertRaisesRegex(self, Exception, 'Make sure you have "django.core.context_processors.request" in "TEMPLATE_CONTEXT_PROCESSORS"'):
+        with assertRaisesRegex(self, Exception, 'Make sure you have "django.core.context_processors.request" in your templates context processor list'):
             ratings({}, item)
 
     @override_settings(STAR_RATINGS_ANONYMOUS=False)
