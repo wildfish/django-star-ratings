@@ -1,3 +1,9 @@
+__next__
+------------------
+
+* Changed sprite image in template tag to use static files wrapper
+  (this may cause issues if your STAR_RATINGS_STAR_SPRITE setting includes static root url)
+
 0.6.1 (2018-02-08)
 ------------------
 
