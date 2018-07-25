@@ -1,3 +1,8 @@
+__next__
+------------------
+
+* Replaced links with forms so that requests are made correclty if there is no js (This may break other css/js)
+
 0.6.1 (2018-02-08)
 ------------------
 
