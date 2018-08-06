@@ -1,3 +1,8 @@
+__next__
+------------------
+
+* Updated error message for missing requests context processor to work for new and old template settings
+
 0.6.1 (2018-02-08)
 ------------------
 
