@@ -20,6 +20,7 @@
 .star-ratings-rating-full, .star-ratings-rating-empty {
     display: block;
     background: url('/static/star-ratings/images/stars.png') no-repeat;
+    border: 0;
 }
 
 .star-ratings-rating-foreground {

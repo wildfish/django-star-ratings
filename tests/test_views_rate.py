@@ -97,8 +97,8 @@ class TestViewRate(TestCase):
 
         score = randint(1, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
-        response = self.post_json(url, {'score': score}, user=user)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        response = self.post_json(url, {'score': score, 'next': '/foo/bar'}, user=user)
 
         self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
 
@@ -180,8 +180,8 @@ class TestViewRate(TestCase):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
-        response = self.post_json(url, {'score': score}, user=user)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        response = self.post_json(url, {'score': score, 'next': '/foo/bar'}, user=user)
 
         self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
 
@@ -251,8 +251,8 @@ class TestViewRate(TestCase):
 
         score = randint(2, 5)
 
-        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
-        response = self.post_json(url, {'score': score}, user=user)
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        response = self.post_json(url, {'score': score, 'next': '/foo/bar'}, user=user)
 
         self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
 
@@ -273,7 +273,7 @@ class TestViewRate(TestCase):
         self.assertEqual(orig_score, rating.score)
 
     @override_settings(STAR_RATINGS_RERATE=False)
-    def test_user_is_logged_in_already_has_a_rating_rerate_is_false_reuest_is_ajax___response_is_400(self):
+    def test_user_is_logged_in_already_has_a_rating_rerate_is_false_reqest_is_ajax___response_is_400(self):
         user = self.get_user()
         foo = mommy.make(Foo)
         ratings = get_star_ratings_rating_model().objects.for_instance(foo)
