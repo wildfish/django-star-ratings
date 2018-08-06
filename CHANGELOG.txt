@@ -1,6 +1,7 @@
 __next__
 ------------------
 
+* Added support for django 2.1
 * Updated error message for missing requests context processor to work for new and old template settings
 
 0.6.1 (2018-02-08)
