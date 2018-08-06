@@ -45,7 +45,7 @@ class UserRatingStr(TestCase):
         try:
             str(user_rating)
         except:
-            self.fail('"str" raised when it should\'nt')
+            self.fail('"str" raised when it shouldn\'t')
 
 
 class UserRatingHasRated(TestCase):
