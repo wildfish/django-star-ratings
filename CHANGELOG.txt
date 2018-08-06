@@ -3,6 +3,8 @@ __next__
 
 * Changed sprite image in template tag to use static files wrapper
   (this may cause issues if your STAR_RATINGS_STAR_SPRITE setting includes static root url)
+* Replaced links with forms so that requests are made correclty if there is no js (This may break other css/js)
+* Updated error message for missing requests context processor to work for new and old template settings
 
 0.6.1 (2018-02-08)
 ------------------

@@ -44,7 +44,7 @@ class UserRatingStr(TestCase):
 
         try:
             str(user_rating)
-        except:  # noqa
+        except:  # noqa: E722
             self.fail('"str" raised when it should\'nt')
 
 

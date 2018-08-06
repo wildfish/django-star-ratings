@@ -18,7 +18,7 @@ def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, ic
     request = context.get('request')
 
     if request is None:
-        raise Exception('Make sure you have "django.core.context_processors.request" in "TEMPLATE_CONTEXT_PROCESSORS"')
+        raise Exception('Make sure you have "django.core.context_processors.request" in your templates context processor list')
 
     rating = get_star_ratings_rating_model().objects.for_instance(item)
     user = is_authenticated(request.user) and request.user or None
