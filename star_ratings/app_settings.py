@@ -26,7 +26,7 @@ class Settings:
 
     @property
     def STAR_RATINGS_STAR_SPRITE(self):
-        return getattr(settings, 'STAR_RATINGS_STAR_SPRITE', '/static/star-ratings/images/stars.png')
+        return getattr(settings, 'STAR_RATINGS_STAR_SPRITE', 'star-ratings/images/stars.png')
 
     @property
     def STAR_RATINGS_OBJECT_ID_PATTERN(self):
