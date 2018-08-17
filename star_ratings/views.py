@@ -34,6 +34,11 @@ class Rate(View):
 
             data['user'] = is_authenticated(request.user) and request.user.pk or None
 
+            if not request.session or not request.session.session_key:
+                request.session.save()
+
+            data['session'] = self.request.session.session_key
+
             res_status = 200
 
             try:
