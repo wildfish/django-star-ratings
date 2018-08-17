@@ -1,0 +1,6 @@
+{% load l10n %}
+"aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ rating.average|unlocalize }}",
+    "ratingCount": "{{ rating.count }}"
+}

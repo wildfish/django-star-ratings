@@ -36,15 +36,22 @@ class RatingManager(models.Manager):
         warn("RatingManager method 'ratings_for_instance' has been renamed to 'for_instance'. Please change uses of 'Rating.objects.ratings_for_instance' to 'Rating.objects.for_instance' in your code.", DeprecationWarning)
         return self.for_instance(instance)
 
-    def rate(self, instance, score, user=None, ip=None):
+    def rate(self, instance, score, user=None, ip=None, session=None):
         if isinstance(instance, self.model):
             raise TypeError("Rating manager 'rate' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
 
+        existing_rating = None
         user = _clean_user(user)
-        existing_rating = UserRating.objects.for_instance_by_user(instance, user)
+
+        if user:
+            existing_rating = UserRating.objects.for_instance_by_user(instance, user)
+        elif session:
+            existing_rating = UserRating.objects.for_instance_by_session(instance, session)
 
         if existing_rating:
+            if user and not existing_rating.user:
+                existing_rating.user = user
             if not app_settings.STAR_RATINGS_RERATE:
                 raise ValidationError(_('Already rated.'))
             existing_rating.score = score
@@ -52,7 +59,7 @@ class RatingManager(models.Manager):
             return existing_rating.rating
         else:
             rating, created = self.get_or_create(content_type=ct, object_id=instance.pk)
-            return UserRating.objects.create(user=user, score=score, rating=rating, ip=ip).rating
+            return UserRating.objects.create(user=user, score=score, rating=rating, ip=ip, session=session).rating
 
 
 @python_2_unicode_compatible
@@ -114,6 +121,10 @@ class UserRatingManager(models.Manager):
         else:
             return None
 
+    def for_instance_by_session(self, instance, session=None):
+        ct = ContentType.objects.get_for_model(instance)
+        return self.filter(rating__content_type=ct, rating__object_id=instance.pk, session=session).first()
+
     def has_rated(self, instance, user=None):
         if isinstance(instance, get_star_ratings_rating_model()):
             raise TypeError("UserRating manager 'has_rated' expects model to be rated, not UserRating model.")
@@ -137,6 +148,7 @@ class UserRating(TimeStampedModel):
     ip = models.GenericIPAddressField(blank=True, null=True)
     score = models.PositiveSmallIntegerField()
     rating = models.ForeignKey(get_star_ratings_rating_model_name(), related_name='user_ratings', on_delete=models.CASCADE)
+    session = models.CharField(max_length=32, null=True, blank=True, db_index=True)
 
     objects = UserRatingManager()
 
