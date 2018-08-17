@@ -12,21 +12,23 @@ from ..compat import is_authenticated
 
 register = template.Library()
 
+EXCEPTION_MESSAGE = 'Make sure you have "django.core.context_processors.request" in your templates context processor list'
+
 
 @register.simple_tag(takes_context=True)
-def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, icon_width=app_settings.STAR_RATINGS_STAR_WIDTH, read_only=False, template_name=None):
+def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT,
+            icon_width=app_settings.STAR_RATINGS_STAR_WIDTH, read_only=False, template_name=None):
     request = context.get('request')
 
     if request is None:
-        raise Exception('Make sure you have "django.core.context_processors.request" in your templates context processor list')
+        raise Exception(EXCEPTION_MESSAGE)
 
     rating = get_star_ratings_rating_model().objects.for_instance(item)
     user = is_authenticated(request.user) and request.user or None
-
-    if is_authenticated(request.user) or app_settings.STAR_RATINGS_ANONYMOUS:
+    if is_authenticated(request.user):
         user_rating = UserRating.objects.for_instance_by_user(item, user=user)
-    else:
-        user_rating = None
+    elif app_settings.STAR_RATINGS_ANONYMOUS:
+        user_rating = UserRating.objects.for_instance_by_session(item, session=request.session.session_key)
 
     if user_rating is not None:
         user_rating_percentage = 100 * (user_rating.score / Decimal(app_settings.STAR_RATINGS_RANGE))
@@ -55,4 +57,23 @@ def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, ic
         'anonymous_ratings': app_settings.STAR_RATINGS_ANONYMOUS,
         'read_only': read_only,
         'editable': not read_only and (is_authenticated(request.user) or app_settings.STAR_RATINGS_ANONYMOUS)
+    })
+
+
+@register.simple_tag(takes_context=True)
+def aggregate_rating(context, item, template_name=None):
+    request = context.get('request')
+    if request is None:
+        raise Exception(EXCEPTION_MESSAGE)
+
+    rating = get_star_ratings_rating_model().objects.for_instance(item)
+    user = is_authenticated(request.user) and request.user or None
+    if is_authenticated(request.user):
+        user_rating = UserRating.objects.for_instance_by_user(item, user=user)
+    elif app_settings.STAR_RATINGS_ANONYMOUS:
+        user_rating = UserRating.objects.for_instance_by_session(item, session=request.session.session_key)
+
+    template_name = template_name or context.get('star_ratings_template_name') or 'star_ratings/aggregate_rating.html'
+    return loader.get_template(template_name).render({
+        'rating': rating,
     })
