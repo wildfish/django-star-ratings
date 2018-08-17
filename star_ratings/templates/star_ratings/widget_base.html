@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n l10n %}
 {% block rating_style %}
 <style>
     #{{ id }} .star-ratings-rating-full, #{{ id }} .star-ratings-rating-empty {
@@ -21,7 +21,7 @@
 {% endblock rating_style %}
 
 {% block rating_container %}
-<div id="{{ id }}" class="star-ratings" data-max-rating="{{ star_count }}" data-avg-rating="{{ rating.average }}">
+<div id="{{ id }}" class="star-ratings" data-max-rating="{{ star_count }}" data-avg-rating="{{ rating.average|unlocalize }}">
     {% block rating_stars %}
         <div class="star-ratings-rating-stars-container">
             <ul class="star-ratings-rating-background">
@@ -43,7 +43,7 @@
                 {% endfor %}
             </ul>
 
-            <ul class="star-ratings-rating-foreground" style="width: {{ percentage|floatformat }}%">
+            <ul class="star-ratings-rating-foreground" style="width: {{ percentage|unlocalize }}%">
                 {% for star in stars %}
                     <li>
                     {% if editable %}
