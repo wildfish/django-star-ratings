@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='userrating',
             name='session',
-            field=models.CharField(blank=True, default=None, max_length=32, null=True, unique=True),
+            field=models.CharField(blank=True, default=None, max_length=32, null=True, db_index=True),
         ),
     ]
