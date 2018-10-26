@@ -11,6 +11,13 @@ Add ratings to any Django model with a template tag.
 See full `documentation
 <http://django-star-ratings.readthedocs.io/en/latest/?badge=latest/>`_.
 
+Requirements
+============
+
+* Python 2.7 and 3.4+.
+* Django 1.8+
+
+
 Installation
 ============
 
