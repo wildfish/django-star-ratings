@@ -4,6 +4,7 @@ from decimal import Decimal
 import uuid
 from django import template
 from django.template import loader
+from django.template.context_processors import csrf
 from django.templatetags.static import static
 
 from ..models import UserRating
@@ -39,6 +40,7 @@ def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, ic
     # template name can be passed as a template parameter
     template_name = template_name or context.get('star_ratings_template_name') or 'star_ratings/widget.html'
     return loader.get_template(template_name).render({
+        'csrf_token': csrf(request)['csrf_token'],
         'rating': rating,
         'request': request,
         'user': request.user,
