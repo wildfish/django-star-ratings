@@ -55,4 +55,4 @@ def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, ic
         'anonymous_ratings': app_settings.STAR_RATINGS_ANONYMOUS,
         'read_only': read_only,
         'editable': not read_only and (is_authenticated(request.user) or app_settings.STAR_RATINGS_ANONYMOUS)
-    })
+    }, request=request)
