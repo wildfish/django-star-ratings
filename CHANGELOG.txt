@@ -1,4 +1,4 @@
-__next__
+0.8.0 (2019-06-26)
 ------------------
 
 * Added support for django 2.2
