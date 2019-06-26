@@ -1,6 +1,7 @@
 __next__
 ------------------
 
+* Added support for django 2.2
 * Fixed issue not setting csrf token in ratings template (thanks @4lm)
 * Added german language support (thanks @4lm)
 * Added support for python 3.7
