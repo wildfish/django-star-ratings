@@ -30,4 +30,4 @@ class Settings:
 
     @property
     def STAR_RATINGS_OBJECT_ID_PATTERN(self):
-        return getattr(settings, 'STAR_RATINGS_OBJECT_ID_PATTERN', '\d+')
+        return getattr(settings, 'STAR_RATINGS_OBJECT_ID_PATTERN', r'\d+')

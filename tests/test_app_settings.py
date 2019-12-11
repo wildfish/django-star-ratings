@@ -49,7 +49,7 @@ class AppSettingsDefaults(TestCase):
             self.assertEqual(width, app_settings.STAR_RATINGS_STAR_WIDTH)
 
     def test_object_id_pattern_not_defined_in_the_settings___defaults_to_integers(self):
-        self.assertEqual('\d+', app_settings.STAR_RATINGS_OBJECT_ID_PATTERN)
+        self.assertEqual(r'\d+', app_settings.STAR_RATINGS_OBJECT_ID_PATTERN)
 
     @override_settings(STAR_RATINGS_OBJECT_ID_PATTERN='[a-z0-9]{32}')
     def test_object_id_pattern_defined_in_the_settings___value_is_setting_value(self):
