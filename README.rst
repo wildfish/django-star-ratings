@@ -14,8 +14,8 @@ See full `documentation
 Requirements
 ============
 
-* Python 2.7 and 3.4+.
-* Django 1.8+
+* Python 3.6+.
+* Django 2.0+
 
 
 Installation

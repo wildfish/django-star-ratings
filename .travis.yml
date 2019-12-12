@@ -4,6 +4,7 @@ dist: xenial
 python:
 - '3.7'
 - '3.6'
+- '3.8'
 env:
 - DJANGO_VERSION="Django>=3.0,<3.1" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest DEPLOY=true
 - DJANGO_VERSION="Django>=2.2,<2.3" RUN_WEB_TESTS=false
