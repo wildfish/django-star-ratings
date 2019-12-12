@@ -10,7 +10,7 @@ path.py
 model-mommy
 django-webtest
 django-braces
-hypothesis==1.16.0
+hypothesis
 pip-tools
 selenium
 mock
