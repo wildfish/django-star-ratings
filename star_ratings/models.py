@@ -9,7 +9,6 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Avg, Count, Sum
-from six import python_2_unicode_compatible
 from django.utils.translation import ugettext as _
 from model_utils.models import TimeStampedModel
 
@@ -55,7 +54,6 @@ class RatingManager(models.Manager):
             return UserRating.objects.create(user=user, score=score, rating=rating, ip=ip).rating
 
 
-@python_2_unicode_compatible
 class AbstractBaseRating(models.Model):
     """
     Attaches Rating models and running counts to the model being rated via a generic relation.
@@ -128,7 +126,6 @@ class UserRatingManager(models.Manager):
         return objs
 
 
-@python_2_unicode_compatible
 class UserRating(TimeStampedModel):
     """
     An individual rating of a user against a model.
