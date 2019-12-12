@@ -3,6 +3,7 @@ __next__
 
 * Added support for python 3.8
 * Added support for django 3
+* Added RU translations (thanks @DarkDemiurg)
 
 0.8.0 (2019-06-26)
 ------------------
