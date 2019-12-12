@@ -4,39 +4,12 @@ dist: xenial
 python:
 - '3.7'
 - '3.6'
-- '3.5'
-- '3.4'
-- '2.7'
+- '3.8'
 env:
-- DJANGO_VERSION="Django>=2.2,<2.3" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest DEPLOY=true
+- DJANGO_VERSION="Django>=3.0,<3.1" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest DEPLOY=true
+- DJANGO_VERSION="Django>=2.2,<2.3" RUN_WEB_TESTS=false
 - DJANGO_VERSION="Django>=2.1,<2.2" RUN_WEB_TESTS=false
 - DJANGO_VERSION="Django>=2.0,<2.1" RUN_WEB_TESTS=false
-- DJANGO_VERSION="Django>=1.11a1,<2.0" RUN_WEB_TESTS=false
-- DJANGO_VERSION="Django>=1.10,<1.11" RUN_WEB_TESTS=false
-- DJANGO_VERSION="Django>=1.9,<1.10" RUN_WEB_TESTS=false
-- DJANGO_VERSION="Django>=1.8,<1.9" RUN_WEB_TESTS=false
-matrix:
-  exclude:
-  - env: DJANGO_VERSION="Django>=2.2,<2.3" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest DEPLOY=true
-    python: '3.6'
-  - env: DJANGO_VERSION="Django>=2.2,<2.3" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest DEPLOY=true
-    python: '3.5'
-  - env: DJANGO_VERSION="Django>=2.2,<2.3" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest DEPLOY=true
-    python: '3.4'
-  - env: DJANGO_VERSION="Django>=2.2,<2.3" RUN_WEB_TESTS=true BROWSER_TAG=chrome_latest DEPLOY=true
-    python: '2.7'
-  - env: DJANGO_VERSION="Django>=2.2,<2.3" RUN_WEB_TESTS=false
-    python: '3.4'
-  - env: DJANGO_VERSION="Django>=2.2,<2.3" RUN_WEB_TESTS=false
-    python: '2.7'
-  - env: DJANGO_VERSION="Django>=2.1,<2.2" RUN_WEB_TESTS=false
-    python: '3.4'
-  - env: DJANGO_VERSION="Django>=2.1,<2.2" RUN_WEB_TESTS=false
-    python: '2.7'
-  - env: DJANGO_VERSION="Django>=2.0,<2.1" RUN_WEB_TESTS=false
-    python: '2.7'
-  - env: DJANGO_VERSION="Django>=1.11a1,<2.0" RUN_WEB_TESTS=false
-    python: '3.7'
 install:
 - pip install pip -U
 - pip install codecov

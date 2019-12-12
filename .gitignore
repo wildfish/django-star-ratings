@@ -12,3 +12,4 @@ build/
 node_modules/
 npm-debug.log
 .cache/
+.pytest_cache/

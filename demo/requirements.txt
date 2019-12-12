@@ -1,4 +1,4 @@
-django==2.1.5
+django
 django-model-utils
 django-braces
 django-star-ratings

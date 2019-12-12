@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory
 from django.test import override_settings
-from hypothesis import given, Settings
+from hypothesis import given, settings
 from hypothesis.extra.django import TestCase
 from hypothesis.strategies import lists, integers
 from model_mommy import mommy
@@ -206,7 +206,8 @@ class TemplateTagsRatings(TestCase):
         context = render_mock.call_args_list[0][0][0]
         self.assertEqual(app_settings.STAR_RATINGS_RANGE, context['star_count'])
 
-    @given(scores=lists(scores()), settings=Settings(max_examples=5))
+    @given(scores=lists(scores()))
+    @settings(max_examples=5)
     def test_several_ratings_are_made___percentage_is_correct_in_result(self, scores):
         with patch('django.template.Template.render') as render_mock:
             item = mommy.make(Foo)
