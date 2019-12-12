@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import override_settings
-from hypothesis import given, Settings
+from hypothesis import given, settings
 from hypothesis.strategies import lists, tuples
 from hypothesis.extra.django import TestCase
 from mock import patch
@@ -63,7 +63,8 @@ class RatingManagerRate(TestCase):
 
         self.assertEqual(score, rating.score)
 
-    @given(lists(scores(), min_size=2), settings=Settings(max_examples=5))
+    @given(lists(scores(), min_size=2))
+    @settings(max_examples=5)
     def test_multiple_users_rating_the_object___aggregates_are_updated(self, scores):
         ratings = None
         for score in scores:
@@ -73,7 +74,8 @@ class RatingManagerRate(TestCase):
         self.assertAlmostEqual(ratings.total, sum(scores))
         self.assertAlmostEqual(ratings.average, mean(scores))
 
-    @given(lists(scores(), min_size=2), settings=Settings(max_examples=5))
+    @given(lists(scores(), min_size=2))
+    @settings(max_examples=5)
     def test_deleting_the_rating___aggregates_are_updated(self, scores):
         ratings = None
         for score in scores:

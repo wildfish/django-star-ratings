@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 
 from hypothesis import given
 from hypothesis.strategies import text
+from hypothesis.extra.django import TestCase
 from random import random, randint
-from django.test import TestCase
 from model_mommy import mommy
 from star_ratings import app_settings, get_star_ratings_rating_model
 from .fakes import fake_user, fake_rating
