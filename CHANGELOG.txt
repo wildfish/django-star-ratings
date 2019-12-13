@@ -1,4 +1,4 @@
-__next__
+0.9.1 (2019-12-13)
 ------------------
 
 * Fixed issue displaying stars in admin (thanks @GDay)
