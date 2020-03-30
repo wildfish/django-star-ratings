@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
-from django.conf.urls import url, include
+from django.urls import include, path
 
 urlpatterns = [
-    url(r'^ratings/', include('star_ratings.urls', namespace='ratings')),
+    path('ratings/', include('star_ratings.urls', namespace='ratings')),
 ]
