@@ -223,6 +223,19 @@ var djangoRemarkRest = {
         return cookieValue;
     },
 
+    setCSRFToken: function (req) {
+        var token = this.getCookie('csrftoken');
+
+        // attempt to get token from DOM if it's not accessible from the cookie.
+        // https://docs.djangoproject.com/en/dev/ref/csrf/#acquiring-csrf-token-from-html
+        if (token == null){
+            token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        }
+
+        req.setRequestHeader("X-CSRFToken", token);
+        return req
+    },
+
     makeRequest: function (url, method, success, fail) {
         var req = new XMLHttpRequest();
         if (req.overrideMimeType !== undefined) {
@@ -261,25 +274,25 @@ var djangoRemarkRest = {
 
     post: function (url, data, success, fail) {
         var req = this.makeRequest(url, 'POST', success, fail);
-        req.setRequestHeader("X-CSRFToken", this.getCookie('csrftoken'));
+        req = this.setCSRFToken(req)
         req.send(JSON.stringify(data));
     },
 
     put: function (url, data, success, fail) {
         var req = this.makeRequest(url, 'PUT', success, fail);
-        req.setRequestHeader("X-CSRFToken", this.getCookie('csrftoken'));
+        req = this.setCSRFToken(req)
         req.send(JSON.stringify(data));
     },
 
     patch: function (url, data, success, fail) {
         var req = this.makeRequest(url, 'PATCH', success, fail);
-        req.setRequestHeader("X-CSRFToken", this.getCookie('csrftoken'));
+        req = this.setCSRFToken(req)
         req.send(JSON.stringify(data));
     },
 
     "delete": function (url, data, success, fail) {
         var req = this.makeRequest(url, 'DELETE', success, fail);
-        req.setRequestHeader("X-CSRFToken", this.getCookie('csrftoken'));
+        req = this.setCSRFToken(req)
         req.send(JSON.stringify(data));
     }
 };
