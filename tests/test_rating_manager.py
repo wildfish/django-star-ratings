@@ -9,8 +9,9 @@ from hypothesis.extra.django import TestCase
 from mock import patch
 from model_mommy import mommy
 from star_ratings import get_star_ratings_rating_model
+
+from .base import BaseFooTest
 from .fakes import fake_rating, fake_user
-from .models import Foo
 from .strategies import scores
 from six import assertRaisesRegex
 
@@ -22,9 +23,9 @@ def mean(nums):
     return float(sum(nums)) / len(nums)
 
 
-class RatingManagerForInstance(TestCase):
+class RatingManagerForInstance(BaseFooTest, TestCase):
     def test_rating_object_exists_for_model___that_object_is_returned(self):
-        item = mommy.make(Foo)
+        item = mommy.make(self.foo_model)
         rating = fake_rating(content_object=item)
 
         res = get_star_ratings_rating_model().objects.for_instance(item)
@@ -32,7 +33,7 @@ class RatingManagerForInstance(TestCase):
         self.assertEqual(rating, res)
 
     def test_rating_object_does_not_exist_for_model___object_is_created_and_returned(self):
-        item = mommy.make(Foo)
+        item = mommy.make(self.foo_model)
 
         res = get_star_ratings_rating_model().objects.for_instance(item)
 
@@ -43,18 +44,19 @@ class RatingManagerForInstance(TestCase):
         self.assertEqual(0, res.average)
 
     def test_passed_a_rating_instance___type_error_is_raised(self):
-        item = mommy.make(Foo)
+        item = mommy.make(self.foo_model)
         ratings = get_star_ratings_rating_model().objects.for_instance(item)
 
         with assertRaisesRegex(self, TypeError, "Rating manager 'for_instance' expects model to be rated, not Rating model."):
             get_star_ratings_rating_model().objects.for_instance(ratings)
 
 
-class RatingManagerRate(TestCase):
+class RatingManagerRate(BaseFooTest, TestCase):
     def setUp(self):
+        super().setUp()
         self.user_a = mommy.make(get_user_model())
         self.user_b = mommy.make(get_user_model())
-        self.foo = Foo.objects.create()
+        self.foo = self.foo_model.objects.create()
 
     @given(scores())
     def test_user_rates_object___rating_object_is_create(self, score):
@@ -125,9 +127,9 @@ class RatingManagerRate(TestCase):
             get_star_ratings_rating_model().objects.rate(ratings, 2, self.user_a, '127.0.0.1')
 
 
-class RatingsForInstanceDeprication(TestCase):
+class RatingsForInstanceDeprication(BaseFooTest, TestCase):
     def test_ratings_for_instance_is_called___deprication_warning_is_given(self):
-        foo = Foo.objects.create()
+        foo = self.foo_model.objects.create()
 
         with patch('star_ratings.models.warn') as warn_mock:
             get_star_ratings_rating_model().objects.ratings_for_instance(foo)
@@ -135,7 +137,7 @@ class RatingsForInstanceDeprication(TestCase):
             warn_mock.assert_called_once_with("RatingManager method 'ratings_for_instance' has been renamed to 'for_instance'. Please change uses of 'Rating.objects.ratings_for_instance' to 'Rating.objects.for_instance' in your code.", DeprecationWarning)
 
     def test_ratings_for_instance_is_called___for_instance_is_called_with_the_correct_instance(self):
-        foo = Foo.objects.create()
+        foo = self.foo_model.objects.create()
 
         with patch('star_ratings.models.RatingManager.for_instance') as for_instance_mock:
             get_star_ratings_rating_model().objects.ratings_for_instance(foo)

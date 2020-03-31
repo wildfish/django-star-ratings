@@ -9,8 +9,16 @@ def pytest_configure():
 
     kwargs = {}
     use_custom_model = os.environ.get('USE_CUSTOM_MODEL') == 'true'
+
+    # This is for tests only, we need to handle that the Foo/Bar models needs a different primary key when running
+    # tests with STAR_RATINGS_RATING_MODEL, setting to leverage in tests.
+    kwargs['FOO_MODEL'] = 'tests.Foo'
+    kwargs['BAR_MODEL'] = 'tests.Bar'
+
     if use_custom_model:
         kwargs['STAR_RATINGS_RATING_MODEL'] = 'tests.MyRating'
+        kwargs['FOO_MODEL'] = 'tests.FooWithUUID'
+        kwargs['BAR_MODEL'] = 'tests.BarWithUUID'
 
     settings.configure(
         DEBUG_PROPAGATE_EXCEPTIONS=True,
