@@ -1,9 +1,16 @@
 from __future__ import unicode_literals
+import os
 
 
 # From https://raw.githubusercontent.com/tomchristie/django-rest-framework/master/tests/conftest.py
+
 def pytest_configure():
     from django.conf import settings
+
+    kwargs = {}
+    use_custom_model = os.environ.get('USE_CUSTOM_MODEL') == 'true'
+    if use_custom_model:
+        kwargs['STAR_RATINGS_RATING_MODEL'] = 'tests.MyRating'
 
     settings.configure(
         DEBUG_PROPAGATE_EXCEPTIONS=True,
@@ -65,6 +72,7 @@ def pytest_configure():
         ),
 
         STAR_RATINGS_RERATE=True,
+        **kwargs
     )
 
     try:
