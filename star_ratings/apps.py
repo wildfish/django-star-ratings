@@ -13,3 +13,6 @@ class StarRatingsAppConfig(AppConfig):
 
         post_save.connect(calculate_ratings, sender=UserRating)
         post_delete.connect(calculate_ratings, sender=UserRating)
+
+        # Add System checks
+        from .checks import rerate_check  # NOQA

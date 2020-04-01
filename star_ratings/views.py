@@ -41,7 +41,12 @@ class Rate(View):
                 if form.is_valid():
                     rating = form.save()
                     result = rating.to_dict()
-                    result['user_rating'] = int(form.cleaned_data['score'])
+
+                    user_rating = int(form.cleaned_data['score'])
+                    if hasattr(rating, '_user_rating_deleted'):
+                        user_rating = None
+
+                    result['user_rating'] = user_rating
                 else:
                     result = {'errors': form.errors}
                     res_status = 400

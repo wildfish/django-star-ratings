@@ -46,6 +46,15 @@ class RatingManager(models.Manager):
         if existing_rating:
             if not app_settings.STAR_RATINGS_RERATE:
                 raise ValidationError(_('Already rated.'))
+
+            same_as_previous = existing_rating.score == score
+
+            if app_settings.STAR_RATINGS_RERATE_SAME_DELETE and same_as_previous:
+                rating = existing_rating.rating
+                existing_rating.delete()
+                rating._user_rating_deleted = True
+                return rating
+
             existing_rating.score = score
             existing_rating.save()
             return existing_rating.rating

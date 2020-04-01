@@ -118,6 +118,52 @@ class RatingManagerRate(TestCase):
         self.assertEqual(ratings.total, 4)
         self.assertEqual(ratings.average, 4)
 
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    @given(tuples(scores(), scores()).filter(lambda x: x[0] != x[1]))
+    def test_same_user_rate_twice_rerate_delete_score_diff__rating_is_changed(self, scores):
+        first, second = scores
+
+        ratings = get_star_ratings_rating_model().objects.rate(self.foo, first, self.user_a, '127.0.0.1')
+        self.assertTrue(ratings.user_ratings.filter(user=self.user_a, score=first))
+        self.assertEqual(ratings.count, 1)
+        self.assertEqual(ratings.total, first)
+        self.assertEqual(ratings.average, first)
+
+        ratings = get_star_ratings_rating_model().objects.rate(self.foo, second, self.user_a, '127.0.0.1')
+        self.assertTrue(ratings.user_ratings.filter(user=self.user_a, score=second))
+        self.assertEqual(ratings.count, 1)
+        self.assertEqual(ratings.total, second)
+        self.assertEqual(ratings.average, second)
+
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_same_user_rate_twice_rerate_is_delete_score_same__rating_is_deleted(self):
+        """
+        If re-rating is disabled the rating should not count
+        """
+        ratings = get_star_ratings_rating_model().objects.rate(self.foo, 2, self.user_a, '127.0.0.1')
+        self.assertEqual(ratings.user_ratings.filter(user=self.user_a).count(), 1)
+
+        ratings = get_star_ratings_rating_model().objects.rate(self.foo, 2, self.user_a, '127.0.0.1')
+        self.assertEqual(ratings.user_ratings.filter(user=self.user_a).count(), 0)
+
+        self.assertEqual(ratings.count, 0)
+        self.assertEqual(ratings.total, 0)
+        self.assertEqual(ratings.average, 0.0)
+
+    @override_settings(STAR_RATINGS_RERATE=False)
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_same_user_rate_twice_rerate_is_false_and_delete__validation_error_is_raised(self):
+        """
+        If re-rating is disabled the rating should not count and deleted should have no impact.
+        """
+        ratings = get_star_ratings_rating_model().objects.rate(self.foo, 2, self.user_a, '127.0.0.1')
+        with self.assertRaises(ValidationError):
+            ratings = get_star_ratings_rating_model().objects.rate(self.foo, 2, self.user_a, '127.0.0.1')
+
+        self.assertEqual(ratings.count, 1)
+        self.assertEqual(ratings.total, 2)
+        self.assertEqual(ratings.average, 2)
+
     def test_rate_is_passed_a_rating_instance___value_error_is_raised(self):
         ratings = get_star_ratings_rating_model().objects.for_instance(self.foo)
 

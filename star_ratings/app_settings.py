@@ -17,6 +17,10 @@ class Settings:
         return getattr(settings, 'STAR_RATINGS_RERATE', True)
 
     @property
+    def STAR_RATINGS_RERATE_SAME_DELETE(self):
+        return getattr(settings, 'STAR_RATINGS_RERATE_SAME_DELETE', False)
+
+    @property
     def STAR_RATINGS_STAR_HEIGHT(self):
         return getattr(settings, 'STAR_RATINGS_STAR_HEIGHT', 32)
 
