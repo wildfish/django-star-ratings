@@ -16,3 +16,6 @@ class StarRatingsAppConfig(AppConfig):
 
         # Add System checks
         from .checks import rerate_check  # NOQA
+        from django.core.checks import Tags, register as register_check
+
+        register_check(rerate_check, Tags.compatibility)
