@@ -11,6 +11,8 @@ Add ratings to any Django model with a template tag.
 See full `documentation
 <http://django-star-ratings.readthedocs.io/en/latest/?badge=latest/>`_.
 
+Built by Wildfish. https://wildfish.com
+
 Requirements
 ============
 
