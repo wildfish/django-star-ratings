@@ -1,14 +1,14 @@
 from __future__ import unicode_literals
 
-from django.conf.urls import include, url
+from django.urls import include, path
 from django.contrib import admin
 from django.contrib.auth import urls as auth_urls
 from .app.views import FooView, SizesView
 
 urlpatterns = [
-    url(r'^$', FooView.as_view(template_name='home.html'), name='home'),
-    url(r'^sizes$', SizesView.as_view(), name='sizes'),
-    url(r'^', include(auth_urls)),
-    url(r'^admin/', admin.site.urls),
-    url(r'^ratings/', include('star_ratings.urls', namespace='ratings')),
+    path('', FooView.as_view(template_name='home.html'), name='home'),
+    path('sizes', SizesView.as_view(), name='sizes'),
+    path('', include(auth_urls)),
+    path('admin/', admin.site.urls),
+    path('ratings/', include('star_ratings.urls', namespace='ratings')),
 ]

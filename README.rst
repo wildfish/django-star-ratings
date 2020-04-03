@@ -15,7 +15,7 @@ Requirements
 ============
 
 * Python 3.6+.
-* Django 2.0+
+* Django 2.2+
 
 
 Installation
@@ -46,7 +46,7 @@ add the following to your urls.py:
 
 ::
 
-    url(r'^ratings/', include('star_ratings.urls', namespace='ratings', app_name='ratings')),
+    path('ratings/', include('star_ratings.urls', namespace='ratings')),
 
 Make sure ``'django.core.context_processors.request',`` is in
 ``TEMPLATE_CONTEXT_PROCESSORS``.
