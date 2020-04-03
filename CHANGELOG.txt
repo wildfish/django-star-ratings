@@ -1,3 +1,12 @@
+__next__
+------------------
+
+* Fixed some deprecation warnings (thanks @mvillalba)
+* Added tests for model url swapping
+* Added fallback to DOM based CSRF token to handle CSRF_COOKIE_HTTPONLY
+* Added support for 3.0.5
+* Added setting to allow deleting rating if the same score is sent
+
 0.9.1 (2019-12-13)
 ------------------
 
