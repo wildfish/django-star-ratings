@@ -95,6 +95,10 @@ Settings
 To prohibit users from altering their ratings set
 ``STAR_RATINGS_RERATE = False`` in settings.py
 
+To allow users to delete a rating by selecting the same score again, set
+``STAR_RATINGS_RERATE_SAME_DELETE = False`` in settings.py, note
+that ``STAR_RATINGS_RERATE`` must be True if this is set.
+
 To change the number of rating stars, set ``STAR_RATINGS_RANGE``
 (defaults to 5)
 

@@ -146,7 +146,14 @@ function updateRating(rating, sender) {
     if(avgElem) {
         valueElem = avgElem.getElementsByClassName('star-ratings-rating-value')[0];
         if (valueElem) {
-            valueElem.innerHTML = rating.average.toFixed(2);
+            var average = rating.average.toFixed(2);
+
+            // suppress . if 0.
+            if (rating.average === 0){
+                average = 0
+            }
+
+            valueElem.innerHTML = average
         }
     }
 
@@ -162,6 +169,10 @@ function updateRating(rating, sender) {
     if(userElem) {
         valueElem = userElem.getElementsByClassName('star-ratings-rating-value')[0];
         if (valueElem) {
+            if (rating.user_rating == null && valueElem.getAttribute('data-when-null', false)){
+                rating.user_rating = valueElem.getAttribute('data-when-null');
+            }
+
             valueElem.innerHTML = rating.user_rating;
         }
     }

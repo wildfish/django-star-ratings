@@ -131,7 +131,7 @@ class TestSwappable(BaseFooTest, TestCase):
         else:
             self.assertFalse(hasattr(rating, 'foo'))
 
-    @pytest.mark.skipif(os.environ.get('USE_CUSTOM_MODEL') == 'true', reason='Only run without swapped model.')
+    @pytest.mark.skipif(os.environ.get('USE_CUSTOM_MODEL', 'false') == 'true', reason='Only run without swapped model.')
     def test_custom_rating_object__object_id_type__int(self):
         user = fake_user()
         foo_a = self.foo = self.foo_model.objects.create(name='foo a')
@@ -139,7 +139,7 @@ class TestSwappable(BaseFooTest, TestCase):
 
         self.assertIsInstance(rating.object_id, int)
 
-    @pytest.mark.skipif(os.environ.get('USE_CUSTOM_MODEL') == 'false', reason='Only run when with swapped model.')
+    @pytest.mark.skipif(os.environ.get('USE_CUSTOM_MODEL', 'false') == 'false', reason='Only run when with swapped model.')
     def test_custom_rating_object__object_id_type__uuid(self):
         user = fake_user()
         foo_a = self.foo = self.foo_model.objects.create(name='foo a')

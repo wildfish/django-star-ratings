@@ -1,11 +1,14 @@
 from __future__ import unicode_literals
 
-from django.test import override_settings
+from django.core.checks import Warning
+from django.test import override_settings, SimpleTestCase
+
 from hypothesis import given
 from hypothesis.extra.django import TestCase
 from hypothesis.strategies import integers
 
 from star_ratings import app_settings
+from star_ratings.checks import rerate_check
 
 
 class AppSettingsDefaults(TestCase):
@@ -22,6 +25,13 @@ class AppSettingsDefaults(TestCase):
     @override_settings(STAR_RATINGS_RERATE=False)
     def test_rerate_defined_in_the_settings___value_is_setting_value(self):
         self.assertFalse(app_settings.STAR_RATINGS_RERATE)
+
+    def test_rerate_same_delete_not_defined_in_the_settings___defaults_to_false(self):
+        self.assertFalse(app_settings.STAR_RATINGS_RERATE_SAME_DELETE)
+
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_rerate_same_delete_defined_in_the_settings___value_is_setting_value(self):
+        self.assertTrue(app_settings.STAR_RATINGS_RERATE_SAME_DELETE)
 
     def test_anon_ratings_not_defined_in_settings___defaults_to_false(self):
         self.assertFalse(app_settings.STAR_RATINGS_ANONYMOUS)
@@ -54,3 +64,30 @@ class AppSettingsDefaults(TestCase):
     @override_settings(STAR_RATINGS_OBJECT_ID_PATTERN='[a-z0-9]{32}')
     def test_object_id_pattern_defined_in_the_settings___value_is_setting_value(self):
         self.assertEqual('[a-z0-9]{32}', app_settings.STAR_RATINGS_OBJECT_ID_PATTERN)
+
+
+class AppSettingsChecks(SimpleTestCase):
+    @override_settings(STAR_RATINGS_RERATE=True)
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_rerate_config__correct(self):
+        errors = rerate_check(None)
+        self.assertEqual(errors, [])
+
+    @override_settings(STAR_RATINGS_RERATE=True)
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=False)
+    def test_rerate_config_deleted_disabled__correct(self):
+        errors = rerate_check(None)
+        self.assertEqual(errors, [])
+
+    @override_settings(STAR_RATINGS_RERATE=False)
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_rerate_config_rerate_disabled__not_correct_check_raised(self):
+        errors = rerate_check(None)
+        expected_errors = [
+            Warning(
+                'You have specified STAR_RATINGS_RERATE_SAME_DELETE=True and STAR_RATINGS_RERATE=False.',
+                hint='If you wish to enable STAR_RATINGS_RERATE_SAME_DELETE please also enable STAR_RATINGS_RERATE.',
+                id='star_ratings.W001',
+            )
+        ]
+        self.assertEqual(errors, expected_errors)

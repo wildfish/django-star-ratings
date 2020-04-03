@@ -34,9 +34,9 @@ class BaseTestViewRate:
             return self.client.post(url, json.dumps(data), content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         return self.client.post(url, json.dumps(data), content_type='application/json')
 
-    def get_user(self):
+    def get_user(self, username='username'):
         return get_user_model().objects.create_user(
-            username='username',
+            username=username,
             first_name='first',
             last_name='last',
             email='example@example.com',
@@ -290,8 +290,161 @@ class BaseTestViewRate:
 
         self.assertEqual(400, response.status_code)
 
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_user_is_logged_in_already_has_a_rating_rerate_is_delete_score_same__rating_deleted(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
+        orig_score = rating.score
 
-@pytest.mark.skipif(os.environ.get('USE_CUSTOM_MODEL') == 'true', reason='Only run without swapped model.')
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        self.post_json(url, {'score': orig_score}, user=user)
+
+        with self.assertRaises(UserRating.DoesNotExist):
+            UserRating.objects.get(pk=rating.pk)
+
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_user_is_logged_in_already_has_a_rating_rerate_is_delete_score_same__redirected_to_next(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        response = self.post_json(url, {'score': rating.score, 'next': '/foo/bar'}, user=user)
+
+        self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
+
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_user_is_logged_in_already_has_a_rating_rerate_is_delete_request_is_ajax_score_same__rating_deleted(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
+        orig_score = rating.score
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        self.post_json(url, {'score': orig_score}, user=user, xhr=True, expect_errors=True)
+
+        with self.assertRaises(UserRating.DoesNotExist):
+            UserRating.objects.get(pk=rating.pk)
+
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_user_is_logged_in_already_has_a_rating_rerate_is_delete_reqest_is_ajax_score_same__response_is_200(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
+        response = self.post_json(url, {'score': rating.score}, user=user, xhr=True, expect_errors=True)
+
+        self.assertEqual(200, response.status_code)
+
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_user_is_logged_in_already_has_a_rating_rerate_is_delete_reqest_is_ajax_score_same__response_empty(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
+
+        # expecting it to be removed
+        expected = {'average': 0.0, 'count': 0, 'percentage': 0.0, 'total': 0, 'user_rating': None}
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
+        response = self.post_json(url, {'score': rating.score}, user=user, xhr=True, expect_errors=True)
+
+        try:
+            json_resp = response.json()
+        except AttributeError:
+            json_resp = json.loads(response.content.decode())
+
+        self.assertEqual(expected, json_resp)
+
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_user_is_logged_in_already_has_a_rating_rerate_is_delete_reqest_is_ajax_score_same__response_updated(self):
+        user = self.get_user()
+        other_user = self.get_user(username='other')
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
+        mommy.make(UserRating, rating=ratings, score=2, user=other_user)
+
+        # expecting it to be removed
+        expected = {'average': 2.0, 'count': 1, 'percentage': 40.0, 'total': 2, 'user_rating': None}
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
+        response = self.post_json(url, {'score': rating.score}, user=user, xhr=True, expect_errors=True)
+
+        try:
+            json_resp = response.json()
+        except AttributeError:
+            json_resp = json.loads(response.content.decode())
+
+        self.assertEqual(expected, json_resp)
+
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_user_is_logged_in_already_has_a_rating_rerate_is_delete_score_diff__ratingchanged(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
+
+        score = randint(2, 5)
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        self.post_json(url, {'score': score}, user=user)
+
+        rating = UserRating.objects.get(pk=rating.pk)
+
+        self.assertEqual(score, rating.score)
+
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_user_is_logged_in_already_has_a_rating_rerate_is_delete_score_diff__redirected_to_next(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        mommy.make(UserRating, rating=ratings, score=1, user=user)
+
+        score = randint(2, 5)
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        response = self.post_json(url, {'score': score, 'next': '/foo/bar'}, user=user)
+
+        self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
+
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_user_is_logged_in_already_has_a_rating_rerate_is_delete_score_diff__rating_changed(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
+
+        score = randint(2, 5)
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        self.post_json(url, {'score': score}, user=user, xhr=True, expect_errors=True)
+
+        rating = UserRating.objects.get(pk=rating.pk)
+        self.assertEqual(score, rating.score)
+
+    @override_settings(STAR_RATINGS_RERATE_SAME_DELETE=True)
+    def test_user_is_logged_in_already_has_a_rating_rerate_is_delete_score_diff__response_is_200(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        mommy.make(UserRating, rating=ratings, score=1, user=user)
+
+        score = randint(2, 5)
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
+        response = self.post_json(url, {'score': score}, user=user, xhr=True, expect_errors=True)
+
+        self.assertEqual(200, response.status_code)
+
+
+@pytest.mark.skipif(os.environ.get('USE_CUSTOM_MODEL', 'false') == 'true', reason='Only run without swapped model.')
 @pytest.mark.django_db
 class TestViewRateWithStandardURLPattern(BaseTestViewRate, BaseFooTest, TestCase):
     """
@@ -324,7 +477,7 @@ class TestViewRateWithStandardURLPattern(BaseTestViewRate, BaseFooTest, TestCase
         )
 
 
-@pytest.mark.skipif(os.environ.get('USE_CUSTOM_MODEL') == 'false', reason='Only run when with swapped model.')
+@pytest.mark.skipif(os.environ.get('USE_CUSTOM_MODEL', 'false') == 'false', reason='Only run when with swapped model.')
 @pytest.mark.django_db
 @override_settings(STAR_RATINGS_OBJECT_ID_PATTERN='[0-9a-f-]+')
 class TestViewRateWithCustomURLPattern(BaseTestViewRate, BaseFooTest, TestCase):
