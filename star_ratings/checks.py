@@ -1,5 +1,6 @@
 from django.core.checks import Warning
 
+
 def rerate_check(app_configs, **kwargs):
     errors = []
     # STAR_RATINGS_RERATE_SAME_DELETE has no impact without STAR_RATINGS_RERATE
