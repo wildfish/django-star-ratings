@@ -6,6 +6,7 @@ __next__
 * Added fallback to DOM based CSRF token to handle CSRF_COOKIE_HTTPONLY
 * Added support for 3.0.5
 * Added setting to allow deleting rating if the same score is sent
+* Added support for Brazilian Portuguese language support  (thanks @luizomf)
 
 0.9.1 (2019-12-13)
 ------------------
