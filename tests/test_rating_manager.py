@@ -11,7 +11,7 @@ from model_mommy import mommy
 from star_ratings import get_star_ratings_rating_model
 
 from .base import BaseFooTest
-from .fakes import fake_rating, fake_user
+from .fakes import fake_rating, fake_user, fake_user_rating
 from .strategies import scores
 from six import assertRaisesRegex
 
@@ -165,6 +165,31 @@ class RatingManagerRate(BaseFooTest, TestCase):
         self.assertEqual(ratings.count, 1)
         self.assertEqual(ratings.total, 2)
         self.assertEqual(ratings.average, 2)
+
+    @override_settings(STAR_RATINGS_CLEARABLE=True)
+    def test_same_user_rate_clearable___rating_is_deleted(self):
+        user_rating = fake_user_rating(user=self.user_a, score=1)
+
+        ratings = get_star_ratings_rating_model().objects.rate(user_rating, None, self.user_a, '127.0.0.1', True)
+
+        self.assertIsNone(ratings)
+        self.assertEqual(get_star_ratings_rating_model().objects.count(), 1)
+
+    @override_settings(STAR_RATINGS_CLEARABLE=True)
+    def test_same_user_rate_clearable___no_rating_to_delete(self):
+        ratings = get_star_ratings_rating_model().objects.rate(self.foo, None, self.user_a, '127.0.0.1', True)
+
+        self.assertIsNone(ratings)
+        self.assertEqual(get_star_ratings_rating_model().objects.count(), 0)
+
+    @override_settings(STAR_RATINGS_CLEARABLE=False)
+    def test_same_user_rate_clearable__disabled___rating_is_not_deleted(self):
+        user_rating = fake_user_rating(user=self.user_a, score=1)
+
+        ratings = get_star_ratings_rating_model().objects.rate(user_rating, None, self.user_a, '127.0.0.1', True)
+
+        self.assertIsNone(ratings)  # no action/non is returned
+        self.assertEqual(get_star_ratings_rating_model().objects.count(), 1)
 
     def test_rate_is_passed_a_rating_instance___value_error_is_raised(self):
         ratings = get_star_ratings_rating_model().objects.for_instance(self.foo)

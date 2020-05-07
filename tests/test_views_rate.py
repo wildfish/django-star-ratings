@@ -443,6 +443,88 @@ class BaseTestViewRate:
 
         self.assertEqual(200, response.status_code)
 
+    @override_settings(STAR_RATINGS_CLEARABLE=True)
+    def test_user_is_logged_in_already_has_a_rating__clearable__rating_deleted(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        self.post_json(url, {'clear': 1}, user=user)
+
+        with self.assertRaises(UserRating.DoesNotExist):
+            UserRating.objects.get(pk=rating.pk)
+
+    @override_settings(STAR_RATINGS_CLEARABLE=True)
+    def test_user_is_logged_in_already_has_a_rating__clearable__redirected_to_next(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        mommy.make(UserRating, rating=ratings, score=1, user=user)
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        response = self.post_json(url, {'clear': 1, 'next': '/foo/bar'}, user=user)
+
+        self.assertRedirects(response, '/foo/bar', fetch_redirect_response=False)
+
+    @override_settings(STAR_RATINGS_CLEARABLE=True)
+    def test_user_is_logged_in_already_has_a_rating__clearable__request_is_ajax__rating_deleted(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        self.post_json(url, {'clear': 1}, user=user, xhr=True, expect_errors=True)
+
+        with self.assertRaises(UserRating.DoesNotExist):
+            UserRating.objects.get(pk=rating.pk)
+
+    @override_settings(STAR_RATINGS_CLEARABLE=True)
+    def test_user_is_logged_in_already_has_a_rating__clearable_request_is_ajax__response_is_200(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        mommy.make(UserRating, rating=ratings, score=1, user=user)
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
+        response = self.post_json(url, {'clear': 1}, user=user, xhr=True, expect_errors=True)
+
+        self.assertEqual(200, response.status_code)
+
+    @override_settings(STAR_RATINGS_CLEARABLE=True)
+    def test_user_is_logged_in_already_has_a_rating__clearable_request_is_ajax__response_empty(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        mommy.make(UserRating, rating=ratings, score=1, user=user)
+
+        # expecting it to be removed
+        expected = {'average': 0.0, 'count': 0, 'percentage': 0.0, 'total': 0, 'user_rating': None}
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id)) + '?next=/foo/bar'
+        response = self.post_json(url, {'clear': 1}, user=user, xhr=True, expect_errors=True)
+
+        try:
+            json_resp = response.json()
+        except AttributeError:
+            json_resp = json.loads(response.content.decode())
+
+        self.assertEqual(expected, json_resp)
+
+    @override_settings(STAR_RATINGS_CLEARABLE=False)
+    def test_user_is_logged_in_already_has_a_rating__clearable__disabled__rating_not_deleted(self):
+        user = self.get_user()
+        foo = mommy.make(self.foo_model)
+        ratings = get_star_ratings_rating_model().objects.for_instance(foo)
+        rating = mommy.make(UserRating, rating=ratings, score=1, user=user)
+
+        url = reverse('ratings:rate', args=(ratings.content_type_id, ratings.object_id))
+        self.post_json(url, {'clear': 1}, user=user)
+
+        self.assertEqual(UserRating.objects.filter(pk=rating.pk).count(), 1)
+
 
 @pytest.mark.skipif(os.environ.get('USE_CUSTOM_MODEL', 'false') == 'true', reason='Only run without swapped model.')
 @pytest.mark.django_db

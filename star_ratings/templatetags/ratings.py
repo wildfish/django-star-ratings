@@ -54,5 +54,6 @@ def ratings(context, item, icon_height=app_settings.STAR_RATINGS_STAR_HEIGHT, ic
         'id': 'dsr{}'.format(uuid.uuid4().hex),
         'anonymous_ratings': app_settings.STAR_RATINGS_ANONYMOUS,
         'read_only': read_only,
-        'editable': not read_only and (is_authenticated(request.user) or app_settings.STAR_RATINGS_ANONYMOUS)
+        'editable': not read_only and (is_authenticated(request.user) or app_settings.STAR_RATINGS_ANONYMOUS),
+        'clearable': not read_only and (is_authenticated(request.user) and app_settings.STAR_RATINGS_CLEARABLE)
     }, request=request)
