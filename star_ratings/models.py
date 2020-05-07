@@ -62,11 +62,12 @@ class RatingManager(models.Manager):
                 existing_rating.score = score
                 existing_rating.save()
                 return existing_rating.rating
-        elif score is not None:
+        elif clear:
+            # user has cleared without an existing_rating
+            return
+        else:
             rating, created = self.get_or_create(content_type=ct, object_id=instance.pk)
             return UserRating.objects.create(user=user, score=score, rating=rating, ip=ip).rating
-
-        return None
 
 
 class AbstractBaseRating(models.Model):

@@ -77,12 +77,14 @@
     <div class="star-ratings-errors"></div>
     {% block rating_clearable %}
         {% if clearable %}
-            <form action="{% url 'ratings:rate' rating.content_type_id rating.object_id %}" class="star-ratings-rate-action" method="post">
-            {% csrf_token %}
-            <input type="hidden" value="1" name="clear">
-            <input type="hidden" value="{{ request.path }}" name="next">
-            <button type="submit" class="star-ratings-rating-clear">Clear</button>
-            </form>
+            <div class="star-ratings-clear star-ratings-clear-{{user_rating|yesno:'visible,hidden'}}">
+                <form action="{% url 'ratings:rate' rating.content_type_id rating.object_id %}" class="star-ratings-rate-action" method="post">
+                {% csrf_token %}
+                <input type="hidden" value="1" name="clear">
+                <input type="hidden" value="{{ request.path }}" name="next">
+                <button type="submit" class="star-ratings-rating-clear">Clear</button>
+                </form>
+            </div>
         {% endif %}
     {% endblock %}
     {% endblock rating_detail %}
