@@ -1,6 +1,7 @@
 __next__
 ------------------
 
+* Added setting to allow clearing a rating.
 * Fixed some deprecation warnings (thanks @mvillalba)
 * Added tests for model url swapping
 * Added fallback to DOM based CSRF token to handle CSRF_COOKIE_HTTPONLY

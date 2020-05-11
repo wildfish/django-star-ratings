@@ -46,3 +46,8 @@
   display: inline-block;
   position: relative;
 }
+
+/* line 39, ../sass/star-ratings.scss */
+.star-ratings-clear-hidden {
+  display: none;
+}

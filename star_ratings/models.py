@@ -35,7 +35,13 @@ class RatingManager(models.Manager):
         warn("RatingManager method 'ratings_for_instance' has been renamed to 'for_instance'. Please change uses of 'Rating.objects.ratings_for_instance' to 'Rating.objects.for_instance' in your code.", DeprecationWarning)
         return self.for_instance(instance)
 
-    def rate(self, instance, score, user=None, ip=None):
+    def delete_existing(self, existing_rating):
+        rating = existing_rating.rating
+        existing_rating.delete()
+        rating._user_rating_deleted = True
+        return rating
+
+    def rate(self, instance, score, user=None, ip=None, clear=False):
         if isinstance(instance, self.model):
             raise TypeError("Rating manager 'rate' expects model to be rated, not Rating model.")
         ct = ContentType.objects.get_for_model(instance)
@@ -44,20 +50,21 @@ class RatingManager(models.Manager):
         existing_rating = UserRating.objects.for_instance_by_user(instance, user)
 
         if existing_rating:
-            if not app_settings.STAR_RATINGS_RERATE:
+            if not app_settings.STAR_RATINGS_CLEARABLE and not app_settings.STAR_RATINGS_RERATE:
                 raise ValidationError(_('Already rated.'))
 
             same_as_previous = existing_rating.score == score
 
-            if app_settings.STAR_RATINGS_RERATE_SAME_DELETE and same_as_previous:
-                rating = existing_rating.rating
-                existing_rating.delete()
-                rating._user_rating_deleted = True
-                return rating
-
-            existing_rating.score = score
-            existing_rating.save()
-            return existing_rating.rating
+            if (app_settings.STAR_RATINGS_CLEARABLE and clear) or \
+                    (app_settings.STAR_RATINGS_RERATE_SAME_DELETE and same_as_previous):
+                return self.delete_existing(existing_rating=existing_rating)
+            elif score is not None:
+                existing_rating.score = score
+                existing_rating.save()
+                return existing_rating.rating
+        elif clear:
+            # user has cleared without an existing_rating
+            return
         else:
             rating, created = self.get_or_create(content_type=ct, object_id=instance.pk)
             return UserRating.objects.create(user=user, score=score, rating=rating, ip=ip).rating

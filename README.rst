@@ -96,13 +96,20 @@ To prohibit users from altering their ratings set
 ``STAR_RATINGS_RERATE = False`` in settings.py
 
 To allow users to delete a rating by selecting the same score again, set
-``STAR_RATINGS_RERATE_SAME_DELETE = False`` in settings.py, note
+``STAR_RATINGS_RERATE_SAME_DELETE = True`` in settings.py, note
 that ``STAR_RATINGS_RERATE`` must be True if this is set.
+
+To allow uses to delete a rating via a clear button, set
+``STAR_RATINGS_CLEARABLE = True``` in settings.py. This can be used
+with or without STAR_RATINGS_RERATE.
 
 To change the number of rating stars, set ``STAR_RATINGS_RANGE``
 (defaults to 5)
 
-To enable anonymous rating set ``STAR_RATINGS_ANONYMOUS = True``.
+To enable anonymous rating set ``STAR_RATINGS_CLEARABLE = True``.
+
+Please note that ``STAR_RATINGS_RERATE``, ``STAR_RATINGS_RERATE_SAME_DELETE`` and  ``STAR_RATINGS_CLEARABLE``
+will have no affect when anonymous rating is enabled.
 
 Anonymous Rating
 ================

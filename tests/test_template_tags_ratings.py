@@ -325,6 +325,7 @@ class TemplateTagsRatings(BaseFooTest, TestCase):
         context = render_mock.call_args_list[0][0][0]
         self.assertFalse(context['editable'])
         self.assertFalse(context['read_only'])
+        self.assertFalse(context['clearable'])
 
     @override_settings(STAR_RATINGS_ANONYMOUS=False)
     @patch('django.template.Template.render')
@@ -341,6 +342,7 @@ class TemplateTagsRatings(BaseFooTest, TestCase):
         context = render_mock.call_args_list[0][0][0]
         self.assertTrue(context['editable'])
         self.assertFalse(context['read_only'])
+        self.assertFalse(context['clearable'])
 
     @override_settings(STAR_RATINGS_ANONYMOUS=True)
     @patch('django.template.Template.render')
@@ -357,6 +359,7 @@ class TemplateTagsRatings(BaseFooTest, TestCase):
         context = render_mock.call_args_list[0][0][0]
         self.assertTrue(context['editable'])
         self.assertFalse(context['read_only'])
+        self.assertFalse(context['clearable'])
 
     @patch('django.template.Template.render')
     def test_read_only_is_set_to_true___editable_is_false(self, render_mock):
@@ -372,6 +375,67 @@ class TemplateTagsRatings(BaseFooTest, TestCase):
         context = render_mock.call_args_list[0][0][0]
         self.assertFalse(context['editable'])
         self.assertTrue(context['read_only'])
+        self.assertFalse(context['clearable'])
+
+    @override_settings(STAR_RATINGS_CLEARABLE=True)
+    @patch('django.template.Template.render')
+    def test_clearable_is_true__not_readonly__authenticated__clearable(self, render_mock):
+        item = mommy.make(self.foo_model)
+
+        request = RequestFactory().get('/')
+        request.user = fake_user()
+
+        ratings({
+            'request': request,
+        }, item, read_only=False)
+
+        context = render_mock.call_args_list[0][0][0]
+        self.assertTrue(context['clearable'])
+
+    @override_settings(STAR_RATINGS_CLEARABLE=True)
+    @patch('django.template.Template.render')
+    def test_clearable_is_true__not_readonly__anon__not_clearable(self, render_mock):
+        item = mommy.make(self.foo_model)
+
+        request = RequestFactory().get('/')
+        request.user = AnonymousUser()
+
+        ratings({
+            'request': request,
+        }, item, read_only=False)
+
+        context = render_mock.call_args_list[0][0][0]
+        self.assertFalse(context['clearable'])
+
+    @override_settings(STAR_RATINGS_CLEARABLE=True)
+    @patch('django.template.Template.render')
+    def test_clearable_is_true__readonly__authenticated__not_clearable(self, render_mock):
+        item = mommy.make(self.foo_model)
+
+        request = RequestFactory().get('/')
+        request.user = fake_user()
+
+        ratings({
+            'request': request,
+        }, item, read_only=True)
+
+        context = render_mock.call_args_list[0][0][0]
+        self.assertFalse(context['clearable'])
+
+    @override_settings(STAR_RATINGS_CLEARABLE=False)
+    @patch('django.template.Template.render')
+    def test_clearable_is_false__not_readonly__authenticated__not_clearable(self, render_mock):
+        item = mommy.make(self.foo_model)
+
+        request = RequestFactory().get('/')
+        request.user = fake_user()
+
+        ratings({
+            'request': request,
+        }, item, read_only=False)
+
+        context = render_mock.call_args_list[0][0][0]
+        self.assertFalse(context['clearable'])
 
     @patch('django.template.loader.get_template')
     def test_template_name_is_set_in_parameter_and_context___parameter_is_used_as_template_name(self, get_mock):

@@ -9,6 +9,10 @@ class Settings:
         return getattr(settings, 'STAR_RATINGS_RANGE', 5)
 
     @property
+    def STAR_RATINGS_CLEARABLE(self):
+        return getattr(settings, 'STAR_RATINGS_CLEARABLE', False)
+
+    @property
     def STAR_RATINGS_ANONYMOUS(self):
         return getattr(settings, 'STAR_RATINGS_ANONYMOUS', False)
 

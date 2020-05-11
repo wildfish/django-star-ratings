@@ -19,6 +19,13 @@ class AppSettingsDefaults(TestCase):
     def test_range_defined_in_the_settings___value_is_setting_value(self):
         self.assertEqual(10, app_settings.STAR_RATINGS_RANGE)
 
+    def test_clearable_not_defined_in_the_settings___defaults_to_true(self):
+        self.assertFalse(app_settings.STAR_RATINGS_CLEARABLE)
+
+    @override_settings(STAR_RATINGS_CLEARABLE=True)
+    def test_clearable_defined_in_the_settings___value_is_setting_value(self):
+        self.assertTrue(app_settings.STAR_RATINGS_CLEARABLE)
+
     def test_rerate_not_defined_in_the_settings___defaults_to_true(self):
         self.assertTrue(app_settings.STAR_RATINGS_RERATE)
 

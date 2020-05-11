@@ -23,15 +23,17 @@ function bindRatings(el) {
 
     el.onmouseenter = function () {
         var maxRating = getMaxRating(this);
-        var score = this.querySelector('[name=score]').value;
-        var parent = utils.findParent(this, "star-ratings");
-        parent.querySelector(".star-ratings-rating-foreground").style.width = 100 / maxRating * score + "%";
+        var scoreEl = this.querySelector('[name=score]');
+
+        if (scoreEl){
+            var parent = utils.findParent(this, "star-ratings");
+            parent.querySelector(".star-ratings-rating-foreground").style.width = 100 / maxRating * scoreEl.value + "%";
+        }
     };
 
     el.onmouseleave = function () {
         var avgRating = getAvgRating(this);
         var maxRating = getMaxRating(this);
-        var score = this.querySelector('[name=score]').value;
         var parent = utils.findParent(this, "star-ratings");
         var percentage = 100 / maxRating * avgRating + "%";
         parent.querySelector(".star-ratings-rating-foreground").style.width = percentage;
@@ -141,11 +143,10 @@ function updateRating(rating, sender) {
     }
 
     parent.setAttribute("data-avg-rating", rating.average);
-
     var avgElem = parent.getElementsByClassName("star-ratings-rating-average")[0];
     if(avgElem) {
         valueElem = avgElem.getElementsByClassName('star-ratings-rating-value')[0];
-        if (valueElem) {
+        if (valueElem ) {
             var average = rating.average.toFixed(2);
 
             // suppress . if 0.
@@ -166,13 +167,24 @@ function updateRating(rating, sender) {
     }
 
     var userElem = parent.getElementsByClassName("star-ratings-rating-user")[0];
+    var clearElem = parent.getElementsByClassName('star-ratings-clear')[0];
     if(userElem) {
         valueElem = userElem.getElementsByClassName('star-ratings-rating-value')[0];
         if (valueElem) {
             if (rating.user_rating == null && valueElem.getAttribute('data-when-null', false)){
                 rating.user_rating = valueElem.getAttribute('data-when-null');
-            }
 
+                if (clearElem) {
+                    clearElem.classList.remove('star-ratings-clear-visible');
+                    clearElem.classList.add('star-ratings-clear-hidden');
+                }
+            }
+            else {
+                if (clearElem) {
+                    clearElem.classList.remove('star-ratings-clear-hidden');
+                    clearElem.classList.add('star-ratings-clear-visible');
+                }
+            }
             valueElem.innerHTML = rating.user_rating;
         }
     }
@@ -180,6 +192,13 @@ function updateRating(rating, sender) {
     parent.querySelector(".star-ratings-rating-foreground").style.width = rating.percentage + '%';
 }
 
+function toggleClass (el, cls) {
+    if (el.classList.contains(cls)) {
+        el.classList.remove(cls);
+    } else {
+        el.classList.add(cls);
+    }
+}
 
 function showError (errors, sender) {
     var parent = utils.findParent(sender, "star-ratings");

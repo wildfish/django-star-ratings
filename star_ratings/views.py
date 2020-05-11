@@ -35,18 +35,23 @@ class Rate(View):
             data['user'] = is_authenticated(request.user) and request.user.pk or None
 
             res_status = 200
+            result = {}
 
             try:
                 form = CreateUserRatingForm(data=data, obj=self.get_object())
                 if form.is_valid():
                     rating = form.save()
-                    result = rating.to_dict()
+                    if rating:
+                        result = rating.to_dict()
 
-                    user_rating = int(form.cleaned_data['score'])
-                    if hasattr(rating, '_user_rating_deleted'):
-                        user_rating = None
+                        user_rating = form.cleaned_data.get('score')
+                        if hasattr(rating, '_user_rating_deleted'):
+                            user_rating = None
 
-                    result['user_rating'] = user_rating
+                        if user_rating:
+                            user_rating = int(user_rating)
+
+                        result['user_rating'] = user_rating
                 else:
                     result = {'errors': form.errors}
                     res_status = 400
