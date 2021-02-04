@@ -21,6 +21,7 @@ jobs:
         django-version:
           - "2.2"
           - "3.0"
+          - "3.1"
         use_custom_model:
           - true
           - false

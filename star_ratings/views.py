@@ -59,7 +59,7 @@ class Rate(View):
                 result = {'errors': err.message}
                 res_status = 400
 
-            if request.is_ajax():
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse(data=result, status=res_status)
             else:
                 return HttpResponseRedirect(return_url)
