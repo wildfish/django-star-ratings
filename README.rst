@@ -106,7 +106,7 @@ with or without STAR_RATINGS_RERATE.
 To change the number of rating stars, set ``STAR_RATINGS_RANGE``
 (defaults to 5)
 
-To enable anonymous rating set ``STAR_RATINGS_CLEARABLE = True``.
+To enable anonymous rating set ``STAR_RATINGS_ANONYMOUS = True``.
 
 Please note that ``STAR_RATINGS_RERATE``, ``STAR_RATINGS_RERATE_SAME_DELETE`` and  ``STAR_RATINGS_CLEARABLE``
 will have no affect when anonymous rating is enabled.
