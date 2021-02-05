@@ -32,7 +32,7 @@ class BaseTestViewRate:
             self.client.login(username=kwargs['user'].username, password='password')
         if 'xhr' in kwargs:
             return self.client.post(url, json.dumps(data), content_type='application/json', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        return self.client.post(url, json.dumps(data), content_type='application/json')
+        return self.client.post(url, data)
 
     def get_user(self, username='username'):
         return get_user_model().objects.create_user(
