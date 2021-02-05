@@ -9,7 +9,7 @@ on:
 
 jobs:
   test-django:
-    name: py${{ matrix.python-version }} django-${{ matrix.django-version }}
+    name: py${{ matrix.python-version }} dj-${{ matrix.django-version }} cm-${{ matrix.use-custom-model }} wt-${{ matrix.run-web-tests }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,18 +21,18 @@ jobs:
         django-version:
           - "2.2"
           - "3.0"
-        use_custom_model:
+        use-custom-model:
           - true
           - false
-        run_web_tests:
+        run-web-tests:
           - true
           - false
         exclude:
-          - run_web_tests: true
+          - run-web-tests: true
             python-version: "3.6"
-          - run_web_tests: true
+          - run-web-tests: true
             python-version: "3.7"
-          - run_web_tests: true
+          - run-web-tests: true
             python-version: "3.8"
     steps:
       - uses: actions/checkout@v2
@@ -49,9 +49,9 @@ jobs:
           pip install "django~=${{ matrix.django-version }}.0" -U
       - name: Test
         env:
-          USE_CUSTOM_MODEL: ${{ matrix.use_custom_model }}
-          RUN_WEB_TESTS: ${{ matrix.run_web_tests }}
-          BROWSER_TAG:  chrome_latest
+          USE_CUSTOM_MODEL: ${{ matrix.use-custom-model }}
+          RUN_WEB_TESTS: ${{ matrix.run-web-tests }}
+          BROWSER_TAG:  chrome-latest
         run: |
           ./scripts/ci_runtests.sh
       - name: Upload coverage to Codecov
