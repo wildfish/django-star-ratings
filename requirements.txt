@@ -4,50 +4,108 @@
 #
 #    pip-compile --output-file=requirements.txt
 #
-asgiref==3.2.7            # via django
-attrs==19.3.0             # via hypothesis, pytest
-beautifulsoup4==4.8.2     # via webtest
-click==7.1.1              # via pip-tools
-coverage==5.0.4           # via -r requirements.in, pytest-cov
-django-braces==1.14.0     # via -r requirements.in
-django-model-utils==4.0.0  # via -r requirements.in
-django-webtest==1.9.7     # via -r requirements.in
-django==3.0.5             # via -r requirements.in, django-braces, django-model-utils, model-mommy
-entrypoints==0.3          # via flake8
-fancycompleter==0.9.1     # via pdbpp
-flake8==3.7.9             # via -r requirements.in
-hypothesis==5.8.0         # via -r requirements.in
-importlib-metadata==1.6.0  # via path, pluggy, pytest
-mccabe==0.6.1             # via flake8
-mock==4.0.2               # via -r requirements.in
-model-mommy==2.0.0        # via -r requirements.in
-more-itertools==8.2.0     # via pytest
-packaging==20.3           # via pytest
-path.py==12.4.0           # via -r requirements.in
-path==13.1.0              # via path.py
-pdbpp==0.10.2             # via -r requirements.in
-pip-tools==4.5.1          # via -r requirements.in
-pluggy==0.13.1            # via pytest
-py==1.8.1                 # via pytest
-pycodestyle==2.5.0        # via flake8
-pyflakes==2.1.1           # via flake8
-pygments==2.6.1           # via pdbpp
-pyparsing==2.4.6          # via packaging
-pyrepl==0.9.0             # via fancycompleter
-pytest-cov==2.8.1         # via -r requirements.in
-pytest-django==3.9.0      # via -r requirements.in
-pytest==5.4.1             # via -r requirements.in, pytest-cov, pytest-django
-pytz==2019.3              # via django
-selenium==3.141.0         # via -r requirements.in
-six==1.14.0               # via django-braces, packaging, pip-tools, webtest
-sortedcontainers==2.1.0   # via hypothesis
-soupsieve==2.0            # via beautifulsoup4
-sqlparse==0.3.1           # via django
-swapper==1.1.2.post1      # via -r requirements.in
-urllib3==1.25.8           # via selenium
-waitress==1.4.3           # via webtest
-wcwidth==0.1.9            # via pytest
-webob==1.8.6              # via webtest
-webtest==2.0.34           # via django-webtest
-wmctrl==0.3               # via pdbpp
-zipp==3.1.0               # via importlib-metadata
+asgiref==3.3.4
+    # via django
+attrs==19.3.0
+    # via
+    #   hypothesis
+    #   pytest
+beautifulsoup4==4.8.2
+    # via webtest
+click==7.1.1
+    # via pip-tools
+coverage==5.0.4
+    # via
+    #   -r requirements.in
+    #   pytest-cov
+django-braces==1.14.0
+    # via -r requirements.in
+django-model-utils==4.0.0
+    # via -r requirements.in
+django-webtest==1.9.7
+    # via -r requirements.in
+django==3.1.9
+    # via
+    #   -r requirements.in
+    #   django-braces
+    #   django-model-utils
+    #   model-mommy
+entrypoints==0.3
+    # via flake8
+fancycompleter==0.9.1
+    # via pdbpp
+flake8==3.7.9
+    # via -r requirements.in
+hypothesis==5.8.0
+    # via -r requirements.in
+mccabe==0.6.1
+    # via flake8
+mock==4.0.2
+    # via -r requirements.in
+model-mommy==2.0.0
+    # via -r requirements.in
+more-itertools==8.2.0
+    # via pytest
+packaging==20.3
+    # via pytest
+path.py==12.4.0
+    # via -r requirements.in
+path==13.1.0
+    # via path.py
+pdbpp==0.10.2
+    # via -r requirements.in
+pip-tools==4.5.1
+    # via -r requirements.in
+pluggy==0.13.1
+    # via pytest
+py==1.8.1
+    # via pytest
+pycodestyle==2.5.0
+    # via flake8
+pyflakes==2.1.1
+    # via flake8
+pygments==2.6.1
+    # via pdbpp
+pyparsing==2.4.6
+    # via packaging
+pyrepl==0.9.0
+    # via fancycompleter
+pytest-cov==2.8.1
+    # via -r requirements.in
+pytest-django==3.9.0
+    # via -r requirements.in
+pytest==5.4.1
+    # via
+    #   -r requirements.in
+    #   pytest-cov
+    #   pytest-django
+pytz==2019.3
+    # via django
+selenium==3.141.0
+    # via -r requirements.in
+six==1.14.0
+    # via
+    #   django-braces
+    #   packaging
+    #   pip-tools
+    #   webtest
+sortedcontainers==2.1.0
+    # via hypothesis
+soupsieve==2.0
+    # via beautifulsoup4
+sqlparse==0.3.1
+    # via django
+swapper==1.1.2.post1
+    # via -r requirements.in
+urllib3==1.25.8
+    # via selenium
+waitress==1.4.3
+    # via webtest
+wcwidth==0.1.9
+    # via pytest
+webob==1.8.6
+    # via webtest
+webtest==2.0.34
+    # via django-webtest
+wmctrl==0.3
+    # via pdbpp
