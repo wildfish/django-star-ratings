@@ -1,0 +1,60 @@
+name: Tests
+
+# Test django-star-ratings on:
+#   all supported Django and Python versions
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-django:
+    name: py${{ matrix.python-version }} dj-${{ matrix.django-version }} cm-${{ matrix.use-custom-model }} wt-${{ matrix.run-web-tests }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - "3.6"
+          - "3.7"
+          - "3.8"
+          - "3.9"
+        django-version:
+          - "2.2"
+          - "3.0"
+        use-custom-model:
+          - true
+          - false
+        run-web-tests:
+          - true
+          - false
+        exclude:
+          - run-web-tests: true
+            python-version: "3.6"
+          - run-web-tests: true
+            python-version: "3.7"
+          - run-web-tests: true
+            python-version: "3.8"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install codecov
+          grep -v "^django==" requirements.txt > /tmp/reqs.txt
+          pip install -r /tmp/reqs.txt
+          pip install "django~=${{ matrix.django-version }}.0" -U
+      - name: Test
+        env:
+          USE_CUSTOM_MODEL: ${{ matrix.use-custom-model }}
+          RUN_WEB_TESTS: ${{ matrix.run-web-tests }}
+          BROWSER_TAG:  chrome-latest
+        run: |
+          ./scripts/ci_runtests.sh
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          name: ${{ matrix.python-version }}-${{ matrix.django-version }}
