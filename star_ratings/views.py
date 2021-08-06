@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+import copy
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
@@ -26,7 +28,11 @@ class Rate(View):
         def _post(request, *args, **kwargs):
             data = request.POST or json.loads(request.body.decode())
 
+            data = copy.deepcopy(data)
             return_url = data.pop('next', '/')
+            if type(return_url) == list:
+                return_url = return_url[0]
+
             if 'HTTP_X_REAL_IP' in self.request.META:
                 data['ip'] = self.request.META['HTTP_X_REAL_IP']
             else:
