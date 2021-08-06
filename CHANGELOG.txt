@@ -1,6 +1,7 @@
 __next__
 ------------------
 
+* Added support for Django 3.2
 * Fixed some documentation issues (thanks @marcanuy)
 * Added setting to allow clearing a rating.
 * Fixed some deprecation warnings (thanks @mvillalba)
