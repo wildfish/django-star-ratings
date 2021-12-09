@@ -1,3 +1,4 @@
+recursive-include star_ratings/locale *
 recursive-include star_ratings/static *
 recursive-include star_ratings/templates *
 recursive-exclude star_ratings/static/star_ratings/js/node_modules *
