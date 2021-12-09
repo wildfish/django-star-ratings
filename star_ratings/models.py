@@ -9,7 +9,7 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Avg, Count, Sum
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from model_utils.models import TimeStampedModel
 
 from . import app_settings, get_star_ratings_rating_model_name, get_star_ratings_rating_model
