@@ -12,6 +12,7 @@ django-webtest
 django-braces
 hypothesis
 pip-tools
-selenium
+selenium<4.0
 mock
 swapper
+six
