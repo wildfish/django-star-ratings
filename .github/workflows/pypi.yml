@@ -3,7 +3,7 @@ name: PyPI
 on:
    push:
      tags:
-       - 'v*'
+       - '*'
 
 jobs:
   publish:
