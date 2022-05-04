@@ -16,7 +16,7 @@ Built by Wildfish. https://wildfish.com
 Requirements
 ============
 
-* Python 3.6+.
+* Python 3.7+.
 * Django 2.2+
 
 

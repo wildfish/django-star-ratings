@@ -14,7 +14,6 @@ jobs:
     strategy:
       matrix:
         python-version:
-          - "3.6"
           - "3.7"
           - "3.8"
           - "3.9"
@@ -33,15 +32,11 @@ jobs:
           - false
         exclude:
           - run-web-tests: true
-            python-version: "3.6"
-          - run-web-tests: true
             python-version: "3.7"
           - run-web-tests: true
             python-version: "3.8"
           - run-web-tests: true
             python-version: "3.9"
-          - python-version: "3.6"
-            django-version: "4.0"
           - python-version: "3.7"
             django-version: "4.0"
           - python-version: "3.10"
