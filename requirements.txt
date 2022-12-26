@@ -107,7 +107,7 @@ webob==1.8.7
     # via webtest
 webtest==3.0.0
     # via django-webtest
-wheel==0.37.0
+wheel==0.38.1
     # via pip-tools
 wmctrl==0.4
     # via pdbpp
