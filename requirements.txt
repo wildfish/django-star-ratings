@@ -18,7 +18,7 @@ coverage[toml]==6.2
     # via
     #   -r requirements.in
     #   pytest-cov
-django==3.2.18
+django==3.2.24
     # via
     #   -r requirements.in
     #   django-braces
