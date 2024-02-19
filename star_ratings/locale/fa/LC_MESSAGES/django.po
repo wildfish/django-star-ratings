@@ -1,0 +1,60 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Amir Aref <amiraref808@gmail.com>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-20 13:52+0430\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Amir Aref <amiraref808@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+#: star_ratings/admin.py:21
+msgid "Score"
+msgstr "امتیاز"
+
+#: star_ratings/admin.py:39
+msgid "Rating average"
+msgstr "میانگین امتیاز"
+
+#: star_ratings/models.py:21
+msgid ""
+"User is mandatory. Enable 'STAR_RATINGS_ANONYMOUS' for anonymous ratings."
+msgstr ""
+"ورود کاربر اجباری است. مقدار 'STAR_RATINGS_ANONYMOUS' را برای امتیاز دادن به صورت ناشناس فعال کنید."
+
+#: star_ratings/models.py:54
+msgid "Already rated."
+msgstr "قبلا امتیاز داده است."
+
+#: star_ratings/templates/star_ratings/widget_base.html:40
+msgid "Log in to rate"
+msgstr "برای امتیاز دادن وارد شوید"
+
+#: star_ratings/templates/star_ratings/widget_base.html:66
+msgid "Average: "
+msgstr "میانگین: "
+
+#: star_ratings/templates/star_ratings/widget_base.html:69
+msgid "Rating Count: "
+msgstr "تعداد امتیازات: "
+
+#: star_ratings/templates/star_ratings/widget_base.html:72
+msgid "You Rated: "
+msgstr "امتیاز شما: "
+
+#: star_ratings/templates/star_ratings/widget_base.html:72
+msgid "Not rated"
+msgstr "امتیاز داده نشده"
+
+#: star_ratings/templates/star_ratings/widget_base.html:74
+msgid "Please log in to rate."
+msgstr "لطفا برای امتیاز دادن وارد شوید."
